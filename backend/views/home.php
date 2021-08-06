@@ -47,6 +47,23 @@ add_thickbox();
 </div>
 
 <script>
+    "use strict";
+
+    const store = new Vuex.Store({
+        state: {
+
+        },
+        getters: {
+
+        },
+        mutations: {
+
+        },
+        actions: {
+
+        },
+    });
+
     const Dashboard = {
 
         mounted() {
@@ -777,6 +794,18 @@ add_thickbox();
 
         </div>`
     }
+
+    NProgress.configure({ parent: '#app' });
+
+    axios.interceptors.request.use(config => {
+        NProgress.start()
+        return config
+    })
+
+    axios.interceptors.response.use(response => {
+        NProgress.done()
+        return response
+    })
 
     const router = new VueRouter({
         routes: [
