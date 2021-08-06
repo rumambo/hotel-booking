@@ -105,13 +105,6 @@ class HotelBooking_Activator
                     ('Standart room', '', 32, '{\"1\":\"1200\",\"1 + 1\":\"\",\"1 + 2\":\"1600\",\"1 + 3\":\"1800\"}', '<p>The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.</p>', '5,6,7,8,9,10,11,12,13,14,15', '2,3', 'STN', '1 man 2 доп. места'),
 ('De luxe suite', '', 64, '{\"1\":\"1300\",\"1 + 1\":\"\",\"1 + 2\":\"\",\"1 + 3\":\"\"}', 'Описание анг', '5,6,7,8,9,10,11,12,13,14,15', '2,3,4,5', 'LUX', '2 man 2 доп. места');",
 
-/*            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_room_types_images` (
-                `id` tinyint(4) NOT NULL AUTO_INCREMENT,
-                `images` text DEFAULT NULL,
-                `date` varchar(19) DEFAULT NULL,
-                `room_types_id` tinyint(4) DEFAULT NULL,
-                PRIMARY KEY (`id`)
-            ) $collate;",*/
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_settings` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -121,14 +114,16 @@ class HotelBooking_Activator
             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}hb_settings` (`param`, `value`) VALUES
+                 ('ROOM_STATUSES', 'Ready,Cleaning,Dirty'),                  
+                 ('BOOKING_STATUS', 'New,Confirmed,Arrived,Freed'),
+                 ('COMFORTS_LIST', 'Wifi,Conditioner,Refrigerator,Safe,Bathrobe,Hair dryer,Slippers,TV,Balcony'),
+                 ('SERVICES_LIST', 'Transfer, Massage, Dinner, Supper'),
+                 ('SETS_LIST', '1,1 + 1,1 + 2,1 + 3'), 
                  ('IMG_LARGE', 1000), 
                  ('IMG_SMALL', 100), 
-                 ('IMG_MEDIUM', 500), 
-                 ('ROOM_STATUSES', 'Ready, Cleaning, Dirty'),
-                 ('COMFORTS_LIST', 'Wifi, Conditioner, Refrigerator, Safe, Bathrobe, Hair dryer, Slippers, TV, Balcony'),
-                 ('SERVICES_LIST', 'Transfer, Massage, Dinner, Supper'),
-                 ('SETS_LIST', '1, 1 + 1, 1 + 2, 1 + 3'),
-                 ('BOOKING_STATUS', 'New, Confirmed, Arrived, Freed');",
+                 ('IMG_MEDIUM', 500),
+                 ('CUR', '[[\"USD\",\"$\",\"1.00\"],[\"RUB\",\"₽\",\"38.00\"],[\"UAH\",\"₴\",\"28.00\"]]'),
+                 ('PROMO', '[\"TEST1\", 10, 1]');",
 
         ];
 

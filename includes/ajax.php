@@ -102,3 +102,216 @@ function vue_get_data()
 
 //add_action('wp_ajax_vue_get_data', 'vue_get_data');
 //add_action('wp_ajax_nopriv_vue_get_data', 'vue_get_data');
+
+
+function hb_get_data()
+{
+
+    echo '{"data":[{"room":"2","start_date":"2021-08-29","end_date":"2021-09-02","id":"4","status":"2","is_paid":true,"fio":"Пупкин Иван Иванович","email":"2","tel":"3","noty":"4"},{"room":"2","start_date":"2021-08-07","end_date":"2021-08-13","id":"52","status":"1","is_paid":false,"fio":"asdf","email":"asdf@dasf.com","tel":"324324","noty":"asdf asdf, дней: 1, доп.услуги(Трансфер 1|Массаж|) , прибытие: 12:00, завтрак: yes, парковка: yes"},{"room":"2","start_date":"2019-11-19","end_date":"2019-11-21","id":"55","status":"1","is_paid":false,"fio":"авпвы","email":"dsf@fds.com","tel":"324324","noty":"ds fdsaf, дней: 2, доп.услуги(Трансфер 1|) , прибытие: 12:00, завтрак: yes, парковка: yes"}],"collections":{"roomType":[{"id":"3","value":"3","label":"STN"},{"id":"4","value":"4","label":"LUX"}],"roomStatus":[{"id":1,"value":1,"label":"Готов"},{"id":2,"value":2,"label":"Уборка"},{"id":3,"value":3,"label":"Грязный"}],"bookingStatus":[{"id":"1","value":"1","label":"Новый"},{"id":"2","value":"2","label":"Подтвердили"},{"id":"3","value":"3","label":"Прибыли"},{"id":"4","value":"4","label":"Освободили"}],"room":[{"id":"2","value":"2","label":"101","type":"3","status":"1"},{"id":"5","value":"5","label":"103","type":"3","status":"2"},{"id":"3","value":"3","label":"201","type":"4","status":"1"}]}}';
+    die();
+
+}
+
+add_action('wp_ajax_hb_get_data', 'hb_get_data');
+add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');
+
+
+function hb_get_rooms()
+{
+
+    global $wpdb;
+
+    // roomType
+    $result = $wpdb->get_results("
+        SELECT *
+        FROM {$wpdb->prefix}hb_room_types",
+        ARRAY_A);
+    foreach ($result as $row) {
+        $data['roomType'][$row['id']] = $row;
+    }
+    unset($result);
+
+    // room
+    $result = $wpdb->get_results("
+        SELECT *
+        FROM {$wpdb->prefix}hb_rooms
+    ", ARRAY_A);
+    foreach ($result as $row) {
+        $type_title = $data['roomType'][$row['type_id']]['title'];
+
+        $data['room'][$type_title][$row['id']]['id'] = $row['id'];
+        $data['room'][$type_title][$row['id']]['name'] = $row['name'];
+        $data['room'][$type_title][$row['id']]['type_id'] = $row['type_id'];
+        $data['room'][$type_title][$row['id']]['type'] = $type_title;
+        $data['room'][$type_title][$row['id']]['status'] = $row['status'];
+        $data['room'][$type_title][$row['id']]['cleaner'] = $row['cleaner'];
+    }
+    unset($result);
+
+//    echo '<pre>';
+//    print_r($data['room']);
+//    echo '</pre>';
+//    die();
+
+    header('Content-Type: application/json');
+    echo json_encode($data['room'], JSON_UNESCAPED_UNICODE);
+    die();
+
+}
+
+add_action('wp_ajax_hb_get_rooms', 'hb_get_rooms');
+add_action('wp_ajax_nopriv_hb_get_rooms', 'hb_get_rooms');
+
+
+function hb_get_orders()
+{
+
+    global $wpdb;
+
+    $result = $wpdb->get_results("
+        SELECT *
+        FROM {$wpdb->prefix}hb_orders
+        ORDER BY id DESC",
+    ARRAY_A);
+
+    $data = [];
+    foreach ($result as $row) {
+        $data[] = $row;
+    }
+    unset($result);
+
+//    echo '<pre>';
+//    print_r($data);
+//    echo '</pre>';
+//    die();
+
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    die();
+
+}
+
+add_action('wp_ajax_hb_get_orders', 'hb_get_orders');
+add_action('wp_ajax_nopriv_hb_get_orders', 'hb_get_orders');
+
+
+function hb_get_room_types()
+{
+
+    global $wpdb;
+
+    $result = $wpdb->get_results("
+        SELECT *
+        FROM {$wpdb->prefix}hb_room_types
+        ORDER BY id ASC",
+        ARRAY_A);
+
+    $data = [];
+    foreach ($result as $row) {
+        $data[] = $row;
+    }
+    unset($result);
+
+//    echo '<pre>';
+//    print_r($data);
+//    echo '</pre>';
+//    die();
+
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    die();
+
+}
+
+add_action('wp_ajax_hb_get_room_types', 'hb_get_room_types');
+add_action('wp_ajax_nopriv_hb_get_room_types', 'hb_get_room_types');
+
+
+function hb_get_settings()
+{
+
+    global $wpdb;
+
+    $result = $wpdb->get_results("
+        SELECT *
+        FROM {$wpdb->prefix}hb_settings
+        ORDER BY id ASC",
+    ARRAY_A);
+
+    $data = [];
+    foreach ($result as $row) {
+        if (
+              $row['param'] === 'ROOM_STATUSES' ||
+              $row['param'] === 'BOOKING_STATUS' ||
+              $row['param'] === 'COMFORTS_LIST' ||
+              $row['param'] === 'SERVICES_LIST' ||
+              $row['param'] === 'SETS_LIST'
+        ) {
+            $data[$row['param']] = array_map('trim', explode(',', $row['value']));
+        } elseif ( $row['param'] === 'CUR' || $row['param'] === 'PROMO') {
+            $data[$row['param']] = json_decode($row['value'], true);
+        } else {
+            $data[$row['param']] = $row['value'];
+        }
+
+    }
+    unset($result);
+
+//    echo '<pre>';
+//    print_r($data);
+//    echo '</pre>';
+//    die();
+
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    die();
+
+}
+
+add_action('wp_ajax_hb_get_settings', 'hb_get_settings');
+add_action('wp_ajax_nopriv_hb_get_settings', 'hb_get_settings');
+
+
+function hb_store_settings()
+{
+    global $wpdb;
+
+    foreach ( $_POST as $key => $value ) {
+
+        if (
+            $key === 'ROOM_STATUSES' ||
+            $key === 'BOOKING_STATUS' ||
+            $key === 'COMFORTS_LIST' ||
+            $key === 'SERVICES_LIST' ||
+            $key === 'SETS_LIST'
+        ) {
+
+            $wpdb->update("{$wpdb->prefix}hb_settings",
+                ['value' => implode(',', $value)],
+                ['param' => $key]
+            );
+        } elseif ( $key === 'CUR' || $key === 'PROMO') {
+            $wpdb->update("{$wpdb->prefix}hb_settings",
+                ['value' => json_encode($value)],
+                ['param' => $key]
+            );
+        } else {
+            $wpdb->update("{$wpdb->prefix}hb_settings",
+                ['value' => $value],
+                ['param' => $key]
+            );
+        }
+
+    }
+
+//    echo '<pre>';
+//    print_r($_POST);
+//    echo '</pre>';
+//    die();
+
+    echo hb_get_settings();
+    die();
+}
+
+add_action('wp_ajax_hb_store_settings', 'hb_store_settings');
+add_action('wp_ajax_nopriv_hb_store_settings', 'hb_store_settings');
