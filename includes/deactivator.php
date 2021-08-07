@@ -11,12 +11,9 @@ class HotelBooking_Deactivator
         $admin = get_role('administrator');
         $admin->remove_cap('hb_options');
 
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_currencies");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_orders");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_rooms");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_room_types");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_room_types_images");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_promocodes");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_settings");
 
     }

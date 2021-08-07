@@ -31,6 +31,8 @@ function hb_admin_scripts()
     wp_enqueue_style('nprogress', 'https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css');
 
 
+    wp_enqueue_script('main', ASSETS_DIR . 'main.js', [], false, true);
+
 }
 
 add_action('admin_enqueue_scripts', 'hb_admin_scripts');

@@ -26,17 +26,6 @@ class HotelBooking_Activator
 
         $table_schema = [
 
-//            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_currencies` (
-//                `id` tinyint(4) NOT NULL AUTO_INCREMENT,
-//                `title` varchar(3) DEFAULT NULL,
-//                `sign` varchar(1) DEFAULT NULL,
-//                `koef` decimal(4,2) DEFAULT NULL,
-//                PRIMARY KEY (`id`)
-//            ) $collate;",
-//
-//            "INSERT INTO `{$wpdb->prefix}hb_currencies` (`title`, `sign`, `koef`) VALUES
-//                 ('USD', '$', '1.00'), ('RUB', '₽', '38.00'), ('UAH', '₴', '28.00');",
-
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_orders` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `room` tinyint(4) DEFAULT NULL,
@@ -61,23 +50,12 @@ class HotelBooking_Activator
 (3, '2019-10-08', '2019-10-11', 'dsf', 'gfdg@fsd.com', '535', 'dsff', 2, 1, '', '', ''),
 (2, '2019-11-19', '2019-11-21', 'авпвы', 'dsf@fds.com', '324324', 'ds fdsaf, дней: 2, доп.услуги(Трансфер 1|) , прибытие: 12:00, завтрак: yes, парковка: yes', 1, 0, 'ru', '1080', '1');",
 
-//            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_promocodes` (
-//                `id` tinyint(4) NOT NULL AUTO_INCREMENT,
-//                `code` varchar(5) DEFAULT NULL,
-//                `sum` smallint(6) DEFAULT NULL,
-//                `status` tinyint(4) DEFAULT NULL,
-//                PRIMARY KEY (`id`)
-//            ) $collate;",
-//
-//            "INSERT INTO `{$wpdb->prefix}hb_promocodes` (`code`, `sum`, `status`) VALUES
-//                 ('TEST1', 10, 1);",
-
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_rooms` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
-                `name` smallint(6) DEFAULT NULL,
+                `name` varchar(250) DEFAULT NULL,
                 `type_id` smallint(6) DEFAULT NULL,
                 `status` tinyint(4) DEFAULT NULL,
-                `cleaner` tinyint(4) DEFAULT NULL,
+                `cleaner` varchar(250) DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) $collate;",
 
@@ -123,7 +101,7 @@ class HotelBooking_Activator
                  ('IMG_SMALL', 100), 
                  ('IMG_MEDIUM', 500),
                  ('CUR', '[[\"USD\",\"$\",\"1.00\"],[\"RUB\",\"₽\",\"38.00\"],[\"UAH\",\"₴\",\"28.00\"]]'),
-                 ('PROMO', '[\"TEST1\", 10, 1]');",
+                 ('PROMO', '[[\"TEST1\", 10, 1]]');",
 
         ];
 
