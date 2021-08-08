@@ -91,7 +91,7 @@ const Dashboard = {
 
     mounted() {
 
-        scheduler.locale.labels.section_fio = 'Name';
+        scheduler.locale.labels.section_fio = 'Fullname';
         scheduler.locale.labels.section_email = 'Email';
         scheduler.locale.labels.section_tel = 'Phone';
         scheduler.locale.labels.section_room = 'Room';
@@ -298,11 +298,11 @@ const Dashboard = {
         scheduler.clearAll();
         scheduler.init('scheduler_here', new Date(), "timeline");
         scheduler.load(ajaxurl + "?action=hb_get_data", "json");
-        // if ( typeof window.dp == 'undefined') {
-        //     window.dp = new dataProcessor(ajaxurl + "?action=hb_get_test_data");
-        //     dp.init(scheduler);
-        // }
-        //
+        if ( typeof window.dp == 'undefined') {
+            window.dp = new dataProcessor(ajaxurl + "?action=hb_get_test_data");
+            dp.init(scheduler);
+        }
+
 
         let element = document.getElementById("scheduler_here");
         let top = scheduler.xy.nav_height + 1 + 1;

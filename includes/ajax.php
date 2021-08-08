@@ -1,27 +1,6 @@
 <?php
 
-//function vue_settings()
-//{
-//    global $wpdb;
-//
-//    $settings = [];
-//    $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}hb_settings", ARRAY_A);
-//    foreach ($result as $row) {
-//        $settings[$row['param']] = $row['value'];
-//    }
-//    unset($result);
-//
-//    header('Content-Type: application/json');
-//    echo json_encode($settings, JSON_UNESCAPED_UNICODE);
-//    die();
-
-//}
-
-//add_action('wp_ajax_settings', 'vue_settings');
-//add_action('wp_ajax_nopriv_settings', 'vue_settings');
-
-
-function vue_get_data()
+/*function hb_get_data()
 {
     global $wpdb;
 
@@ -75,14 +54,14 @@ function vue_get_data()
 
     // room
     $result = $wpdb->get_results("
-        SELECT 
-            id, id as value, 
-            name as label, 
-            type_id as type, 
-            cleaner as status 
+        SELECT
+            id as value,
+            name as label,
+            type_id as type,
+            cleaner as status
         FROM {$wpdb->prefix}hb_rooms
         WHERE `status` = 1
-        ORDER BY name ASC, type_id ASC 
+        ORDER BY name ASC, type_id ASC
     ", ARRAY_A);
     foreach ($result as $row) {
         $data['collections']['room'][] = $row;
@@ -100,8 +79,8 @@ function vue_get_data()
 
 }
 
-//add_action('wp_ajax_vue_get_data', 'vue_get_data');
-//add_action('wp_ajax_nopriv_vue_get_data', 'vue_get_data');
+add_action('wp_ajax_hb_get_data', 'hb_get_data');
+# add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');*/
 
 
 function hb_get_data()
