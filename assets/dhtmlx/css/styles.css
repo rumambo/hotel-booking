@@ -1,5 +1,19 @@
+.dhx_cal_container, .dhx_timeline_label_wrapper {
+	background: transparent;
+}
 
+.status-label {
+	font-weight:normal;
+	
+}
 
+.room_status {
+	
+}
+
+.dhx_widget.dhx_message {
+	margin-top: 2px;
+}
 .dhx_cal_container #room_filter:focus{
 	outline: 1px solid #52daff;
 }
@@ -14,12 +28,10 @@
 	border-left: 1px solid #cecece;
 }
 
-.dhx_section_time select {
-	display: none;
-}
+
 
 .timeline_weekend {
-	background-color: #FFF9C4;
+	background-color:  #f7f7f7;
 }
 
 .timeline_item_cell {
@@ -28,17 +40,11 @@
 	height: 100% !important;
 	font-size: 14px;
 	text-align: center;
-	line-height: 31px;
+	/* line-height: 50px; */
 }
 
 .room_status {
 	position: relative;
-	text-align:left !important;
-	text-indent:10px;
-}
-
-.status-label {
-	font-weight:normal; 
 }
 
 .timeline_item_separator {
@@ -58,15 +64,15 @@
 }
 
 .room_status_indicator_1 {
-	background-color: #4CAF50;
+	background-color: #0AB169;
 }
 
 .room_status_indicator_2 {
-	background-color: red;
+	background-color: #FF5252;
 }
 
 .room_status_indicator_3 {
-	background-color: #FFA000;
+	background-color:  #DF943D;
 }
 
 .dhx_cal_event_line {
@@ -74,19 +80,19 @@
 }
 
 .event_1 {
-	background-color: #FFB74D !important;
+	background-color: #ff9633 !important;
 }
 
 .event_2 {
-	background-color: #9CCC65 !important;
+	background-color: #0fc4a7 !important;
 }
 
 .event_3 {
-	background-color: #40C4FF !important;
+	background-color: #0288d1 !important;
 }
 
 .event_4 {
-	background-color: #BDBDBD !important;
+	background-color: #9575cd !important;
 }
 
 .booking_status, .booking_paid {
@@ -111,19 +117,24 @@
 	color: black;
 }
 
-.dhx_section_time select {
-	display: none
-}
-
 .dhx_mini_calendar .dhx_year_week,
 .dhx_mini_calendar .dhx_scale_bar {
 	height: 30px !important;
 }
 
+.dhx_cal_light_wide .dhx_cal_lsection{
+
+}
 .dhx_cal_light_wide .dhx_section_time {
 	text-align: left;
-}
 
+}
+.dhx_scale_bar.dhx_second_scale_bar, .dhx_scale_bar {
+	color:   rgba(0,0,0,.54) !important
+}
+.dhx_cal_light.dhx_cal_light_wide {
+	width: 500px;
+}
 .dhx_cal_light_wide .dhx_section_time > input:first-child {
 	margin-left: 10px;
 }
@@ -141,7 +152,10 @@
 	line-height: 60px;
 }
 
+
+
 .dhx_cal_radio label, .dhx_cal_radio input {
+
 	vertical-align: middle;
 }
 
@@ -156,10 +170,27 @@
 
 .dhx_cal_radio {
 	line-height: 19px;
+
 }
 
 .dhtmlXTooltip.tooltip {
 	color: #4d4d4d;
 	font-size: 15px;
 	line-height: 140%;
+}
+
+/*  Material Skin Fixes*/
+.dhx_cal_header.dhx_second_cal_header{
+	border-bottom: 1px solid #e0e0e0 !important;
+	box-shadow: 0 3px 5px 0 rgba(0,0,0,.1) !important;
+}
+.dhx_scale_bar.dhx_second_scale_bar{
+	border-top: 1px solid #e0e0e0 !important;
+	border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.dhx_timeline_scale_header.dhx_timeline_second_scale{
+	border-top: 1px solid #e0e0e0 !important;
+	border-bottom: 1px solid #e0e0e0 !important;
+	height: 59px !important; /* Compensate 1px difference with the scale_bar row*/
 }

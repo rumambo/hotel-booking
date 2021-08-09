@@ -110,13 +110,103 @@ add_action('wp_ajax_hb_get_data', 'hb_get_data');
 
 /*function hb_get_data()
 {
-
-    echo '{"data":[{"room":"2","start_date":"2021-08-29","end_date":"2021-09-02","id":"4","status":"2","is_paid":true,"fio":"Пупкин Иван Иванович","email":"2","tel":"3","noty":"4"},{"room":"2","start_date":"2021-08-07","end_date":"2021-08-13","id":"52","status":"1","is_paid":false,"fio":"asdf","email":"asdf@dasf.com","tel":"324324","noty":"asdf asdf, дней: 1, доп.услуги(Трансфер 1|Массаж|) , прибытие: 12:00, завтрак: yes, парковка: yes"},{"room":"2","start_date":"2019-11-19","end_date":"2019-11-21","id":"55","status":"1","is_paid":false,"fio":"авпвы","email":"dsf@fds.com","tel":"324324","noty":"ds fdsaf, дней: 2, доп.услуги(Трансфер 1|) , прибытие: 12:00, завтрак: yes, парковка: yes"}],"collections":{"roomType":[{"id":"3","value":"3","label":"STN"},{"id":"4","value":"4","label":"LUX"}],"roomStatus":[{"id":1,"value":1,"label":"Готов"},{"id":2,"value":2,"label":"Уборка"},{"id":3,"value":3,"label":"Грязный"}],"bookingStatus":[{"id":"1","value":"1","label":"Новый"},{"id":"2","value":"2","label":"Подтвердили"},{"id":"3","value":"3","label":"Прибыли"},{"id":"4","value":"4","label":"Освободили"}],"room":[{"id":"2","value":"2","label":"101","type":"3","status":"1"},{"id":"5","value":"5","label":"103","type":"3","status":"2"},{"id":"3","value":"3","label":"201","type":"4","status":"1"}]}}';
+     $data = [
+         "data" => [
+             [
+                 "room" => "1",
+                 "start_date" => "2021-08-02",
+                 "end_date" => "2021-08-23",
+                 "text" => "A-12",
+                 "id" => "1",
+                 "status" => "1",
+                 "is_paid" => "1"
+             ],
+         ],
+         "collections" => [
+             "roomType" => [
+                 [
+                     "id" => "1",
+                     "value" => "1",
+                     "label" => "1 bed"
+                 ],
+                 [
+                     "id" => "2",
+                     "value" => "2",
+                     "label" => "2 beds"
+                 ],
+                 [
+                     "id" => "3",
+                     "value" => "3",
+                     "label" => "3 beds"
+                 ],
+                 [
+                     "id" => "4",
+                     "value" => "4",
+                     "label" => "4 beds"
+                 ]
+             ],
+             "roomStatus" => [
+                 [
+                     "id" => "1",
+                     "value" => "1",
+                     "label" => "Ready"
+                 ],
+                 [
+                     "id" => "2",
+                     "value" => "2",
+                     "label" => "Dirty"
+                 ],
+                 [
+                     "id" => "3",
+                     "value" => "3",
+                     "label" => "Clean up"
+                 ]
+             ],
+             "bookingStatus" => [
+                 [
+                     "id" => "1",
+                     "value" => "1",
+                     "label" => "New"
+                 ],
+                 [
+                     "id" => "2",
+                     "value" => "2",
+                     "label" => "Confirmed"
+                 ],
+                 [
+                     "id" => "3",
+                     "value" => "3",
+                     "label" => "Arrived"
+                 ],
+                 [
+                     "id" => "4",
+                     "value" => "4",
+                     "label" => "Checked Out"
+                 ]
+             ],
+             "room" => [
+                 [
+                     "id" => "1",
+                     "value" => "1",
+                     "label" => "101",
+                     "type" => "1",
+                     "status" => "1"
+                 ],
+                 [
+                     "id" => "2",
+                     "value" => "2",
+                     "label" => "102",
+                     "type" => "1",
+                     "status" => "3"
+                 ],
+             ]
+         ]
+     ];
+    echo json_encode($data);
     die();
+}
 
-}*/
-
-add_action('wp_ajax_hb_get_data', 'hb_get_data');
+add_action('wp_ajax_hb_get_data', 'hb_get_data');*/
 # add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');
 
 

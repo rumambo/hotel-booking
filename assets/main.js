@@ -91,36 +91,36 @@ const Dashboard = {
 
     mounted() {
 
-        scheduler.locale.labels.section_fio = 'Fullname';
-        scheduler.locale.labels.section_email = 'Email';
-        scheduler.locale.labels.section_tel = 'Phone';
-        scheduler.locale.labels.section_room = 'Room';
-        scheduler.locale.labels.section_noty = 'Noty';
-        scheduler.locale.labels.section_status = 'Status';
-        scheduler.locale.labels.section_is_paid = 'Paid';
-        scheduler.locale.labels.section_time = 'Date';
+        // scheduler.locale.labels.section_text = 'Name';
+        // scheduler.locale.labels.section_room = 'Room';
+        // scheduler.locale.labels.section_status = 'Status';
+        // scheduler.locale.labels.section_is_paid = 'Paid';
+        // scheduler.locale.labels.section_time = 'Time';
         scheduler.xy.scale_height = 30;
         scheduler.config.details_on_create = true;
         scheduler.config.details_on_dblclick = true;
-        scheduler.config.prevent_cache = true;
-        scheduler.config.show_loading = true;
-        scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+        //scheduler.config.prevent_cache = true;
+        //scheduler.config.show_loading = true;
+        scheduler.config.buttons_left = ["dhx_delete_btn"];
+        scheduler.config.buttons_right = ["dhx_save_btn", "dhx_cancel_btn"];
+        //scheduler.config.drag_lightbox = false;
 
-        let roomsArr = scheduler.serverList("room");
-        let roomTypesArr = scheduler.serverList("roomType");
-        let roomStatusesArr = scheduler.serverList("roomStatus");
-        let bookingStatusesArr = scheduler.serverList("bookingStatus");
+        var roomsArr = scheduler.serverList("room");
+        var roomTypesArr = scheduler.serverList("roomType");
+        var roomStatusesArr = scheduler.serverList("roomStatus");
+        var bookingStatusesArr = scheduler.serverList("bookingStatus");
 
         scheduler.config.lightbox.sections = [
-            {map_to: "fio", name: "fio", type: "textarea", height: 30},
-            {map_to: "email", name: "email", type: "textarea", height: 30},
-            {map_to: "tel", name: "tel", type: "textarea", height: 30},
-            {map_to: "noty", name: "noty", type: "textarea", height: 30},
-            {map_to: "room", name: "room", type: "select", options: scheduler.serverList("currentRooms")},
-            {map_to: "status", name: "status", type: "radio", options: scheduler.serverList("bookingStatus")},
-            {map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: true, unchecked_value: false},
-            {map_to: "time", name: "time", type: "calendar_time"}
+            {map_to: "fullname", name: "Full Name", type: "textarea", height: 30},
+            {map_to: "email", name: "Email", type: "textarea", height: 30},
+            {map_to: "tel", name: "Phone", type: "textarea", height: 30},
+            {map_to: "noty", name: "Noty", type: "textarea", height: 30},
+            {map_to: "room", name: "Room", type: "select", options: scheduler.serverList("currentRooms")},
+            {map_to: "status", name: "Status", type: "radio", options: scheduler.serverList("bookingStatus")},
+            {map_to: "is_paid", name: "Is paid", type: "checkbox", checked_value: true, unchecked_value: false},
+            {map_to: "time", name: "Time", type: "calendar_time"}
         ];
+
 
         scheduler.locale.labels.timeline_tab = 'Timeline';
 
@@ -128,25 +128,36 @@ const Dashboard = {
             fit_events: true,
             name: "timeline",
             y_property: "room",
-            render: 'tree',
+            // render: 'tree',
+            render: 'bar',
             x_unit: "day",
             x_date: "%d",
-            x_step: 1,
             x_size: 31,
+            // x_step: 1,
             // x_size: 2,
             // x_start: 0,
             // x_length: 2,
             dy: 32,
             event_dy: 'full',
+            // event_dy: 48,
             section_autoheight: false,
             round_position: true,
-            scrollable: true,
+            // scrollable: true,
             y_unit: scheduler.serverList("currentRooms"),
             second_scale: {
                 x_unit: "month",
                 x_date: "%F"
             }
-        });
+        })
+
+        var headerHTML = "<div class='timeline_item_separator'></div>" +
+            "<div class='timeline_item_cell'>Number</div>" +
+            "<div class='timeline_item_separator'></div>" +
+            "<div class='timeline_item_cell'>Type</div>" +
+            "<div class='timeline_item_separator'></div>" +
+            "<div class='timeline_item_cell room_status'>Status</div>";
+
+        scheduler.locale.labels.timeline_scale_header = headerHTML;
 
         function findInArray(array, key) {
             for (var i = 0; i < array.length; i++) {
@@ -169,11 +180,7 @@ const Dashboard = {
         }
 
         scheduler.templates.timeline_scale_label = function (key, label, section) {
-
-            console.log(section.status);
-
-            let roomStatus = getRoomStatus(section.status);
-            // console.log(roomStatus);
+            var roomStatus = getRoomStatus(section.status);
             return ["<div class='timeline_item_separator'></div>",
                 "<div class='timeline_item_cell'>" + label + "</div>",
                 "<div class='timeline_item_separator'></div>",
@@ -185,12 +192,18 @@ const Dashboard = {
                 "</div>"].join("");
         };
 
+        // scheduler.date.timeline_start = scheduler.date.month_start;
+        // scheduler.date.add_timeline = function (date, step) {
+        //     return scheduler.date.add(date, step, "month");
+        // };
+
         scheduler.attachEvent("onBeforeViewChange", function (old_mode, old_date, mode, date) {
-            let year = date.getFullYear();
-            let month = (date.getMonth() + 1);
-            let d = new Date(year, month, 0);
-            let daysInMonth = d.getDate();
-            scheduler.matrix["timeline"].x_size = daysInMonth;
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1);
+            var d = new Date(year, month, 0);
+            var daysInMonth = d.getDate();
+            var timeline = scheduler.getView('timeline');
+            timeline.x_size = daysInMonth;
             return true;
         });
 
@@ -199,45 +212,45 @@ const Dashboard = {
         };
 
         function getBookingStatus(key) {
-            let bookingStatus = findInArray(bookingStatusesArr, key);
+            var bookingStatus = findInArray(bookingStatusesArr, key);
             return !bookingStatus ? '' : bookingStatus.label;
         }
 
         function getPaidStatus(isPaid) {
-            return isPaid ? "Paid" : "Not paid";
+            return isPaid ? "💶" : "";
         }
 
-        let eventDateFormat = scheduler.date.date_to_str("%d %M %Y");
+        var eventDateFormat = scheduler.date.date_to_str("%d %M %Y");
         scheduler.templates.event_bar_text = function (start, end, event) {
-            return '';
-            // let paidStatus = getPaidStatus(event.is_paid);
-            // let startDate = eventDateFormat(event.start_date);
-            // let endDate = eventDateFormat(event.end_date);
-            // return [event.text + "<br />",
-            // 	startDate + " - " + endDate,
-            // 	"<div class='booking_status booking-option'>" + getBookingStatus(event.status) + "</div>",
-            // 	"<div class='booking_paid booking-option'>" + paidStatus + "</div>"].join("");
+            // return '';
+            var paidStatus = getPaidStatus(event.is_paid);
+            var startDate = eventDateFormat(event.start_date);
+            var endDate = eventDateFormat(event.end_date);
+            return [event.text + "<br />",
+                // startDate + " - " + endDate,
+                // "<div class='booking_status booking-option'>" + getBookingStatus(event.status) + "</div>",
+                "<div class='booking_paid booking-option'>" + paidStatus + "</div>"].join("");
         };
 
         scheduler.templates.tooltip_text = function (start, end, event) {
-            let room = getRoom(event.room) || {label: ""};
+            var room = getRoom(event.room) || { label: "" };
 
-            let html = [];
+            var html = [];
             // html.push("Booking: <b>" + event.text + "</b>");
             html.push("Room: <b>" + room.label + "</b>");
             html.push("Check-in: <b>" + eventDateFormat(start) + "</b>");
-            html.push("Departure: <b>" + eventDateFormat(end) + "</b>");
+            html.push("Check-out: <b>" + eventDateFormat(end) + "</b>");
             html.push(getBookingStatus(event.status) + ", " + getPaidStatus(event.is_paid));
             return html.join("<br>")
         };
 
         scheduler.templates.lightbox_header = function (start, end, ev) {
-            let formatFunc = scheduler.date.date_to_str('%d.%m.%Y');
+            var formatFunc = scheduler.date.date_to_str('%d.%m.%Y');
             return formatFunc(start) + " - " + formatFunc(end);
         };
 
         scheduler.attachEvent("onEventCollision", function (ev, evs) {
-            for (let i = 0; i < evs.length; i++) {
+            for (var i = 0; i < evs.length; i++) {
                 if (ev.room != evs[i].room) continue;
                 dhtmlx.message({
                     type: "error",
@@ -248,23 +261,21 @@ const Dashboard = {
         });
 
         scheduler.attachEvent('onEventCreated', function (event_id) {
-            console.log('tik');
-            let ev = scheduler.getEvent(event_id);
+            var ev = scheduler.getEvent(event_id);
             ev.status = 1;
             ev.is_paid = false;
-            // ev.text = 'new booking';
-            // console.log(ev);
+            // ev.text = 'New booking';
         });
 
-        scheduler.addMarkedTimespan({days: [0, 6], zones: "fullday", css: "timeline_weekend"});
+        scheduler.addMarkedTimespan({ days: [0, 6], zones: "fullday", css: "timeline_weekend" });
 
-        window.updateSections = function updateSections(value) {
-            let currentRoomsArr = [];
+        window.showRooms = function showRooms(value) {
+            var currentRoomsArr = [];
             if (value == 'all') {
                 scheduler.updateCollection("currentRooms", roomsArr.slice());
                 return
             }
-            for (let i = 0; i < roomsArr.length; i++) {
+            for (var i = 0; i < roomsArr.length; i++) {
                 if (value == roomsArr[i].type) {
                     currentRoomsArr.push(roomsArr[i]);
                 }
@@ -272,70 +283,62 @@ const Dashboard = {
             scheduler.updateCollection("currentRooms", currentRoomsArr);
         };
 
-        scheduler.attachEvent("onXLE", function () {
-            updateSections("all");
+        scheduler.attachEvent("onLoadEnd", function () {
+            showRooms("all");
 
-            let select = document.getElementById("room_filter");
-            let selectHTML = ["<option value='all'>All</option>"];
-
-            roomTypesArr.forEach(function (item, i, arr) {
-                // console.log( i + ": " + item.id + " (массив:" + arr + ")" );
-                selectHTML.push("<option value='" + item.id + "'>" + getRoomType(item.id) + "</option>");
-            });
-
-            // for (let i = 1; i < roomTypesArr.length + 1; i++) {
-            //     selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
-            // }
+            var select = document.getElementById("room_filter");
+            var selectHTML = ["<option value='all'>All</option>"];
+            for (var i = 1; i < roomTypesArr.length + 1; i++) {
+                selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
+            }
             select.innerHTML = selectHTML.join("");
         });
 
+
         scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
-            if (!ev.fio) {
+            if (!ev.fullname) {
                 dhtmlx.alert("Full name is required!");
                 return false;
             }
             return true;
         });
+/*        var dhxMessageConfig = {
+            position: "top-right",
+            text: "Changes saved in the database",
+            expire: 1500,
+            node: "scheduler_here"
+        };
 
+        scheduler.attachEvent("onEventChanged", function (id, ev) {
+            dhx.message(dhxMessageConfig);
+        });
+
+        scheduler.attachEvent("onEventDeleted", function (id, ev) {
+            dhx.message(dhxMessageConfig);
+        });*/
 
         scheduler.clearAll();
         scheduler.init('scheduler_here', new Date(), "timeline");
         scheduler.load(ajaxurl + "?action=hb_get_data", "json");
-        if (typeof window.dp == 'undefined') {
+        // if (typeof window.dp == 'undefined') {
             window.dp = new dataProcessor(ajaxurl + "?action=hb_get_data");
             dp.init(scheduler);
-        }
+            // disable style updates on add/upd/del
+            dp.styles = "";
+        // }
 
 
-        let element = document.getElementById("scheduler_here");
-        let top = scheduler.xy.nav_height + 1 + 1;
-        let height = scheduler.xy.scale_height;
-        let width = scheduler.matrix.timeline.dx;
-        let header = document.createElement("div");
-        header.className = "collection_label";
-        header.style.position = "absolute";
-        header.style.top = top + "px";
-        header.style.width = width + "px";
-        header.style.height = height + "px";
-
-        let descriptionHTML = "<div class='timeline_item_separator'></div>" +
-            "<div class='timeline_item_cell'>Room</div>" +
-            "<div class='timeline_item_separator'></div>" +
-            "<div class='timeline_item_cell'>Type</div>" +
-            "<div class='timeline_item_separator'></div>" +
-            "<div class='timeline_item_cell room_status'>Status</div>";
-        header.innerHTML = descriptionHTML;
-        element.appendChild(header);
-
+    },
+    created () {
 
     },
     methods: {},
     template: `<div>
-            <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+            <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:600px;'>
                 <div class="dhx_cal_navline">
                     <div style="font-size:16px;padding:4px 20px;">
                         Filter by Type:
-                        <select id="room_filter" onchange='updateSections(this.value)'></select>
+                        <select id="room_filter" onchange='showRooms(this.value)'></select>
                     </div>
                     <div class="dhx_cal_prev_button">&nbsp;</div>
                     <div class="dhx_cal_next_button">&nbsp;</div>
@@ -343,8 +346,7 @@ const Dashboard = {
                     <div class="dhx_cal_date"></div>
                 </div>
                 <div class="dhx_cal_header"></div>
-                <div class="dhx_cal_data">
-                </div>
+                <div class="dhx_cal_data"></div>
             </div>
         </div>`
 }
@@ -661,7 +663,7 @@ const Orders = {
             <tr v-for="(item, index) in orders">
                  <td>{{ item.id }}</td>
                 <td>
-                    {{ item.fio }}<br>
+                    {{ item.fullname }}<br>
                     Email: {{ item.email }} <br>Noty: {{ item.noty }}, дней: 2, доп.услуги(Трансфер 1|) , прибытие: 12:00, завтрак: yes, парковка: yes
                 </td>
                 <td>
