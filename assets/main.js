@@ -5,11 +5,13 @@ const store = new Vuex.Store({
         settings: [],
         rooms: [],
         roomtypes: [],
+        init_scheduler: false,
     },
     getters: {
         allSettings: (state) => state.settings,
         allRooms: (state) => state.rooms,
         allRoomTypes: (state) => state.roomtypes,
+        initScheduler: (state) => state.init_scheduler,
     },
     mutations: {
         getSettings(state) {
@@ -52,6 +54,9 @@ const store = new Vuex.Store({
                 .then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
         },
+        setInitScheduler(state, flag) {
+            state.init_scheduler = flag;
+        },
         // delRoom(state, {id}) {
         //     axios
         //         .post(ajaxurl + '?action=hb_delete_room', Qs.stringify({'id':id}))
@@ -81,6 +86,9 @@ const store = new Vuex.Store({
         addRoom: ({commit}, tmp) => {
             commit("addRoom", tmp);
         },
+        setInitScheduler: ({commit}, flag) => {
+            commit("setInitScheduler", flag);
+        },
         // delRoom: ({commit}, {id}) => {
         //     commit("delRoom", {id});
         // },
@@ -88,19 +96,25 @@ const store = new Vuex.Store({
 });
 
 const Dashboard = {
-
     mounted() {
 
-        // scheduler.locale.labels.section_text = 'Name';
-        // scheduler.locale.labels.section_room = 'Room';
-        // scheduler.locale.labels.section_status = 'Status';
-        // scheduler.locale.labels.section_is_paid = 'Paid';
-        // scheduler.locale.labels.section_time = 'Time';
+        // console.log(this.$store.getters.initScheduler);
+
+        // if ( this.$store.getters.initScheduler === false ) {
+
+        scheduler.locale.labels.section_fullname = 'Fullname';
+        scheduler.locale.labels.section_email = 'Email';
+        scheduler.locale.labels.section_tel = 'Phone';
+        scheduler.locale.labels.section_room = 'Room';
+        scheduler.locale.labels.section_noty = 'Noty';
+        scheduler.locale.labels.section_status = 'Status';
+        scheduler.locale.labels.section_is_paid = 'Paid';
+        scheduler.locale.labels.section_time = 'Date';
         scheduler.xy.scale_height = 30;
         scheduler.config.details_on_create = true;
         scheduler.config.details_on_dblclick = true;
         //scheduler.config.prevent_cache = true;
-        //scheduler.config.show_loading = true;
+        scheduler.config.show_loading = true;
         scheduler.config.buttons_left = ["dhx_delete_btn"];
         scheduler.config.buttons_right = ["dhx_save_btn", "dhx_cancel_btn"];
         //scheduler.config.drag_lightbox = false;
@@ -111,14 +125,14 @@ const Dashboard = {
         var bookingStatusesArr = scheduler.serverList("bookingStatus");
 
         scheduler.config.lightbox.sections = [
-            {map_to: "fullname", name: "Full Name", type: "textarea", height: 30},
+            {map_to: "fullname", name: "fullname", type: "textarea", height: 30},
             {map_to: "email", name: "Email", type: "textarea", height: 30},
             {map_to: "tel", name: "Phone", type: "textarea", height: 30},
             {map_to: "noty", name: "Noty", type: "textarea", height: 30},
             {map_to: "room", name: "Room", type: "select", options: scheduler.serverList("currentRooms")},
-            {map_to: "status", name: "Status", type: "radio", options: scheduler.serverList("bookingStatus")},
-            {map_to: "is_paid", name: "Is paid", type: "checkbox", checked_value: true, unchecked_value: false},
-            {map_to: "time", name: "Time", type: "calendar_time"}
+            {map_to: "status", name: "status", type: "radio", options: scheduler.serverList("bookingStatus")},
+            {map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: 1, unchecked_value: 0},
+            {map_to: "time", name: "time", type: "calendar_time"}
         ];
 
 
@@ -320,13 +334,16 @@ const Dashboard = {
         scheduler.clearAll();
         scheduler.init('scheduler_here', new Date(), "timeline");
         scheduler.load(ajaxurl + "?action=hb_get_data", "json");
-        // if (typeof window.dp == 'undefined') {
+        if (typeof window.dp == 'undefined') {
             window.dp = new dataProcessor(ajaxurl + "?action=hb_get_data");
             dp.init(scheduler);
             // disable style updates on add/upd/del
             dp.styles = "";
-        // }
+        }
 
+        //     this.$store.dispatch('setInitScheduler', true)
+        //
+        // }
 
     },
     created () {

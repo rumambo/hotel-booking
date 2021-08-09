@@ -7,8 +7,21 @@
 	
 }
 
-.room_status {
-	
+.dhx_cal_container.dhx_mini_calendar {
+	background:#fff;
+}
+
+.dhx_section_time input.dhx_readonly {
+	background:#fff;
+	border: 1px solid rgba(0,0,0,.08) !important;
+}
+
+.dhx_cal_light_wide .dhx_wrap_section {
+	margin-bottom:5px;
+}
+
+.dhx_cal_light .dhx_cal_radio label {
+	margin-right:10px;
 }
 
 .dhx_widget.dhx_message {
