@@ -33,6 +33,12 @@
 
 .room_status {
 	position: relative;
+	text-align:left !important;
+	text-indent:10px;
+}
+
+.status-label {
+	font-weight:normal; 
 }
 
 .timeline_item_separator {

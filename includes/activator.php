@@ -31,7 +31,7 @@ class HotelBooking_Activator
                 `room` tinyint(4) DEFAULT NULL,
                 `start_date` date DEFAULT NULL,
                 `end_date` date DEFAULT NULL,
-                `fio` varchar(100) DEFAULT NULL,
+                `fullname` varchar(250) DEFAULT NULL,
                 `email` varchar(100) DEFAULT NULL,
                 `tel` varchar(6) DEFAULT NULL,
                 `noty` varchar(255) DEFAULT NULL,

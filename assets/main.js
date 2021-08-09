@@ -170,23 +170,26 @@ const Dashboard = {
 
         scheduler.templates.timeline_scale_label = function (key, label, section) {
 
-            var roomStatus = getRoomStatus(section.status);
+            console.log(section.status);
+
+            let roomStatus = getRoomStatus(section.status);
+            // console.log(roomStatus);
             return ["<div class='timeline_item_separator'></div>",
                 "<div class='timeline_item_cell'>" + label + "</div>",
                 "<div class='timeline_item_separator'></div>",
                 "<div class='timeline_item_cell'>" + getRoomType(section.type) + "</div>",
                 "<div class='timeline_item_separator'></div>",
                 "<div class='timeline_item_cell room_status'>",
-                "<span class='room_status_indicator room_status_indicator_" + roomStatus.key + "'></span>",
+                "<span class='room_status_indicator room_status_indicator_" + roomStatus.id + "'></span>",
                 "<span class='status-label'>" + roomStatus.label + "</span>",
                 "</div>"].join("");
         };
 
         scheduler.attachEvent("onBeforeViewChange", function (old_mode, old_date, mode, date) {
-            var year = date.getFullYear();
-            var month = (date.getMonth() + 1);
-            var d = new Date(year, month, 0);
-            var daysInMonth = d.getDate();
+            let year = date.getFullYear();
+            let month = (date.getMonth() + 1);
+            let d = new Date(year, month, 0);
+            let daysInMonth = d.getDate();
             scheduler.matrix["timeline"].x_size = daysInMonth;
             return true;
         });
@@ -196,7 +199,7 @@ const Dashboard = {
         };
 
         function getBookingStatus(key) {
-            var bookingStatus = findInArray(bookingStatusesArr, key);
+            let bookingStatus = findInArray(bookingStatusesArr, key);
             return !bookingStatus ? '' : bookingStatus.label;
         }
 
@@ -204,12 +207,12 @@ const Dashboard = {
             return isPaid ? "Paid" : "Not paid";
         }
 
-        var eventDateFormat = scheduler.date.date_to_str("%d %M %Y");
+        let eventDateFormat = scheduler.date.date_to_str("%d %M %Y");
         scheduler.templates.event_bar_text = function (start, end, event) {
             return '';
-            // var paidStatus = getPaidStatus(event.is_paid);
-            // var startDate = eventDateFormat(event.start_date);
-            // var endDate = eventDateFormat(event.end_date);
+            // let paidStatus = getPaidStatus(event.is_paid);
+            // let startDate = eventDateFormat(event.start_date);
+            // let endDate = eventDateFormat(event.end_date);
             // return [event.text + "<br />",
             // 	startDate + " - " + endDate,
             // 	"<div class='booking_status booking-option'>" + getBookingStatus(event.status) + "</div>",
@@ -217,9 +220,9 @@ const Dashboard = {
         };
 
         scheduler.templates.tooltip_text = function (start, end, event) {
-            var room = getRoom(event.room) || {label: ""};
+            let room = getRoom(event.room) || {label: ""};
 
-            var html = [];
+            let html = [];
             // html.push("Booking: <b>" + event.text + "</b>");
             html.push("Room: <b>" + room.label + "</b>");
             html.push("Check-in: <b>" + eventDateFormat(start) + "</b>");
@@ -229,12 +232,12 @@ const Dashboard = {
         };
 
         scheduler.templates.lightbox_header = function (start, end, ev) {
-            var formatFunc = scheduler.date.date_to_str('%d.%m.%Y');
+            let formatFunc = scheduler.date.date_to_str('%d.%m.%Y');
             return formatFunc(start) + " - " + formatFunc(end);
         };
 
         scheduler.attachEvent("onEventCollision", function (ev, evs) {
-            for (var i = 0; i < evs.length; i++) {
+            for (let i = 0; i < evs.length; i++) {
                 if (ev.room != evs[i].room) continue;
                 dhtmlx.message({
                     type: "error",
@@ -246,7 +249,7 @@ const Dashboard = {
 
         scheduler.attachEvent('onEventCreated', function (event_id) {
             console.log('tik');
-            var ev = scheduler.getEvent(event_id);
+            let ev = scheduler.getEvent(event_id);
             ev.status = 1;
             ev.is_paid = false;
             // ev.text = 'new booking';
@@ -256,12 +259,12 @@ const Dashboard = {
         scheduler.addMarkedTimespan({days: [0, 6], zones: "fullday", css: "timeline_weekend"});
 
         window.updateSections = function updateSections(value) {
-            var currentRoomsArr = [];
+            let currentRoomsArr = [];
             if (value == 'all') {
                 scheduler.updateCollection("currentRooms", roomsArr.slice());
                 return
             }
-            for (var i = 0; i < roomsArr.length; i++) {
+            for (let i = 0; i < roomsArr.length; i++) {
                 if (value == roomsArr[i].type) {
                     currentRoomsArr.push(roomsArr[i]);
                 }
@@ -272,15 +275,15 @@ const Dashboard = {
         scheduler.attachEvent("onXLE", function () {
             updateSections("all");
 
-            var select = document.getElementById("room_filter");
-            var selectHTML = ["<option value='all'>All</option>"];
+            let select = document.getElementById("room_filter");
+            let selectHTML = ["<option value='all'>All</option>"];
 
             roomTypesArr.forEach(function (item, i, arr) {
                 // console.log( i + ": " + item.id + " (массив:" + arr + ")" );
                 selectHTML.push("<option value='" + item.id + "'>" + getRoomType(item.id) + "</option>");
             });
 
-            // for (var i = 1; i < roomTypesArr.length + 1; i++) {
+            // for (let i = 1; i < roomTypesArr.length + 1; i++) {
             //     selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
             // }
             select.innerHTML = selectHTML.join("");
@@ -298,8 +301,8 @@ const Dashboard = {
         scheduler.clearAll();
         scheduler.init('scheduler_here', new Date(), "timeline");
         scheduler.load(ajaxurl + "?action=hb_get_data", "json");
-        if ( typeof window.dp == 'undefined') {
-            window.dp = new dataProcessor(ajaxurl + "?action=hb_get_test_data");
+        if (typeof window.dp == 'undefined') {
+            window.dp = new dataProcessor(ajaxurl + "?action=hb_get_data");
             dp.init(scheduler);
         }
 
@@ -315,7 +318,7 @@ const Dashboard = {
         header.style.width = width + "px";
         header.style.height = height + "px";
 
-        var descriptionHTML = "<div class='timeline_item_separator'></div>" +
+        let descriptionHTML = "<div class='timeline_item_separator'></div>" +
             "<div class='timeline_item_cell'>Room</div>" +
             "<div class='timeline_item_separator'></div>" +
             "<div class='timeline_item_cell'>Type</div>" +

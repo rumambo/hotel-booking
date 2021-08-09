@@ -35,6 +35,7 @@ function hb_deactivate_plugin_name()
 
 register_deactivation_hook(__FILE__, 'hb_deactivate_plugin_name');
 
+include INC_DIR . 'helper.php';
 include INC_DIR . 'ajax.php';
 
 if (is_admin()) {
