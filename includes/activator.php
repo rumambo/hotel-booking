@@ -43,12 +43,8 @@ class HotelBooking_Activator
                 PRIMARY KEY (`id`)
             ) $collate;",
 
-            "INSERT INTO `{$wpdb->prefix}hb_orders` (`room`, `start_date`, `end_date`, `fio`, `email`, `tel`, `noty`, `status`, `is_paid`, `locale`, `cost`, `guest`) VALUES
-                 (2, '2019-09-29', '2019-10-05', 'Пупкин Иван Иванович', '2', '3', '4', 2, 1, '', '', ''),
-(2, '2019-10-05', '2019-10-06', 'asdf', 'asdf@dasf.com', '324324', 'asdf asdf, дней: 1, доп.услуги(Трансфер 1|Массаж|) , прибытие: 12:00, завтрак: yes, парковка: yes', 1, 0, 'ru', '1200', '1'),
-(2, '2019-10-30', '2019-10-31', 'Тест', 'dgdf@sdf.com', '23424', 'dfsd, дней: 1, доп.услуги(Трансфер 1|) , прибытие: 13:00, завтрак: yes, парковка: yes', 1, 0, 'ru', '1600', '1 + 2'),
-(3, '2019-10-08', '2019-10-11', 'dsf', 'gfdg@fsd.com', '535', 'dsff', 2, 1, '', '', ''),
-(2, '2019-11-19', '2019-11-21', 'авпвы', 'dsf@fds.com', '324324', 'ds fdsaf, дней: 2, доп.услуги(Трансфер 1|) , прибытие: 12:00, завтрак: yes, парковка: yes', 1, 0, 'ru', '1080', '1');",
+            "INSERT INTO `{$wpdb->prefix}hb_orders` (`room`, `start_date`, `end_date`, `fullname`, `email`, `tel`, `noty`, `status`, `is_paid`, `locale`, `cost`, `guest`) VALUES
+                 (2, '2021-08-19', '2021-08-25', 'Пупкин Иван Иванович', '2', '3', '4', 2, 1, '', '', '');",
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_rooms` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -60,10 +56,10 @@ class HotelBooking_Activator
             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}hb_rooms` (`name`, `type_id`, `status`, `cleaner`) VALUES
-                    (101, 1, 0, 1),
-                    (201, 2, 1, 1),
-                    (102, 1, 0, 1),
-                    (103, 1, 1, 2);",
+                    (101, 1, 1, 'Ready'),
+                    (201, 2, 1, 'Ready'),
+                    (102, 1, 1, 'Dirty'),
+                    (103, 1, 1, 'Cleaning');",
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_room_types` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,

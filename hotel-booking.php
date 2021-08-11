@@ -40,6 +40,8 @@ include INC_DIR . 'ajax.php';
 
 if (is_admin()) {
     require_once plugin_dir_path(__FILE__) . '/backend/init.php';
+} else {
+    require_once plugin_dir_path(__FILE__) . '/public/init.php';
 }
 
 
