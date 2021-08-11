@@ -341,9 +341,6 @@ const Dashboard = {
             dp.styles = "";
         }
 
-        //     this.$store.dispatch('setInitScheduler', true)
-        //
-        // }
 
     },
     created () {
