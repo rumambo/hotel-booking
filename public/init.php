@@ -19,8 +19,15 @@ function front_style()
     wp_enqueue_script('datepicker', ASSETS_DIR . 'datepicker/js/hotel-datepicker.min.js');
     wp_enqueue_style('datepicker', ASSETS_DIR . 'datepicker/css/hotel-datepicker.css');
 
-    wp_enqueue_style('bootstrap', ASSETS_DIR . 'bootstrap.min.css');
+    wp_enqueue_script('swiper', ASSETS_DIR . 'swiper/swiper.min.js');
+    wp_enqueue_style('swiper', ASSETS_DIR . 'swiper/swiper.min.css');
 
+    wp_enqueue_script('vue-swiper', ASSETS_DIR . 'vue-awesome-swiper.js');
+
+    wp_enqueue_script('swiper', ASSETS_DIR . 'lightbox/lightbox.js');
+    wp_enqueue_style('swiper', ASSETS_DIR . 'lightbox/lightbox.css');
+
+    wp_enqueue_style('bootstrap', ASSETS_DIR . 'bootstrap.min.css');
 
     wp_enqueue_script('script', ASSETS_DIR . 'core.js');
 }

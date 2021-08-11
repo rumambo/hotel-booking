@@ -1,6 +1,6 @@
 <div id="hotel-booking">
 
-    <div class="hb-row mb-3" @submit="search">
+    <div class="row mb-3">
         <div class="col-md-2">
             <select class="custom-select" v-model="currentCurrency"  @change="currentCurrencyChange">
                 <option v-for="currency in currencies" v-bind:value="currency.id">
@@ -15,7 +15,7 @@
             <input type="text" v-model="promocode" class="form-control" :placeholder="message.promocode">
         </div>
         <div class="col-md-3">
-            <button type="button" class="btn btn-block btn-primary">
+            <button type="button" @click="search" class="btn btn-block btn-primary">
                 {{ message.check_availability }}
             </button>
         </div>
@@ -27,8 +27,8 @@
     </div>
 
     <div v-for="(room, item) in rooms" class="" style="border:1px solid #ced4da; margin-bottom:15px; padding:15px;">
-        <div class="hb-row">
-            <div class="col-md-2">
+        <div class="row">
+            <div class="col-md-3">
                 <template>
                     <swiper :options="swiperOption">
                         <swiper-slide v-for="(image, index) in room.images" :key="index">
@@ -44,7 +44,7 @@
                     />
                 </template>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <h5 class="">{{ room.name }}</h5>
                 <div>
                     <b>{{ message.area }}:</b>
@@ -63,48 +63,48 @@
                 </ul>
             </div>
             <div class="col-md-4">
-                <div class="hb-row">
+                <div class="row">
 
-                    <label class="col-sm-6 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-md-right">
                         {{ message.guest }}
                     </label>
-                    <div class="col-sm-6">
+                    <div class="col-md-7">
                         <select class="custom-select guest mb-2" ref="guest" @change="changeGuest($event, item)" :id="'guest_'+room.id">
                             <option v-for="(guest, opt) in room.capacity_guest" :value="parseInt(room.capacity_cost[opt]/currenciesRatio[currentCurrency])">{{ guest }}</option>
                         </select>
                     </div>
 
-                    <label class="col-sm-6 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-md-right">
                         {{ message.breakfast }}
                     </label>
-                    <div class="col-sm-6">
+                    <div class="col-md-7">
                         <select class="custom-select mb-2" :id="'breakfast_'+room.id">
                             <option value="yes">{{ message.yes }}</option>
                             <option value="no">{{ message.no }}</option>
                         </select>
                     </div>
 
-                    <label class="col-sm-6 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-md-right">
                         {{ message.parking }}
                     </label>
-                    <div class="col-sm-6">
+                    <div class="col-md-7">
                         <select class="custom-select mb-2" :id="'parking_'+room.id">
                             <option value="yes">{{ message.yes }}</option>
                             <option value="no">{{ message.no }}</option>
                         </select>
                     </div>
 
-                    <label class="col-sm-6 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-md-right">
                         {{ message.arrival }}
                     </label>
-                    <div class="col-sm-6">
+                    <div class="col-md-7">
                         <input type="time" :id="'time_'+room.id" class="form-control mb-2" :placeholder="message.time" value="12:00">
                     </div>
 
-                    <label class="col-sm-6 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-md-right">
                         {{ message.price }}
                     </label>
-                    <div class="col-sm-6">
+                    <div class="col-md-7">
                         <h4 class="d-inline-block" ref="cost" :id="'cost_'+room.id">{{ parseInt(room.capacity_cost[0]/currenciesRatio[currentCurrency]) }}</h4>
                         {{ currencies_sign[currentCurrency] }}
                     </div>
@@ -113,7 +113,7 @@
 
             </div>
 
-            <div class="col-md-2 text-right col-form-label">
+            <div class="col-md-3 text-right col-form-label">
                 {{ message.left }} <span class="badge badge-warning text-white">{{ room.available }}</span>
             </div>
             <div class="col-md-3 pr-3">
@@ -186,7 +186,7 @@
                         </button>
                     </div>
                     <div class="modal-body" id="checkBooking">
-                        <form class="hb-row"  @submit.prevent="submit">
+                        <form class="row"  @submit.prevent="submit">
                             <div class="col-md-4">
                                 <input type="text" v-model="fields.tel" class="form-control" :placeholder="message.tel" required/>
                             </div>
@@ -218,7 +218,7 @@
                     </div>
                     <div class="modal-body">
 
-                        <div class="hb-row">
+                        <div class="row">
                             <div class="col-md-4">
 
                                 <h6 class="text-center mb-3">{{ selected_room_type }}</h6>
@@ -253,25 +253,25 @@
 
                             </div>
                             <div class="col-md-8">
-                                <div class="form-group hb-row">
+                                <div class="form-group row">
                                     <label class="col-form-label col-md-3">{{ message.fio }}</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="booking.fio" class="form-control" :placeholder="message.fio" required/>
                                     </div>
                                 </div>
-                                <div class="form-group hb-row">
+                                <div class="form-group row">
                                     <label class="col-form-label col-md-3">{{ message.tel }}</label>
                                     <div class="col-md-6">
                                         <input type="text" v-model="booking.tel" class="form-control" :placeholder="message.tel" required/>
                                     </div>
                                 </div>
-                                <div class="form-group hb-row">
+                                <div class="form-group row">
                                     <label class="col-form-label col-md-3">{{ message.email }}</label>
                                     <div class="col-md-6">
                                         <input type="email" v-model="booking.email" class="form-control" placeholder="E-mail" />
                                     </div>
                                 </div>
-                                <div class="form-group hb-row">
+                                <div class="form-group row">
                                     <label class="col-form-label col-md-3">{{ message.add_services }}</label>
                                     <div class="col-md-9">
                                         <div v-for="list in add_services_list">
@@ -283,7 +283,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group hb-row">
+                                <div class="form-group row">
                                     <label class="col-form-label col-md-3">{{ message.noty }}</label>
                                     <div class="col-md-9">
                                         <textarea class="form-control" v-model="booking.noty" rows="3" :placeholder="message.noty"></textarea>
@@ -306,6 +306,10 @@
 </script>
 
 <style>
+    [v-cloak] {
+        display: none;
+    }
+
     .datepicker table td, .datepicker table th {
         border:0;
     }
@@ -372,11 +376,22 @@
         border-radius:0 !important;
     }
 
-    #hotel-booking .hb-row {
+    #hotel-booking .row {
         display: flex;
         flex-wrap: wrap;
         margin-right: -15px;
         margin-left: -15px;
     }
 
+    #hotel-booking .modal-title {
+        font-size:1rem;
+    }
+
+    #hotel-booking .modal-header {
+        padding: .5rem 1rem;
+    }
+
+    #hotel-booking .mb-3 {
+        margin-bottom: 1rem!important;
+    }
 </style>

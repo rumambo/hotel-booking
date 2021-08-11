@@ -8,7 +8,7 @@ Vue.prototype.message = {
     breakfast: 'Breakfast',
     parking: 'Parking',
     arrival: 'Arrival',
-    price: 'Price per day',
+    price: 'Price / day',
     yes: 'Yes',
     no: 'No',
     promocode: 'Promo code',
@@ -47,6 +47,8 @@ Vue.prototype.datepicker_lang = {
         'month-names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },
 };
+
+Vue.use(VueAwesomeSwiper);
 
 Vue.component('modal0', {
     template: '#modal-checkBooking',
@@ -100,10 +102,10 @@ Vue.component('modal1', {
     methods: {
         submit() {
 
-            var inputElements = document.getElementsByClassName('add_services');
-            var a = 0;
+            let inputElements = document.getElementsByClassName('add_services');
+            let a = 0;
             this.booking.add_services = {};
-            for(var i=0; inputElements[i]; i++ ){
+            for(let i=0; inputElements[i]; i++ ){
                 if( inputElements[i].checked ){
                     this.booking.add_services[a] = inputElements[i].value;
                     a++;
@@ -139,7 +141,7 @@ Vue.component('modal1', {
     }
 });
 
-var booking = new Vue({
+const booking = new Vue({
     el: '#hotel-booking',
     data: {
         add_services_list: {},
@@ -171,7 +173,7 @@ var booking = new Vue({
         },
         showModalCheckBooking: false,
         showModalBooking: false,
-        currentLocale: 'en',
+        // currentLocale: 'en',
         currentCurrency: 'USD',
         // locales: [
         //     {id: 'ru', name: 'Русский'},
@@ -188,19 +190,19 @@ var booking = new Vue({
             RUB: '₽',
             USD: '$'
         },
-        currenciesRatio: [{"UAH":"1.00","RUB":"0.38","USD":"25.00"}],
+        currenciesRatio: {"UAH":"28.00","RUB":"38","USD":"1"},
         rooms: [{
             "id": "3",
             "name": "Standart room",
             "desc": "<p>The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.<\/p>",
             "images": [{
-                "name": ""
+                "name": "https://via.placeholder.com/350x350"
             }, {
-                "name": ""
+                "name": "https://via.placeholder.com/350x350"
             }, {
-                "name": ""
+                "name": "https://via.placeholder.com/350x350"
             }, {
-                "name": ""
+                "name": "https://via.placeholder.com/350x350"
             }],
             "area": "32",
             "capacity": "1 man 2 доп. места",
@@ -214,9 +216,9 @@ var booking = new Vue({
             "name": "De luxe suite",
             "desc": "Описание анг",
             "images": [{
-                "name": ""
+                "name": "https://via.placeholder.com/350x350"
             }, {
-                "name": ""
+                "name": "https://via.placeholder.com/350x350"
             }],
             "area": "64",
             "capacity": "2 man 2 доп. места",
@@ -238,10 +240,10 @@ var booking = new Vue({
 
         this.initDatePicker();
 
-        var today = new Date();
-        var tomorrow = new Date();
+        let today = new Date();
+        let tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        var input1 = document.querySelector('#input-id');
+        let input1 = document.querySelector('#input-id');
         input1.value = fecha.format(today, 'DD.MM.YYYY') + ' - ' + fecha.format(tomorrow, 'DD.MM.YYYY');
         this.date_range = input1.value;
 
@@ -253,11 +255,12 @@ var booking = new Vue({
 
     },
     methods: {
-        search (event) {
+        search () {
+            // console.log(event);
             console.log(this.date_range);
             console.log(this.promocode);
 
-            var data = {
+            let data = {
                 'range': this.date_range,
                 'promocode': this.promocode,
             };
@@ -271,12 +274,12 @@ var booking = new Vue({
             //     }
             // });
 
-            event.preventDefault();
-            return;
+            // event.preventDefault();
+            // return;
         },
         getNight() {
             this.selected_days = datepicker.getNights();
-            var dateRange = document.querySelector('#input-id').value;
+            let dateRange = document.querySelector('#input-id').value;
             this.date_range = dateRange;
             dateRange = dateRange.split(' - ');
             this.selected_datestart = dateRange[0];
