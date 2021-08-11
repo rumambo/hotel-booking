@@ -7,25 +7,25 @@ Vue.prototype.message = {
     guest: 'Guest',
     breakfast: 'Breakfast',
     parking: 'Parking',
-    arrival: 'Arrival',
+    arrival: 'Arrival Time',
     price: 'Price / day',
     yes: 'Yes',
     no: 'No',
     promocode: 'Promo code',
-    arrival_date: 'Arrival Date',
-    departure_date: 'Departure date',
+    arrival_date: 'Arrival',
+    departure_date: 'Departure',
     check_availability: 'Check availability',
     time: 'Time',
     meter: 'm',
     booking_form: 'Booking form',
-    fio: 'Full Name',
+    fullname: 'Full Name',
     tel: 'Phone',
     email: 'Email',
     noty: 'Wishes',
     send: 'Send',
     back: 'Back',
     left: 'left',
-    qty_night: 'Number of nights',
+    qty_night: 'Nights',
     add_services: 'Additional services',
     order: 'Order Form',
     guests: 'Guests',
@@ -38,14 +38,14 @@ Vue.prototype.message = {
 };
 
 Vue.prototype.datepicker_lang = {
-    en: {
+
         night: 'Night',
         nights: 'Nights',
         'day-names-short': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         'day-names': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         'month-names-short': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         'month-names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    },
+
 };
 
 Vue.use(VueAwesomeSwiper);
@@ -56,14 +56,12 @@ Vue.component('modal0', {
         return {
             fields: {},
             errors: {},
-            currentLocale: this.$root.$data.currentLocale,
         }
     },
     methods: {
         submit() {
-            this.fields.locale = this.currentLocale;
-            this.errors = {};
-            axios.post('http://'+domain+'/check', this.fields).then(response => {
+            // this.errors = {};
+            axios.post(ajaxurl + '?action=hb_check', this.fields).then(response => {
                 document.getElementById('check_result').innerHTML = '<div class="mt-3">'+response.data+'</div>';
                 // console.log(response.data);
             }).catch(error => {
@@ -92,7 +90,6 @@ Vue.component('modal1', {
             selected_parking: this.$root.$data.selected_parking,
             bookingImage: this.$root.$data.bookingImage,
             add_services_list: this.$root.$data.add_services_list,
-            currentLocale: this.$root.$data.currentLocale,
             currentCurrency: this.$root.$data.currentCurrency,
             currencies_sign: this.$root.$data.currencies_sign,
             selected_cost: this.$root.$data.selected_cost,
@@ -123,16 +120,15 @@ Vue.component('modal1', {
             this.booking.arrival = this.selected_arrival;
             this.booking.breakfast = this.selected_breakfast;
             this.booking.parking = this.selected_parking;
-            this.booking.locale = this.currentLocale;
             this.booking.currency = this.currentCurrency;
             this.booking.cost = this.selected_cost;
             this.booking.guest = this.selected_guest;
 
             this.errors = {};
-            axios.post('http://'+domain+'/send', this.booking)
+            axios.post(ajaxurl + '?action=hb_send', this.booking)
                 .then(function (response) {
                     console.log(response.data);
-                    this.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >'+ this.booking.message[this.booking.currentLocale].order_success +'</h1> <a class="btn btn-success" href="">'+ this.booking.message[this.booking.currentLocale].return +'</a></div>';
+                    this.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >'+ this.booking.message.order_success +'</h1> <a class="btn btn-success" href="">'+ this.booking.message.return +'</a></div>';
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -173,7 +169,6 @@ const booking = new Vue({
         },
         showModalCheckBooking: false,
         showModalBooking: false,
-        // currentLocale: 'en',
         currentCurrency: 'USD',
         // locales: [
         //     {id: 'ru', name: 'Русский'},
@@ -285,20 +280,21 @@ const booking = new Vue({
             this.selected_datestart = dateRange[0];
             this.selected_dateend = dateRange[1];
         },
-        showLightbox: function (imageName, index) {
+        showLightbox(imageName, index) {
+            // console.log(imageName.name, index);
             this.$refs.lightbox[index].show(imageName);
         },
         // changeLang: function () {
         //     this.initDatePicker().destroy();
         //     this.initDatePicker();
         // },
-        initDatePicker: function () {
+        initDatePicker() {
             datepicker = new HotelDatepicker(document.getElementById('input-id'), {
                 format: 'DD.MM.YYYY',
                 startOfWeek: 'monday',
                 showTopbar: false,
                 selectForward: true,
-                i18n: this.datepicker_lang[this.currentLocale],
+                i18n: this.datepicker_lang,
             });
             return datepicker;
         },

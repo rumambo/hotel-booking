@@ -24,11 +24,12 @@ function front_style()
 
     wp_enqueue_script('vue-swiper', ASSETS_DIR . 'vue-awesome-swiper.js');
 
-    wp_enqueue_script('swiper', ASSETS_DIR . 'lightbox/lightbox.js');
-    wp_enqueue_style('swiper', ASSETS_DIR . 'lightbox/lightbox.css');
+    wp_enqueue_script('lightbox', ASSETS_DIR . 'lightbox/lightbox.js');
+    wp_enqueue_style('lightbox', ASSETS_DIR . 'lightbox/lightbox.css');
 
     wp_enqueue_style('bootstrap', ASSETS_DIR . 'bootstrap.min.css');
 
     wp_enqueue_script('script', ASSETS_DIR . 'core.js');
+    wp_localize_script('script', 'ajaxurl', admin_url('admin-ajax.php'));
 }
 add_action('wp_head', 'front_style');

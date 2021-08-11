@@ -520,3 +520,103 @@ function hb_update_room()
 
 add_action('wp_ajax_hb_update_room', 'hb_update_room');
 # add_action('wp_ajax_nopriv_hb_update_room', 'hb_update_room');
+
+
+function hb_check()
+{
+    global $wpdb;
+
+    $_POST = json_decode(file_get_contents('php://input'), true);
+
+    $order_id = (int)$_POST['order_id'];
+    $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim($_POST['tel'])));
+
+    $check = $wpdb->get_row("
+        SELECT *
+        FROM ".$wpdb->prefix."hb_orders
+        WHERE id = $order_id AND tel = $tel
+    ");
+
+    if ( empty($check) ) {
+        echo 'Sorry, your order not find';
+        die();
+    }
+
+//    print_r($check);
+    $res = '
+    <ul>
+        <li>Arrival: '.$check->start_date.'</li>
+        <li>Departure: '.$check->end_date.'</li>
+        <li>Room: '.$check->room.'</li>
+        <li>Price per day: '.$check->cost.'</li>
+        <li>Guests: '.$check->guest.'</li>
+    </ul>
+    ';
+    echo $res;
+    die();
+}
+
+add_action('wp_ajax_hb_check', 'hb_check');
+add_action('wp_ajax_nopriv_hb_check', 'hb_check');
+
+
+function hb_send()
+{
+    global $wpdb;
+
+    $_POST = json_decode(file_get_contents('php://input'), true);
+
+    $room_type_id = (int)$_POST['room_type_id'];
+    $start_date = date('Y-m-d', strtotime(strip_tags(trim($_POST['datestart']))));
+    $end_date = date('Y-m-d', strtotime(strip_tags(trim($_POST['dateend']))));
+    $rooms_all_list = helper::getAvailableRoomsByRoomTypeId(
+        $room_type_id, $start_date, $end_date
+    );
+    if (!count($rooms_all_list)) {
+        die('Error not found available room');
+    }
+
+    $room_id = $rooms_all_list[0];
+
+    $fullname = strip_tags(trim($_POST['fullname']));
+    $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim($_POST['tel'])));
+    $email = strip_tags(trim($_POST['email']));
+    $noty = strip_tags(trim($_POST['noty']));
+    $status = 1;
+    $is_paid = 0;
+    $locale = strip_tags(trim($_POST['locale']));
+    $cost = strip_tags(trim($_POST['cost']));
+    $guest = strip_tags(trim($_POST['guest']));
+
+    $noty .= ', days: ' . (int)$_POST['days'];
+    if (count($_POST['add_services'])) {
+        $services = '';
+        foreach ($_POST['add_services'] as $item) {
+            $services .= $item . '|';
+        }
+        $noty .= ', add.services(' . $services . ') ';
+    }
+    $noty .= ', arrival: ' . strip_tags(trim($_POST['arrival']));
+    $noty .= ', breakfast: ' . strip_tags(trim($_POST['breakfast']));
+    $noty .= ', parking: ' . strip_tags(trim($_POST['parking']));
+
+    $wpdb->insert( "{$wpdb->prefix}hb_orders", [
+        'room' => $room_id,
+        'start_date' => $start_date,
+        'end_date' => $end_date,
+        'fullname' => $fullname,
+        'email' => $email,
+        'tel' => $tel,
+        'noty' => $noty,
+        'status' => $status,
+        'is_paid' => $is_paid,
+        'cost' => $cost,
+        'guest' => $guest,
+    ]);
+
+    echo $wpdb->insert_id;
+    die();
+}
+
+add_action('wp_ajax_hb_send', 'hb_send');
+add_action('wp_ajax_nopriv_hb_send', 'hb_send');

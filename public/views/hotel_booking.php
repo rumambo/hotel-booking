@@ -124,13 +124,13 @@
                     onclick=""
                     @click="
                         showModalBooking=true;
-                        selected_room_type=room[currentLocale].name;
+                        selected_room_type=room.name;
                         selected_room_type_id=room.id;
                         bookingImage=room.images[0].name;
                         selected_arrival=this.document.getElementById('time_'+room.id).value;
                         selected_breakfast=this.document.getElementById('breakfast_'+room.id).value;
                         selected_parking=this.document.getElementById('parking_'+room.id).value;
-                        add_services_list=room.add_services[currentLocale];
+                        add_services_list=room.add_services;
                         selected_cost=this.document.getElementById('guest_'+room.id).value;
                         selected_guest=this.document.getElementById('guest_'+room.id).options[this.document.getElementById('guest_'+room.id).selectedIndex].text;
                         selected_days=selected_days;
@@ -211,7 +211,7 @@
             <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
                 <form class="modal-content" @submit.prevent="submit">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ message.order }}</h5>
+                        <h5 class="modal-title">{{ message.order }} - {{ selected_room_type }}</h5>
                         <button type="button" class="close" @click="$emit('close')" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -221,42 +221,42 @@
                         <div class="row">
                             <div class="col-md-4">
 
-                                <h6 class="text-center mb-3">{{ selected_room_type }}</h6>
                                 <!-- <img :src="bookingImage" class="img-fluid" /> -->
 
                                 <ul class="list-group">
-                                    <li class="list-group-item py-2">
-                                        {{ message.arrival_date }}: <b class="float-right">{{ selected_datestart }}</b>
+                                    <li class="list-group-item py-1">
+                                        {{ message.arrival_date }} <b class="float-right">{{ selected_datestart }}</b><br/>
+
+                                        <b class="float-right">{{ selected_arrival }}</b>
                                     </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.departure_date }}: <b class="float-right">{{ selected_dateend }}</b>
+                                    <li class="list-group-item py-1">
+                                        {{ message.departure_date }} <b class="float-right">{{ selected_dateend }}</b>
                                     </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.qty_night }}: <b class="float-right">{{ selected_days }}</b>
+
+                                    <li class="list-group-item py-1">
+                                        {{ message.qty_night }} <b class="float-right">{{ selected_days }}</b>
                                     </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.price }}: <b class="float-right">{{ selected_cost }} {{ currencies_sign[currentCurrency] }}</b>
+                                    <li class="list-group-item py-1">
+                                        {{ message.price }} <b class="float-right">{{ selected_cost }} {{ currencies_sign[currentCurrency] }}</b>
                                     </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.arrival }}: <b class="float-right">{{ selected_arrival }}</b>
+
+                                    <li class="list-group-item py-1">
+                                        {{ message.breakfast }} <b class="float-right">{{ message[selected_breakfast] }}</b>
                                     </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.breakfast }}: <b class="float-right">{{ message[selected_breakfast] }}</b>
+                                    <li class="list-group-item py-1">
+                                        {{ message.parking }} <b class="float-right">{{ message[selected_parking] }}</b>
                                     </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.parking }}: <b class="float-right">{{ message[selected_parking] }}</b>
-                                    </li>
-                                    <li class="list-group-item py-2">
-                                        {{ message.guests }}: <b class="float-right">{{ selected_guest }}</b>
+                                    <li class="list-group-item py-1">
+                                        {{ message.guests }} <b class="float-right">{{ selected_guest }}</b>
                                     </li>
                                 </ul>
 
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group row">
-                                    <label class="col-form-label col-md-3">{{ message.fio }}</label>
+                                    <label class="col-form-label col-md-3">{{ message.fullname }}</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="booking.fio" class="form-control" :placeholder="message.fio" required/>
+                                        <input type="text" v-model="booking.fullname" class="form-control" :placeholder="message.fullname" required/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -371,7 +371,7 @@
         display: revert;
         font-size:16px;
     }
-    #hotel-booking input, #hotel-booking button, .custom-select {
+    #hotel-booking input, #hotel-booking textarea, #hotel-booking button, .custom-select {
         font-size:16px !important;
         border-radius:0 !important;
     }
