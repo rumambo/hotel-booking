@@ -663,10 +663,10 @@ function hb_get()
     $add_services_data = [];
     $result = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "hb_settings");
     foreach ($result as $row) {
-        if ( $row->param === 'SERVICES_LIST') {
+        if ($row->param === 'SERVICES_LIST') {
             $add_services_data = explode(',', $row->value);
         }
-        if ( $row->param === 'COMFORTS_LIST') {
+        if ($row->param === 'COMFORTS_LIST') {
             $comfort_data = explode(',', $row->value);
         }
     }
@@ -751,3 +751,134 @@ function hb_get()
 
 add_action('wp_ajax_hb_get', 'hb_get');
 add_action('wp_ajax_nopriv_hb_get', 'hb_get');
+
+
+function hb_add_room_type()
+{
+    global $wpdb;
+
+    $shortcode = sanitize_text_field($_POST['shortcode']);
+    $title = sanitize_text_field($_POST['title']);
+    $area = sanitize_text_field($_POST['area']);
+    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
+    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
+    $capacity = json_encode($_POST['price']);
+    $images = '';
+    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
+    $desc = sanitize_text_field($_POST['desc']);
+
+    $wpdb->insert("{$wpdb->prefix}hb_room_types", [
+        'title' => $title,
+        'images' => $images,
+        'area' => $area,
+        'capacity' => $capacity,
+        'desc' => $desc,
+        'comfort_list' => $comfort_list,
+        'add_services_list' => $add_services,
+        'shortcode' => $shortcode,
+        'capacity_desc' => $capacity_desc,
+    ]);
+
+    echo hb_get_room_types();
+    die();
+}
+
+add_action('wp_ajax_hb_add_room_type', 'hb_add_room_type');
+add_action('wp_ajax_nopriv_hb_add_room_type', 'hb_add_room_type');
+
+function hb_del_room_type()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+
+    if (is_admin() && $id !== 0) {
+        $wpdb->delete("{$wpdb->prefix}hb_room_types", ['id' => $id]);
+    }
+
+    echo hb_get_room_types();
+    die();
+}
+
+add_action('wp_ajax_hb_del_room_type', 'hb_del_room_type');
+add_action('wp_ajax_nopriv_hb_del_room_type', 'hb_del_room_type');
+
+
+function hb_get_room_type()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+
+    $data = [];
+    if (is_admin() && $id !== 0) {
+
+        $row = $wpdb->get_row("
+            SELECT * 
+            FROM {$wpdb->prefix}hb_room_types 
+            WHERE id = $id
+        ");
+
+        $capacity = json_decode($row->capacity, true);
+        $price = [];
+        foreach ($capacity as $key => $value) {
+            $price[$key] = $value;
+        }
+
+        $data = [
+            'id' => $row->id,
+            'shortcode' => $row->shortcode,
+            'title' => $row->title,
+            'area' => $row->area,
+            'capacity_text' => $row->capacity_desc,
+            'add_services' => explode(',', $row->add_services_list),
+            'price' => $price,
+            'photos' => '',
+            'comfort_list' => explode(',', $row->comfort_list),
+            'desc' => $row->desc,
+        ];
+    }
+
+    echo json_encode($data);
+    die();
+}
+
+add_action('wp_ajax_hb_get_room_type', 'hb_get_room_type');
+add_action('wp_ajax_nopriv_hb_get_room_type', 'hb_get_room_type');
+
+
+function hb_edit_room_type()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+    $shortcode = sanitize_text_field($_POST['shortcode']);
+    $title = sanitize_text_field($_POST['title']);
+    $area = sanitize_text_field($_POST['area']);
+    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
+    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
+    $capacity = json_encode($_POST['price']);
+    $images = '';
+    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
+    $desc = sanitize_text_field($_POST['desc']);
+
+    if (is_admin() && $id !== 0) {
+        $wpdb->update("{$wpdb->prefix}hb_room_types", [
+            'title' => $title,
+            'images' => $images,
+            'area' => $area,
+            'capacity' => $capacity,
+            'desc' => $desc,
+            'comfort_list' => $comfort_list,
+            'add_services_list' => $add_services,
+            'shortcode' => $shortcode,
+            'capacity_desc' => $capacity_desc,
+        ], ['id' => $id]);
+    }
+
+    echo hb_get_room_types();
+    die();
+}
+
+add_action('wp_ajax_hb_edit_room_type', 'hb_edit_room_type');
+add_action('wp_ajax_nopriv_hb_edit_room_type', 'hb_edit_room_type');

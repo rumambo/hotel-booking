@@ -48,6 +48,29 @@ const store = new Vuex.Store({
                     .catch(error => console.log(error));
             }
         },
+        addRoomType(state, tmp) {
+            axios
+                .post(ajaxurl + '?action=hb_add_room_type', Qs.stringify(tmp))
+                .then(response => (state.roomtypes = response.data))
+                .catch(error => console.log(error));
+
+            router.push('/room_types')
+        },
+        editRoomType(state, tmp) {
+            axios
+                .post(ajaxurl + '?action=hb_edit_room_type', Qs.stringify(tmp))
+                .then(response => (state.roomtypes = response.data))
+                .catch(error => console.log(error));
+
+            router.push('/room_types')
+        },
+        delRoomType(state, id) {
+            axios
+                .post(ajaxurl + '?action=hb_del_room_type', Qs.stringify({id: id}))
+                .then(response => (state.roomtypes = response.data))
+                .catch(error => console.log(error));
+
+        },
         addRoom(state, tmp) {
             axios
                 .post(ajaxurl + '?action=hb_add_room', Qs.stringify(tmp))
@@ -82,6 +105,15 @@ const store = new Vuex.Store({
         },
         getRoomTypes: ({commit}) => {
             commit("getRoomTypes");
+        },
+        addRoomType: ({commit}, tmp) => {
+            commit("addRoomType", tmp);
+        },
+        editRoomType: ({commit}, tmp) => {
+            commit("editRoomType", tmp);
+        },
+        delRoomType: ({commit}, id) => {
+            commit("delRoomType", id);
         },
         addRoom: ({commit}, tmp) => {
             commit("addRoom", tmp);
@@ -369,129 +401,185 @@ const RoomTypes = {
     mounted() {
         this.$store.dispatch('getRoomTypes')
     },
+    methods: {
+        delRoomType(id) {
+            this.$store.dispatch('delRoomType', id)
+        }
+    },
     template: `<div>
 
-            <a href="#TB_inline?width=500&inlineId=modal-window-add" class="button button-primary thickbox" style="float:right;">
-                <span class="dashicons dashicons-plus" style="line-height: 32px;" ></span>
-            </a>
-            <div id="modal-window-add" style="display:none;">
-                <div style="padding-top:5px;">
+        <router-link to="/room_types/add" class="button button-primary" style="float:right;">
+           <span class="dashicons dashicons-plus" style="line-height: 32px;" ></span>
+        </router-link>
 
-                    <input type="text" placeholder="Title">
-                    <input type="text" placeholder="Shortcode">
-                    <input type="text" style="width:80px;" placeholder="Area"> м<sup>2</sup>
+        <h3>Room Types</h3>
 
-                    <h4 style="margin-bottom:0; margin:5px 0;">Additional Services</h4>
-                    <label style="margin-right:15px;" v-for="item in store.getters.allSettings.BOOKING_STATUS">
-                        <input type="checkbox" name="add_services[]" value="2" checked=""> {{ item }}
-                    </label>
-
-                    <div style="clear:both"></div>
-
-
-                    <div style="background:#f7f7f7;">
-                        <h4 style="margin-bottom:0; margin:5px 0;">Capacity</h4>
-                        <div style="width:50%; float:left">
-
-                            <div style="margin-bottom:5px" v-for="item in store.getters.allSettings.SETS_LIST">
-                                <div style="width:70%; float:left">
-                                    <input type="text" placeholder="Price by {{ item }}">
-                                </div>
-                                <div style="width:30%; float:left; line-height:30px;">
-                                    {{ item }}
-                                </div>
-                                <div style="clear:both"></div>
-                            </div>
-
-
-                        </div>
-                        <div style="width:50%; float:left">
-
-                            Picture
-                            <div class="row" id="images_result"></div>
-                            <input type="file" class="form-control" onchange="images_upload()" name="images[]" accept="image/jpeg,image/png,image/gif" multiple="">
-                            <div class="progress progress_images" style="display:none">
-                                <div class="images-bar progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-
-                        </div>
-                        <div style="clear:both"></div>
+        <table class="widefat striped">
+            <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Capacity</th>
+                <th>Price</th>
+                <th style="width:50px"></th>
+                <th style="width:50px"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in store.getters.allRoomTypes">
+                <td class="align-middle">
+                    #
+                </td>
+                <td class="align-middle">
+                    <b>{{ item.shortcode }}</b><br>
+                    {{ item.title }}, {{ item.area }} m<sup>2</sup>
+                    <br/>
+                    <span v-html="item.desc"></span>
+                    <div>
+                        {{ item.add_services_list }}
                     </div>
-
-                    <h4 style="margin-bottom:0; margin:5px 0;">Comfort</h4>
-                    <label style="margin-right:15px; float:left; width:20%;" v-for="item in store.getters.allSettings.COMFORTS_LIST">
-                        <input type="checkbox" name="comfort[]" value="5" checked=""> {{ item }}
-                    </label>
-
-                    <div style="clear:both"></div>
-
-
-                    <input type="text" placeholder="Capacity text">
-
-                    <div style="clear:both"></div>
-
-                    <textarea rows="3" placeholder="Description"></textarea>
-
-                    <div style="clear:both"></div>
-
-                    <button type="submit" name="add" class="button button-primary">
-                        Добавить
+                    <div>
+                        {{ item.comfort_list }}
+                    </div>
+                </td>
+                <td class="align-middle">
+                    <div v-for="(cap, ci ) in JSON.parse(item.capacity)">
+                     {{ cap ? ci : ''  }}
+                    </div>
+                </td>
+                <td class="align-middle">
+                    <div v-for="(cap, ci ) in JSON.parse(item.capacity)">
+                     {{ cap }}
+                    </div>
+                </td>
+                <td style="text-align:right;">
+                    <router-link :to="{path: '/room_types/edit/'+item.id}" tag="button" class="button button-primary button-small" style="background: #FFB900;border:1px solid #FFB900;">
+                        <span class="dashicons dashicons-edit" style="line-height: 24px;"></span>
+                    </router-link>
+                </td>
+                <td style="text-align:right;">
+                    <button @click="delRoomType(item.id)" type="button" class="button button-primary button-small" style="background: #DC3232;border:1px solid #DC3232;">
+                        <span class="dashicons dashicons-trash" style="line-height: 24px;"></span>
                     </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-                </div>
-            </div>
+    </div>`
+}
 
-            <h3>Room Types</h3>
+const AddRoomType = {
+    data() {
+        return {
+            tmpRoomType: {
+                id: null,
+                shortcode: '',
+                title: '',
+                area: '',
+                capacity_text: '',
+                add_services: [],
+                price: [],
+                photos: '',
+                comfort_list: [],
+                desc: '',
+            },
+        }
+    },
+    methods: {
+        addRoomType() {
+            this.$store.dispatch("addRoomType", this.tmpRoomType);
+        },
+        editRoomType() {
+            this.$store.dispatch("editRoomType", this.tmpRoomType);
+        },
+    },
+    mounted: function () {
+        if ( this.$route.params.id !== undefined ) {
+            // console.log( this.$route.params.id );
 
-            <table class="widefat striped">
-                <thead>
-                <tr>
-                    <th>Photo</th>
-                    <th>Name</th>
-                    <th>Area</th>
-                    <th>Capacity</th>
-                    <th>Price</th>
-                    <th style="width:50px"></th>
-                    <th style="width:50px"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in store.getters.allRoomTypes">
-                    <td class="align-middle">
-                        #
-                    </td>
-                    <td class="align-middle">
-                        <b>{{ item.shortcode }}</b><br>
-                        {{ item.title }}
-                    </td>
-                    <td class="align-middle">
-                        {{ item.area }}
-                    </td>
-                    <td class="align-middle">
-                        <div v-for="(cap, ci ) in JSON.parse(item.capacity)">
-                         {{ cap ? ci : ''  }}
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <div v-for="(cap, ci ) in JSON.parse(item.capacity)">
-                         {{ cap }}
-                        </div>
-                    </td>
-                    <td style="text-align:right;">
-                        <a href="#" class="button button-primary button-small" style="background: #FFB900;border:1px solid #FFB900;">
-                            <span class="dashicons dashicons-edit" style="line-height: 24px;"></span>
-                        </a>
-                    </td>
-                    <td style="text-align:right;">
-                        <a href="#" class="button button-primary button-small" style="background: #DC3232;border:1px solid #DC3232;">
-                            <span class="dashicons dashicons-trash" style="line-height: 24px;"></span>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            let id = this.$route.params.id;
 
-        </div>`
+            axios
+                .post(ajaxurl + '?action=hb_get_room_type', Qs.stringify({id: id}))
+                .then(response => (this.tmpRoomType = response.data))
+                .catch(error => console.log(error));
+
+        }
+    },
+    template: `<div>
+        
+        <router-link to="/room_types" class="button button-primary" style="float:right;">
+           <span class="dashicons dashicons-menu" style="line-height: 32px;" ></span>
+        </router-link>
+        
+        <h3>Add Room Type</h3>
+        <input type="text" v-model="tmpRoomType.shortcode" placeholder="Shortcode">
+        <input type="text" v-model="tmpRoomType.title" placeholder="Title">
+        <input type="text" v-model="tmpRoomType.area" style="width:80px;" placeholder="Area"> m<sup>2</sup>
+        <input type="text"  v-model="tmpRoomType.capacity_text" placeholder="Capacity text">
+        
+        <div style="clear:both; margin-bottom:15px;"></div>
+        
+        <h4 style="margin-bottom:5px;">Additional Services</h4>
+        <label style="margin-right:15px;" v-for="item in store.getters.allSettings.SERVICES_LIST">
+        <input type="checkbox" v-model="tmpRoomType.add_services" :value="item"> 
+            {{ item }}
+        </label>
+                
+        <div style="clear:both; margin-bottom:15px;"></div>
+  
+        <div style="width:25%; float:left">
+           <h4 style="margin-bottom:5px; margin-top:0;">Price</h4>
+           <div style="margin-bottom:5px" v-for="(item, index) in store.getters.allSettings.SETS_LIST">
+              <div style="width:100px; float:left;">
+                 <input v-model="tmpRoomType.price[item]" style="width:90%" type="text" placeholder="Price">
+              </div>
+              <div style="width:100px; float:left; line-height:30px;">
+                 {{ item }}
+              </div>
+              <div style="clear:both;"></div>
+           </div>
+        </div>
+       <div style="width:75%; float:right">
+          <h4 style="margin-bottom:5px;  margin-top:0">Picture</h4>
+          <div class="row" id="images_result"></div>
+          <input type="file" class="form-control" onchange="images_upload()" name="images[]" accept="image/jpeg,image/png,image/gif" multiple="">
+          <div class="progress progress_images" style="display:none">
+             <div class="images-bar progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+       </div>
+        
+        <div style="clear:both; margin-bottom:15px;"></div>
+        
+        <div style="width:50%; float:left">
+        
+            <h4 style="margin-bottom:0; margin:5px 0;">Comfort</h4>
+            
+            <label style="margin-right:15px; float:left; width:25%;" v-for="item in store.getters.allSettings.COMFORTS_LIST">
+            <input type="checkbox" v-model="tmpRoomType.comfort_list" :value="item" checked=""> {{ item }}
+            </label>
+            
+        </div>
+        <div style="width:50%; float:left">
+            <h4 style="margin-bottom:0; margin:5px 0;">Description</h4>
+            <textarea rows="3" v-model="tmpRoomType.desc" placeholder="Description" style="width:100%"></textarea>
+        </div>
+        
+        <div style="clear:both; margin-bottom:10px;"></div>
+
+        <div v-if="$route.params.id !== undefined">
+        <button type="button" @click="editRoomType" class="button button-primary">
+            Edit
+        </button>
+        </div>
+        <div v-else>
+        <button type="button" @click="addRoomType" class="button button-primary">
+            Add
+        </button>
+        </div>
+        
+    </div>`
 }
 
 const Rooms = {
@@ -856,6 +944,8 @@ const router = new VueRouter({
         {path: "/room_types", component: RoomTypes,},
         {path: "/rooms", component: Rooms,},
         {path: "/orders", component: Orders,},
+        {path: '/room_types/add', component: AddRoomType},
+        {path: '/room_types/edit/:id', component: AddRoomType},
         {path: "/settings", component: Settings,},
     ]
 });

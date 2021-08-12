@@ -31,7 +31,7 @@ function front_style()
 
     wp_enqueue_style('core', ASSETS_DIR . 'core.css');
 
-    wp_enqueue_script('script', ASSETS_DIR . 'core.js');
+    wp_enqueue_script('script', ASSETS_DIR . 'public.js');
     wp_localize_script('script', 'ajaxurl', admin_url('admin-ajax.php'));
 }
 add_action('wp_head', 'front_style');
