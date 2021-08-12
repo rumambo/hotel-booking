@@ -18,12 +18,12 @@ function hb_admin_scripts()
     wp_enqueue_script('dx-tooltip', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_tooltip.js');
 
     wp_enqueue_style('dx', ASSETS_DIR . 'dx/dhtmlxscheduler_material.css');
-    wp_enqueue_style('styles', ASSETS_DIR . 'styles.css');
+    wp_enqueue_style('styles', ASSETS_DIR . 'backend.css');
 
     wp_enqueue_script('np', ASSETS_DIR . 'nprogress/nprogress.min.js');
     wp_enqueue_style('np', ASSETS_DIR . 'nprogress/nprogress.min.css');
 
-    wp_enqueue_script('main', ASSETS_DIR . 'main.js', [], false, true);
+    wp_enqueue_script('main', ASSETS_DIR . 'backend.js', [], false, true);
 }
 
 add_action('admin_enqueue_scripts', 'hb_admin_scripts');

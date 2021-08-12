@@ -29,7 +29,7 @@ function front_style()
 
 //    wp_enqueue_style('bootstrap', ASSETS_DIR . 'bootstrap.min.css');
 
-    wp_enqueue_style('core', ASSETS_DIR . 'core.css');
+    wp_enqueue_style('core', ASSETS_DIR . 'public.css');
 
     wp_enqueue_script('script', ASSETS_DIR . 'public.js');
     wp_localize_script('script', 'ajaxurl', admin_url('admin-ajax.php'));
