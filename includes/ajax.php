@@ -4,7 +4,7 @@ function hb_get_data()
 {
     global $wpdb;
 
-    if ( isset($_POST['ids']) ) {
+    if (isset($_POST['ids'])) {
 
         $command = helper::parseRequestArguments($_POST);
 
@@ -233,12 +233,12 @@ function hb_get_rooms()
     foreach ($result as $row) {
         $type_title = $data['roomType'][$row['type_id']]['title'];
 
-        $data['room'][$type_title.'|'.$row['type_id']][$row['id']]['id'] = $row['id'];
-        $data['room'][$type_title.'|'.$row['type_id']][$row['id']]['name'] = $row['name'];
-        $data['room'][$type_title.'|'.$row['type_id']][$row['id']]['type_id'] = $row['type_id'];
-        $data['room'][$type_title.'|'.$row['type_id']][$row['id']]['type'] = $type_title;
-        $data['room'][$type_title.'|'.$row['type_id']][$row['id']]['status'] = $row['status'];
-        $data['room'][$type_title.'|'.$row['type_id']][$row['id']]['cleaner'] = $row['cleaner'];
+        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['id'] = $row['id'];
+        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['name'] = $row['name'];
+        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['type_id'] = $row['type_id'];
+        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['type'] = $type_title;
+        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['status'] = $row['status'];
+        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['cleaner'] = $row['cleaner'];
     }
     unset($result);
 
@@ -433,7 +433,7 @@ function hb_add_room()
 
     if (is_admin()) {
 //        print_r($_POST);
-        $wpdb->insert( "{$wpdb->prefix}hb_rooms", [
+        $wpdb->insert("{$wpdb->prefix}hb_rooms", [
             'name' => $_POST['name'],
             'type_id' => (int)$_POST['type_id'],
             'cleaner' => $_POST['cleaner'],
@@ -533,11 +533,11 @@ function hb_check()
 
     $check = $wpdb->get_row("
         SELECT *
-        FROM ".$wpdb->prefix."hb_orders
+        FROM " . $wpdb->prefix . "hb_orders
         WHERE id = $order_id AND tel = $tel
     ");
 
-    if ( empty($check) ) {
+    if (empty($check)) {
         echo 'Sorry, your order not find';
         die();
     }
@@ -545,11 +545,11 @@ function hb_check()
 //    print_r($check);
     $res = '
     <ul>
-        <li>Arrival: '.$check->start_date.'</li>
-        <li>Departure: '.$check->end_date.'</li>
-        <li>Room: '.$check->room.'</li>
-        <li>Price per day: '.$check->cost.'</li>
-        <li>Guests: '.$check->guest.'</li>
+        <li>Arrival: ' . $check->start_date . '</li>
+        <li>Departure: ' . $check->end_date . '</li>
+        <li>Room: ' . $check->room . '</li>
+        <li>Price per day: ' . $check->cost . '</li>
+        <li>Guests: ' . $check->guest . '</li>
     </ul>
     ';
     echo $res;
@@ -600,7 +600,7 @@ function hb_send()
     $noty .= ', breakfast: ' . strip_tags(trim($_POST['breakfast']));
     $noty .= ', parking: ' . strip_tags(trim($_POST['parking']));
 
-    $wpdb->insert( "{$wpdb->prefix}hb_orders", [
+    $wpdb->insert("{$wpdb->prefix}hb_orders", [
         'room' => $room_id,
         'start_date' => $start_date,
         'end_date' => $end_date,
@@ -620,3 +620,134 @@ function hb_send()
 
 add_action('wp_ajax_hb_send', 'hb_send');
 add_action('wp_ajax_nopriv_hb_send', 'hb_send');
+
+
+function hb_get()
+{
+    global $wpdb;
+
+    $start_date = '';
+    $end_date = '';
+    $promocode = 0;
+
+    $data = [];
+    $rooms_list = [];
+
+    $rooms_all_list = helper::getAvailableRoomsList($start_date, $end_date);
+
+//    echo '<pre>';
+//    print_r($rooms_all_list);
+//    echo '</pre>';
+//    die();
+
+    if (count($rooms_all_list) > 0) {
+        $rooms_all_list = implode(',', $rooms_all_list);
+
+        $result = $wpdb->get_results("
+            SELECT *
+            FROM " . $wpdb->prefix . "hb_rooms
+            WHERE id IN ($rooms_all_list) AND status = 1
+        ");
+        foreach ($result as $row) {
+            $rooms_list[$row->type_id][] = $row->id;
+        }
+        unset($result);
+    }
+
+//    echo '<pre>';
+//    print_r($rooms_list);
+//    echo '</pre>';
+//    die();
+
+    $comfort_data = [];
+    $add_services_data = [];
+    $result = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "hb_settings");
+    foreach ($result as $row) {
+        if ( $row->param === 'SERVICES_LIST') {
+            $add_services_data = explode(',', $row->value);
+        }
+        if ( $row->param === 'COMFORTS_LIST') {
+            $comfort_data = explode(',', $row->value);
+        }
+    }
+    unset($result);
+
+//    print_r($add_services_data);
+//    print_r($comfort_data);
+//    die();
+
+    $result = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "hb_room_types");
+    foreach ($result as $row) {
+
+        echo '<pre>';
+        print_r($row);
+        echo '</pre>';
+        die();
+
+        $images = [];
+        $images_list = explode('|||', $row['images']);
+        foreach ($images_list as $value) {
+            $images[] = ['name' => FRONTEND_LINK . '/uploads/room_types/md/' . $value];
+        }
+        $capacity_data = json_decode($row['capacity'], true);
+        $capacity_guest = [];
+        $capacity_cost = [];
+        foreach ($capacity_data as $guest => $cost) {
+            if (!empty($cost)) {
+                $cost = $promocode != 0 ? $cost - ($cost * $promocode) / 100 : $cost;
+                $capacity_cost[] = $cost;
+                $capacity_guest[] = $guest;
+            }
+        }
+        $comfort_list = [];
+        $comfort_list_data = explode(',', $row['comfort_list']);
+        foreach ($comfort_list_data as $c_id) {
+            $comfort_list['en'][] = $comfort_data[$c_id]['name_en'];
+        }
+//    ddd($comfort_list);
+        $add_services_list = [];
+        $add_services_list_data = explode(',', $row['add_services_list']);
+        foreach ($add_services_list_data as $a_id) {
+            $add_services_list['en'][] = $add_services_data[$a_id]['name_en'];
+        }
+//    ddd($add_services_list);
+
+        $available_rooms = 0;
+        if (isset($rooms_list[$row['id']]) && count($rooms_list[$row['id']])) {
+            $available_rooms = count($rooms_list[$row['id']]);
+        }
+
+        $capacity = [
+            'en' => $row['capacity_desc_en']
+        ];
+
+        $data[] = [
+            'id' => $row['id'],
+            'en' => [
+                'name' => $row['name_en'],
+                'desc' => $row['desc_en'],
+            ],
+            'images' => $images,
+            'area' => $row['area'],
+            'capacity' => $capacity,
+            'capacity_guest' => $capacity_guest,
+            'capacity_cost' => $capacity_cost,
+            'available' => $available_rooms,
+            'comfort_list' => $comfort_list,
+            'add_services' => $add_services_list,
+        ];
+    }
+    unset($result);
+
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';
+    die();
+
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    die();
+}
+
+add_action('wp_ajax_hb_get', 'hb_get');
+add_action('wp_ajax_nopriv_hb_get', 'hb_get');

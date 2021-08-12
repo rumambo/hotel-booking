@@ -42,7 +42,7 @@ class helper
         $status = (int)$event['status'];
         $is_paid = (int)$event['is_paid'];
 
-        $wpdb->insert( "{$wpdb->prefix}hb_orders", [
+        $wpdb->insert("{$wpdb->prefix}hb_orders", [
             'room' => $room,
             'start_date' => $start_date,
             'end_date' => $end_date,
@@ -94,27 +94,27 @@ class helper
     }
 
 
-
-    public static function getAvailableRoomsByRoomTypeId (
-        $room_type_id, $start_date, $end_date
-    )
-    {
+    public static function getAvailableRoomsByRoomTypeId(
+        $type_id,
+        $start_date,
+        $end_date
+    ) {
         global $wpdb;
 
-        $rooms_all_list = [];
+        $rooms_list = [];
 
         $rooms = $wpdb->get_results("
             SELECT *
             FROM " . $wpdb->prefix . "hb_rooms
-            WHERE room_types_id = $room_type_id AND status = 1
+            WHERE types_id = $type_id AND status = 1
             ORDER BY cleaner ASC
         ");
         foreach ($rooms as $row) {
-            $rooms_all_list[] = $row->id;
+            $rooms_list[] = $row->id;
         }
         unset($rooms);
 
-        $rooms_not_available_list = [];
+        $rooms_busy_list = [];
 
         $rooms = $wpdb->get_results("
             SELECT room as room_id
@@ -122,77 +122,67 @@ class helper
             WHERE start_date >= $start_date  AND end_date <= $end_date
         ");
         foreach ($rooms as $row) {
-            $rooms_not_available_list[] = $row->room_id;
+            $rooms_busy_list[] = $row->room_id;
         }
         unset($rooms);
 
-        if (count($rooms_not_available_list)) {
-            foreach ($rooms_all_list as $key => $item) {
-                if (in_array($item, $rooms_not_available_list)) {
-                    unset($rooms_all_list[$key]);
+        if (count($rooms_busy_list)) {
+            foreach ($rooms_list as $key => $item) {
+                if (in_array($item, $rooms_busy_list)) {
+                    unset($rooms_list[$key]);
                 }
             }
         }
 
-        return $rooms_all_list;
+        return $rooms_list;
     }
 
 
-    function getAvailableRoomsList ( $start_date = '', $end_date = '' )
+    function getAvailableRoomsList($start_date = '', $end_date = '')
     {
-        global $db;
+        global $wpdb;
 
-        if ( empty($start_date) && empty($end_date) ) {
+        if (empty($start_date) && empty($end_date)) {
             $start_date = date('Y-m-d');
             $end_date = date('Y-m-d', strtotime("+1 day"));
         }
 
-//    echo $start_date;
-//    echo '<br>';
-//    echo $end_date;
-
-        $rooms_all_list = [];
-        $rooms = $db->query("
-        SELECT
-            *
-        FROM " . PREFIX . "_rooms
-        WHERE
-            status = 1
-        ORDER BY cleaner ASC
-    ");
+        $rooms_list = [];
+        $rooms = $wpdb->get_results("
+            SELECT *
+            FROM " . $wpdb->prefix . "hb_rooms
+            WHERE status = 1
+            ORDER BY cleaner ASC
+        ");
         foreach ($rooms as $row) {
-            $rooms_all_list[] = $row['id'];
+            $rooms_list[] = $row->id;
         }
         unset($rooms);
-//    dd($rooms_all_list);
 
-        $rooms_not_available_list = [];
-        $rooms = $db->query("
-        SELECT 
-            room as room_id
-        FROM 
-            " . PREFIX . "_orders
-        WHERE 
-            start_date BETWEEN '{$start_date}' AND '{$end_date}' OR 
-            end_date BETWEEN '{$start_date}' AND '{$end_date}' OR 
-            (start_date <= '{$start_date}' AND end_date >= '{$end_date}')
-    ");
+        $rooms_busy_list = [];
+
+        $rooms = $wpdb->get_results("
+            SELECT room as room_id
+            FROM " . $wpdb->prefix . "hb_orders
+            WHERE 
+                start_date BETWEEN '$start_date' AND '$end_date' OR 
+                end_date BETWEEN '$start_date' AND '$end_date' OR 
+                (start_date <= '$start_date' AND end_date >= '$end_date')
+        ");
         foreach ($rooms as $row) {
-            $rooms_not_available_list[] = $row['room_id'];
+            $rooms_busy_list[] = $row->room_id;
         }
         unset($rooms);
-//    ddd($rooms_not_available_list);
 
-        if (count($rooms_not_available_list) != 0) {
-
-            foreach ($rooms_all_list as $key => $item) {
-                if (in_array($item, $rooms_not_available_list)) {
-                    unset($rooms_all_list[$key]);
+        if (count($rooms_busy_list)) {
+            foreach ($rooms_list as $key => $item) {
+                if (in_array($item, $rooms_busy_list)) {
+                    unset($rooms_list[$key]);
                 }
             }
         }
 
-        return $rooms_all_list;
+        return $rooms_list;
     }
 
 

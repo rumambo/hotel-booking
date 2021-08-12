@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div v-for="(room, item) in rooms" class="" style="border:1px solid #ced4da; margin-bottom:15px; padding:15px;">
+    <div v-for="(room, item) in rooms" class="" style="border:1px solid #ced4da; margin-bottom:15px; padding:15px; background:#fff;">
         <div class="row">
             <div class="col-md-3">
                 <template>
@@ -304,94 +304,3 @@
         </div>
     </div>
 </script>
-
-<style>
-    [v-cloak] {
-        display: none;
-    }
-
-    .datepicker table td, .datepicker table th {
-        border:0;
-    }
-    .modal-mask {
-        position: fixed;
-        z-index: 9998;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, .5);
-        display: table;
-        transition: opacity .3s ease;
-    }
-
-    .modal-wrapper {
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    .vld-overlay {
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        align-items: center;
-        display: none;
-        justify-content: center;
-        overflow: hidden;
-        z-index: 1
-    }
-
-    .vld-overlay.is-active {
-        display: flex
-    }
-
-    .vld-overlay.is-full-page {
-        z-index: 999;
-        position: fixed
-    }
-
-    .vld-overlay .vld-background {
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        background: #fff;
-        opacity: 0.8
-    }
-
-    .vld-overlay .vld-icon, .vld-parent {
-        position: relative
-    }
-
-    #hotel-booking {
-        all: unset;
-        display: revert;
-        font-size:16px;
-    }
-    #hotel-booking input, #hotel-booking textarea, #hotel-booking button, .custom-select {
-        font-size:16px !important;
-        border-radius:0 !important;
-    }
-
-    #hotel-booking .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -15px;
-    }
-
-    #hotel-booking .modal-title {
-        font-size:1rem;
-    }
-
-    #hotel-booking .modal-header {
-        padding: .5rem 1rem;
-    }
-
-    #hotel-booking .mb-3 {
-        margin-bottom: 1rem!important;
-    }
-</style>
