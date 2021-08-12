@@ -431,14 +431,16 @@ const RoomTypes = {
                     #
                 </td>
                 <td class="align-middle">
-                    <b>{{ item.shortcode }}</b><br>
-                    {{ item.title }}, {{ item.area }} m<sup>2</sup>
+                    {{ item.shortcode }} -  
+                    <b>{{ item.title }}</b>, {{ item.area }} m<sup>2</sup>
                     <br/>
                     <span v-html="item.desc"></span>
                     <div>
+                        <b>Services: </b>
                         {{ item.add_services_list }}
                     </div>
                     <div>
+                        <b>Comfort: </b>
                         {{ item.comfort_list }}
                     </div>
                 </td>
