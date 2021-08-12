@@ -1,10 +1,39 @@
+.vue-input-tag-wrapper .new-tag {
+	margin-bottom: 0;
+	padding: 0;
+}
+
+.row {
+	display: flex;
+	margin: 0 -5px;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+	flex-basis: 100%;
+	flex: 1;
+	margin: 0 5px 10px;
+}
+
+a:focus, input[type=text]:focus {
+	box-shadow: none;
+}
+
+[v-cloak] {
+	display: none;
+}
+
 .dhx_cal_container, .dhx_timeline_label_wrapper {
 	background: transparent;
 }
 
 .status-label {
 	font-weight:normal;
-	
+
 }
 
 .dhx_cal_container.dhx_mini_calendar {

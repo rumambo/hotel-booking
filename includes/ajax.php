@@ -52,7 +52,13 @@ function hb_get_data()
     unset($result);
 
     // roomType
-    $result = $wpdb->get_results("SELECT id, id as value, shortcode as label FROM {$wpdb->prefix}hb_room_types",
+    $result = $wpdb->get_results("
+        SELECT DISTINCT 
+               a.id, a.id as value, 
+               a.shortcode as label 
+        FROM {$wpdb->prefix}hb_room_types a, {$wpdb->prefix}hb_rooms as b
+        WHERE a.id = b.type_id AND b.status = 1
+        ",
         ARRAY_A);
     foreach ($result as $row) {
         $data['collections']['roomType'][] = $row;
@@ -215,40 +221,43 @@ function hb_get_rooms()
 
     global $wpdb;
 
+    $data = [];
+    $types = [];
+
     // roomType
     $result = $wpdb->get_results("
-        SELECT *
+        SELECT id, title
         FROM {$wpdb->prefix}hb_room_types",
         ARRAY_A);
     foreach ($result as $row) {
-        $data['roomType'][$row['id']] = $row;
+        $data[$row['title'] . '|' . $row['id']] = [];
+        $types[$row['id']] = $row['title'];
     }
     unset($result);
 
     // room
     $result = $wpdb->get_results("
-        SELECT *
-        FROM {$wpdb->prefix}hb_rooms
+        SELECT * FROM {$wpdb->prefix}hb_rooms
     ", ARRAY_A);
     foreach ($result as $row) {
-        $type_title = $data['roomType'][$row['type_id']]['title'];
+        $type_title = $types[$row['type_id']];
 
-        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['id'] = $row['id'];
-        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['name'] = $row['name'];
-        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['type_id'] = $row['type_id'];
-        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['type'] = $type_title;
-        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['status'] = $row['status'];
-        $data['room'][$type_title . '|' . $row['type_id']][$row['id']]['cleaner'] = $row['cleaner'];
+        $data[$type_title . '|' . $row['type_id']][$row['id']]['id'] = $row['id'];
+        $data[$type_title . '|' . $row['type_id']][$row['id']]['name'] = $row['name'];
+        $data[$type_title . '|' . $row['type_id']][$row['id']]['type_id'] = $row['type_id'];
+        $data[$type_title . '|' . $row['type_id']][$row['id']]['type'] = $type_title;
+        $data[$type_title . '|' . $row['type_id']][$row['id']]['status'] = $row['status'];
+        $data[$type_title . '|' . $row['type_id']][$row['id']]['cleaner'] = $row['cleaner'];
     }
     unset($result);
 
 //    echo '<pre>';
-//    print_r($data['room']);
+//    print_r($data);
 //    echo '</pre>';
 //    die();
 
     header('Content-Type: application/json');
-    echo json_encode($data['room'], JSON_UNESCAPED_UNICODE);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
 
 }
@@ -882,3 +891,68 @@ function hb_edit_room_type()
 
 add_action('wp_ajax_hb_edit_room_type', 'hb_edit_room_type');
 add_action('wp_ajax_nopriv_hb_edit_room_type', 'hb_edit_room_type');
+
+
+function hb_upload_images()
+{
+    echo '<pre>';
+    print_r($_FILES);
+    echo '</pre>';
+
+//    require( __DIR__ . '/../../../wp-load.php' );
+
+    $wordpress_upload_dir = wp_upload_dir();
+    $i = 1;
+
+    $photo = $_FILES['file'];
+    $new_file_path = $wordpress_upload_dir['path'] . '/' . $photo['name'];
+    $new_file_mime = mime_content_type($photo['tmp_name']);
+
+    if (empty($photo)) {
+        die('File is not selected.');
+    }
+
+    if ($photo['error']) {
+        die($photo['error']);
+    }
+
+    if ($photo['size'] > wp_max_upload_size()) {
+        die('It is too large than expected.');
+    }
+
+    if (!in_array($new_file_mime, get_allowed_mime_types())) {
+        die('WordPress doesn\'t allow this type of uploads.');
+    }
+
+    while (file_exists($new_file_path)) {
+        $i++;
+        $new_file_path = $wordpress_upload_dir['path'] . '/' . $i . '_' . $photo['name'];
+    }
+
+    if (move_uploaded_file($photo['tmp_name'], $new_file_path)) {
+
+        $upload_id = wp_insert_attachment([
+            'guid' => $new_file_path,
+            'post_mime_type' => $new_file_mime,
+            'post_title' => preg_replace('/\.[^.]+$/', '', $photo['name']),
+            'post_content' => '',
+            'post_status' => 'inherit'
+        ], $new_file_path);
+
+        // wp_generate_attachment_metadata() won't work if you do not include this file
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        // Generate and save the attachment metas into the database
+        wp_update_attachment_metadata($upload_id, wp_generate_attachment_metadata($upload_id, $new_file_path));
+
+        // Show the uploaded file in browser
+        wp_redirect($wordpress_upload_dir['url'] . '/' . basename($new_file_path));
+
+    }
+
+
+    die();
+}
+
+add_action('wp_ajax_hb_upload_images', 'hb_upload_images');
+add_action('wp_ajax_nopriv_hb_upload_images', 'hb_upload_images');

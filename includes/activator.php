@@ -64,13 +64,13 @@ class HotelBooking_Activator
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_room_types` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
                 `title` varchar(250) DEFAULT NULL,
-                `images` varchar(250) DEFAULT NULL,
+                `images` text DEFAULT NULL,
                 `area` tinyint(4) DEFAULT NULL,
                 `capacity` varchar(250) DEFAULT NULL,
                 `desc` text DEFAULT NULL,
                 `comfort_list` varchar(250) DEFAULT NULL,
                 `add_services_list` varchar(250) DEFAULT NULL,
-                `shortcode` varchar(3) DEFAULT NULL,
+                `shortcode` varchar(250) DEFAULT NULL,
                 `capacity_desc` varchar(250) DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) $collate;",
@@ -78,6 +78,9 @@ class HotelBooking_Activator
             "INSERT INTO `{$wpdb->prefix}hb_room_types` (`title`, `images`, `area`, `capacity`, `desc`, `comfort_list`, `add_services_list`, `shortcode`, `capacity_desc`) VALUES
                     ('Standart room', '', 32, '{\"1\":\"1200\",\"1 + 1\":\"\",\"1 + 2\":\"1600\",\"1 + 3\":\"1800\"}', '<p>The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.</p>', '5,6,7,8,9,10,11,12,13,14,15', '2,3', 'STN', '1 man 2 доп. места'),
 ('De luxe suite', '', 64, '{\"1\":\"1300\",\"1 + 1\":\"\",\"1 + 2\":\"\",\"1 + 3\":\"\"}', 'Описание анг', '5,6,7,8,9,10,11,12,13,14,15', '2,3,4,5', 'LUX', '2 man 2 доп. места');",
+
+
+
 
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_settings` (

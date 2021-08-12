@@ -1,30 +1,6 @@
 <?php
 add_thickbox();
 ?>
-<style>
-    .vue-input-tag-wrapper .new-tag {
-        margin-bottom: 0;
-        padding: 0;
-    }
-
-    .row {
-        display: flex;
-        margin: 0 -5px;
-    }
-
-    .column {
-        flex: 50%;
-        margin: 0 5px;
-    }
-
-    a:focus, input[type=text]:focus {
-        box-shadow: none;
-    }
-
-    [v-cloak] {
-        display: none;
-    }
-</style>
 
 <div id="app">
     <h2 class="nav-tab-wrapper">

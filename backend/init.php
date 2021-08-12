@@ -9,6 +9,8 @@ function hb_admin_scripts()
     wp_enqueue_script('axios', ASSETS_DIR . 'axios.min.js');
     wp_enqueue_script('vuex', ASSETS_DIR . 'vuex.min.js');
 
+    wp_enqueue_script('vue-image-upload', ASSETS_DIR . 'vue-upload-component.min.js');
+
     wp_enqueue_script('dx', ASSETS_DIR . 'dx/dhtmlxscheduler.js');
     wp_enqueue_script('dx-limit', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_limit.js');
     wp_enqueue_script('dx-collision', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_collision.js');

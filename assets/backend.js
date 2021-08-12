@@ -54,6 +54,8 @@ const store = new Vuex.Store({
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
+            state.rooms = [];
+
             router.push('/room_types')
         },
         editRoomType(state, tmp) {
@@ -62,6 +64,8 @@ const store = new Vuex.Store({
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
+            state.rooms = [];
+
             router.push('/room_types')
         },
         delRoomType(state, id) {
@@ -69,6 +73,8 @@ const store = new Vuex.Store({
                 .post(ajaxurl + '?action=hb_del_room_type', Qs.stringify({id: id}))
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
+
+            state.rooms = [];
 
         },
         addRoom(state, tmp) {
@@ -214,6 +220,9 @@ const Dashboard = {
         }
 
         function getRoomType(key) {
+
+            // console.log(key);
+
             return findInArray(roomTypesArr, key).label;
         }
 
@@ -332,10 +341,12 @@ const Dashboard = {
         scheduler.attachEvent("onLoadEnd", function () {
             showRooms("all");
 
+            // console.log(roomTypesArr);
+
             var select = document.getElementById("room_filter");
             var selectHTML = ["<option value='all'>All</option>"];
-            for (var i = 1; i < roomTypesArr.length + 1; i++) {
-                selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
+            for (var i = 0; i < roomTypesArr.length; i++) {
+                selectHTML.push("<option value='" + roomTypesArr[i].key + "'>" + getRoomType(roomTypesArr[i].key) + "</option>");
             }
             select.innerHTML = selectHTML.join("");
         });
@@ -474,6 +485,8 @@ const RoomTypes = {
 const AddRoomType = {
     data() {
         return {
+            files: [],
+            postAction: ajaxurl+'?action=hb_upload_images',
             tmpRoomType: {
                 id: null,
                 shortcode: '',
@@ -495,6 +508,31 @@ const AddRoomType = {
         editRoomType() {
             this.$store.dispatch("editRoomType", this.tmpRoomType);
         },
+        inputFile: function (newFile, oldFile) {
+            if (newFile && oldFile && !newFile.active && oldFile.active) {
+                // Get response data
+                console.log('response', newFile.response)
+                if (newFile.xhr) {
+                    //  Get the response status code
+                    console.log('status', newFile.xhr.status)
+                }
+            }
+        },
+        inputFilter: function (newFile, oldFile, prevent) {
+            if (newFile && !oldFile) {
+                // Filter non-image file
+                if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
+                    return prevent()
+                }
+            }
+
+            // Create a blob field
+            newFile.blob = ''
+            let URL = window.URL || window.webkitURL
+            if (URL && URL.createObjectURL) {
+                newFile.blob = URL.createObjectURL(newFile.file)
+            }
+        }
     },
     mounted: function () {
         if ( this.$route.params.id !== undefined ) {
@@ -544,12 +582,33 @@ const AddRoomType = {
            </div>
         </div>
        <div style="width:75%; float:right">
-          <h4 style="margin-bottom:5px;  margin-top:0">Picture</h4>
+          <h4 style="margin-bottom:5px;  margin-top:0">Pictures</h4>
+          
+  <ul>
+    <li v-for="file in files">{{file.name}} - Error: {{file.error}}, Success: {{file.success}}</li>
+  </ul>
+  <file-upload
+    class="button"
+    ref="upload"
+    v-model="files"
+    :multiple="true"
+    accept="image/png,image/gif,image/jpeg,image/webp"
+    :post-action="postAction"
+    @input-file="inputFile"
+    @input-filter="inputFilter"
+  >
+  Upload file
+  </file-upload>
+  <button class="button button-primary" v-show="!$refs.upload || !$refs.upload.active" @click.prevent="$refs.upload.active = true" type="button">Start upload</button>
+  <button class="button button-primary" v-show="$refs.upload && $refs.upload.active" @click.prevent="$refs.upload.active = false" type="button">Stop upload</button>
+          
+          <!--
           <div class="row" id="images_result"></div>
           <input type="file" class="form-control" onchange="images_upload()" name="images[]" accept="image/jpeg,image/png,image/gif" multiple="">
           <div class="progress progress_images" style="display:none">
              <div class="images-bar progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
+          -->
        </div>
         
         <div style="clear:both; margin-bottom:15px;"></div>
@@ -953,6 +1012,8 @@ const router = new VueRouter({
 });
 
 Vue.component('input-tag', vueInputTag.default)
+
+Vue.component('file-upload', VueUploadComponent)
 
 const app = new Vue({
     router,
