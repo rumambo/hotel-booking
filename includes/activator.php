@@ -35,7 +35,7 @@ class HotelBooking_Activator
                 `email` varchar(100) DEFAULT NULL,
                 `tel` varchar(6) DEFAULT NULL,
                 `noty` varchar(255) DEFAULT NULL,
-                `status` tinyint(4) DEFAULT NULL,
+                `status` varchar(50) DEFAULT NULL,
                 `is_paid` tinyint(4) DEFAULT NULL,
                 `cost` varchar(50) DEFAULT NULL,
                 `guest` varchar(50) DEFAULT NULL,

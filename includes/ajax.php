@@ -79,7 +79,7 @@ function hb_get_data()
     foreach ($bs as $i => $item) {
         $id = $i + 1;
         $data['collections']['bookingStatus'][$i]['id'] = $id;
-        $data['collections']['bookingStatus'][$i]['value'] = $id;
+        $data['collections']['bookingStatus'][$i]['value'] = $item;
         $data['collections']['bookingStatus'][$i]['label'] = $item;
     }
 
@@ -704,6 +704,7 @@ function hb_del_room_type()
                 wp_delete_attachment($value, true );
             }
         }
+        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['type_id' => $id]);
         $wpdb->delete("{$wpdb->prefix}hb_room_types", ['id' => $id]);
         $wpdb->delete("{$wpdb->prefix}hb_room_types_images", ['type_id' => $id]);
 

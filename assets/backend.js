@@ -136,17 +136,13 @@ const store = new Vuex.Store({
 const Dashboard = {
     mounted() {
 
-        // console.log(this.$store.getters.initScheduler);
-
-        // if ( this.$store.getters.initScheduler === false ) {
-
         scheduler.locale.labels.section_fullname = 'Fullname';
         scheduler.locale.labels.section_email = 'Email';
         scheduler.locale.labels.section_tel = 'Phone';
         scheduler.locale.labels.section_room = 'Room';
         scheduler.locale.labels.section_noty = 'Noty';
         scheduler.locale.labels.section_status = 'Status';
-        scheduler.locale.labels.section_is_paid = 'Paid';
+        scheduler.locale.labels.section_is_paid = 'Is paid';
         scheduler.locale.labels.section_time = 'Date';
         scheduler.xy.scale_height = 30;
         scheduler.config.details_on_create = true;
@@ -168,7 +164,7 @@ const Dashboard = {
             {map_to: "tel", name: "Phone", type: "textarea", height: 30},
             {map_to: "noty", name: "Noty", type: "textarea", height: 30},
             {map_to: "room", name: "Room", type: "select", options: scheduler.serverList("currentRooms")},
-            {map_to: "status", name: "status", type: "radio", options: scheduler.serverList("bookingStatus")},
+            {map_to: "status", name: "status", type: "radio", options: bookingStatusesArr},
             {map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: 1, unchecked_value: 0},
             {map_to: "time", name: "time", type: "calendar_time"}
         ];
@@ -180,8 +176,8 @@ const Dashboard = {
             fit_events: true,
             name: "timeline",
             y_property: "room",
-            // render: 'tree',
-            render: 'bar',
+            render: 'tree',
+            // render: 'bar',
             x_unit: "day",
             x_date: "%d",
             x_size: 31,
@@ -320,6 +316,7 @@ const Dashboard = {
             ev.status = 1;
             ev.is_paid = false;
             // ev.text = 'New booking';
+            ev.text = '';
         });
 
         scheduler.addMarkedTimespan({ days: [0, 6], zones: "fullday", css: "timeline_weekend" });
@@ -525,6 +522,12 @@ const AddRoomType = {
                     this.$store.state.roomtypes = [];
                 }
             }
+            // Automatic upload
+            if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
+                if (!this.$refs.upload.active) {
+                    this.$refs.upload.active = true
+                }
+            }
         },
         inputFilter: function (newFile, oldFile, prevent) {
             if (newFile && !oldFile) {
@@ -639,18 +642,13 @@ const AddRoomType = {
     @input-file="inputFile"
     @input-filter="inputFilter"
   >
-  Choose photos
+  Upload photos
   </file-upload>
+  <!--
   <button class="button button-primary" v-show="!$refs.upload || !$refs.upload.active" @click.prevent="$refs.upload.active = true" type="button">Start upload</button>
   <button class="button button-primary" v-show="$refs.upload && $refs.upload.active" @click.prevent="$refs.upload.active = false" type="button">Stop upload</button>
-          
-          <!--
-          <div class="row" id="images_result"></div>
-          <input type="file" class="form-control" onchange="images_upload()" name="images[]" accept="image/jpeg,image/png,image/gif" multiple="">
-          <div class="progress progress_images" style="display:none">
-             <div class="images-bar progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          -->
+  -->
+
        </div>
         
         <div style="clear:both; margin-bottom:15px;"></div>
@@ -769,7 +767,6 @@ const Rooms = {
                     </tr>
                     <tr>
                         <th>Room</th>
-                        <th>Type room</th>
                         <th>Cleaning</th>
                         <th style="width:50px"></th>
                         <!-- <th style="width:50px"></th> -->
@@ -780,9 +777,6 @@ const Rooms = {
                     <tr v-for="(item, index1) in room">
                         <td>
                             {{ item.name }}
-                        </td>
-                        <td>
-                            {{ item.type }}
                         </td>
                         <td>
                             <select v-model="item.cleaner" @change="updateRoom(item.id, item.cleaner)">
@@ -884,7 +878,7 @@ const Orders = {
                     {{ item.cost }}
                 </td>
                 <td>
-                     {{ item.status }} - {{ item.is_paid }}
+                     {{ item.status }} - {{ item.is_paid === 1 ? 'Is paid' : 'Not paid' }}
                 </td>
                 <td style="text-align:right;">
                     <a href="#" @click="delOrder(item.id, index)" class="button button-primary button-small" style="background: #DC3232;border:1px solid #DC3232;">
@@ -1033,11 +1027,13 @@ NProgress.configure({parent: '#app'});
 
 axios.interceptors.request.use(config => {
     NProgress.start()
+    jQuery('#block').css('display', 'block')
     return config
 })
 
 axios.interceptors.response.use(response => {
     NProgress.done()
+    jQuery('#block').css('display', 'none')
     return response
 })
 

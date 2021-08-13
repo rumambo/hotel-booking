@@ -20,8 +20,9 @@ add_thickbox();
             <span class="dashicons dashicons-admin-settings"></span> Settings
         </router-link>
     </h2>
-    <div v-cloak style="margin-right:10px;">
+    <div v-cloak id="main-content">
         <router-view></router-view>
+        <div id="block"></div>
     </div>
 </div>
 

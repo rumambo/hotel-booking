@@ -39,7 +39,7 @@ class helper
         $email = sanitize_text_field($event['email']);
         $tel = sanitize_text_field($event['tel']);
         $noty = sanitize_text_field($event['noty']);
-        $status = (int)$event['status'];
+        $status = sanitize_text_field($event['status']);
         $is_paid = (int)$event['is_paid'];
 
         $wpdb->insert("{$wpdb->prefix}hb_orders", [
