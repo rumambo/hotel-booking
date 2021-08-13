@@ -3,7 +3,7 @@
     <div class="row mb-3">
         <div class="col-md-2">
             <select class="custom-select" v-model="currentCurrency"  @change="currentCurrencyChange">
-                <option v-for="currency in currencies" v-bind:value="currency.id">
+                <option v-for="currency in currencies" :value="currency.id">
                     {{currency.name}}
                 </option>
             </select>
@@ -28,44 +28,50 @@
 
     <div v-for="(room, item) in rooms" class="" style="border:1px solid #ced4da; margin-bottom:15px; padding:15px; background:#fff;">
         <div class="row">
-            <div class="col-md-3">
-                <template>
-                    <swiper :options="swiperOption">
-                        <swiper-slide v-for="(image, index) in room.images" :key="index">
-                            <img class="card-img" :src="image.name" @click="showLightbox(image, item)" />
-                        </swiper-slide>
-                        <div class="swiper-pagination swiper-pagination-white" slot="pagination"></div>
-                        <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
-                        <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
-                    </swiper>
-                    <lightbox
-                        ref="lightbox"
-                        :images="room.images"
-                    />
-                </template>
-            </div>
-            <div class="col-md-5">
-                <h5 class="">{{ room.name }}</h5>
-                <div>
-                    <b>{{ message.area }}:</b>
-                    <span>{{ room.area }} {{ message.meter }}<sup>2</sup></span>
-                </div>
-                <div>
-                    <b>{{ message.capacity }}:</b>
-                    <span> {{ room.capacity }}</span>
-                </div>
-                <p class="mt-3" v-html="room.desc">/p>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-5">
+                        <template>
+                            <swiper :options="swiperOption">
+                                <swiper-slide v-for="(image, index) in room.images" :key="index">
+                                    <img class="card-img" :src="image.name" @click="showLightbox(image, item)" />
+                                </swiper-slide>
+                                <div class="swiper-pagination swiper-pagination-white" slot="pagination"></div>
+                                <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
+                                <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
+                            </swiper>
+                            <lightbox
+                                ref="lightbox"
+                                :images="room.images"
+                            />
+                        </template>
+                    </div>
+                    <div class="col-md-7">
+                        <h5 class="">{{ room.name }}</h5>
+                        <div>
+                            <b>{{ message.area }}:</b>
+                            <span>{{ room.area }} {{ message.meter }}<sup>2</sup></span>
+                        </div>
+                        <div>
+                            <b>{{ message.capacity }}:</b>
+                            <span> {{ room.capacity }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mt-3" v-html="room.desc">/p>
 
-                <ul class="list-inline text-muted" style="font-size:12px">
-                    <li v-for="comfort_item in room.comfort_list" class="list-inline-item">
-                        <i class="fa fa-check text-success"></i> {{ comfort_item }}
-                    </li>
-                </ul>
+                        <ul class="list-inline text-muted" style="font-size:12px">
+                            <li v-for="comfort_item in room.comfort_list" class="list-inline-item">
+                                <i class="fa fa-check text-success"></i> {{ comfort_item }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="row">
 
-                    <label class="col-md-5 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-right">
                         {{ message.guest }}
                     </label>
                     <div class="col-md-7">
@@ -74,7 +80,7 @@
                         </select>
                     </div>
 
-                    <label class="col-md-5 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-right">
                         {{ message.breakfast }}
                     </label>
                     <div class="col-md-7">
@@ -84,7 +90,7 @@
                         </select>
                     </div>
 
-                    <label class="col-md-5 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-right">
                         {{ message.parking }}
                     </label>
                     <div class="col-md-7">
@@ -94,19 +100,11 @@
                         </select>
                     </div>
 
-                    <label class="col-md-5 col-form-label text-md-right">
+                    <label class="col-md-5 col-form-label text-right">
                         {{ message.arrival }}
                     </label>
                     <div class="col-md-7">
                         <input type="time" :id="'time_'+room.id" class="form-control mb-2" :placeholder="message.time" value="12:00">
-                    </div>
-
-                    <label class="col-md-5 col-form-label text-md-right">
-                        {{ message.price }}
-                    </label>
-                    <div class="col-md-7">
-                        <h4 class="d-inline-block" ref="cost" :id="'cost_'+room.id">{{ parseInt(room.capacity_cost[0]/currenciesRatio[currentCurrency]) }}</h4>
-                        {{ currencies_sign[currentCurrency] }}
                     </div>
 
                 </div>
@@ -115,6 +113,16 @@
 
             <div class="col-md-3 text-right col-form-label">
                 {{ message.left }} <span class="badge badge-warning text-white">{{ room.available }}</span>
+            </div>
+
+            <div class="col-md-2 text-right col-form-label">
+                {{ message.price }}
+            </div>
+            <div class="col-md-4">
+
+                <h5 class="d-inline-block" ref="cost" :id="'cost_'+room.id">{{ parseInt(room.capacity_cost[0]/currenciesRatio[currentCurrency]) }}</h5>
+                    {{ currencies_sign[currentCurrency] }} per night
+
             </div>
             <div class="col-md-3 pr-3">
                 <span v-if="room.available != 0">

@@ -554,95 +554,61 @@ function hb_get()
         unset($result);
     }
 
-//    echo '<pre>';
-//    print_r($rooms_list);
-//    echo '</pre>';
-//    die();
-
-    $comfort_data = [];
-    $add_services_data = [];
-    $result = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "hb_settings");
+    $result = $wpdb->get_results("
+        SELECT * FROM " . $wpdb->prefix . "hb_room_types
+    ", ARRAY_A);
     foreach ($result as $row) {
-        if ($row->param === 'SERVICES_LIST') {
-            $add_services_data = explode(',', $row->value);
-        }
-        if ($row->param === 'COMFORTS_LIST') {
-            $comfort_data = explode(',', $row->value);
-        }
-    }
-    unset($result);
-
-//    print_r($add_services_data);
-//    print_r($comfort_data);
-//    die();
-
-    $result = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "hb_room_types");
-    foreach ($result as $row) {
-
-        echo '<pre>';
-        print_r($row);
-        echo '</pre>';
-        die();
 
         $images = [];
-        $images_list = explode('|||', $row['images']);
-        foreach ($images_list as $value) {
-            $images[] = ['name' => FRONTEND_LINK . '/uploads/room_types/md/' . $value];
+        if (!empty($row['images'])) {
+            $img = explode(',', $row['images']);
+            foreach ( $img as $attach_id ) {
+                $images[] = [
+                    'name' => wp_get_attachment_image_src($attach_id, 'full')[0],
+                ];
+            }
+        } else {
+            $images[] = [
+                'name' => plugin_dir_url(__DIR__) . 'assets/images/no_photo.png',
+            ];
         }
+
         $capacity_data = json_decode($row['capacity'], true);
         $capacity_guest = [];
         $capacity_cost = [];
         foreach ($capacity_data as $guest => $cost) {
             if (!empty($cost)) {
-                $cost = $promocode != 0 ? $cost - ($cost * $promocode) / 100 : $cost;
+                $cost = $promocode !== 0 ? $cost - ($cost * $promocode) / 100 : $cost;
                 $capacity_cost[] = $cost;
                 $capacity_guest[] = $guest;
             }
         }
-        $comfort_list = [];
-        $comfort_list_data = explode(',', $row['comfort_list']);
-        foreach ($comfort_list_data as $c_id) {
-            $comfort_list['en'][] = $comfort_data[$c_id]['name_en'];
-        }
-//    ddd($comfort_list);
-        $add_services_list = [];
-        $add_services_list_data = explode(',', $row['add_services_list']);
-        foreach ($add_services_list_data as $a_id) {
-            $add_services_list['en'][] = $add_services_data[$a_id]['name_en'];
-        }
-//    ddd($add_services_list);
 
         $available_rooms = 0;
         if (isset($rooms_list[$row['id']]) && count($rooms_list[$row['id']])) {
             $available_rooms = count($rooms_list[$row['id']]);
         }
 
-        $capacity = [
-            'en' => $row['capacity_desc_en']
-        ];
-
         $data[] = [
             'id' => $row['id'],
-            'en' => [
-                'name' => $row['name_en'],
-                'desc' => $row['desc_en'],
-            ],
+            'name' => $row['title'],
+            'desc' => $row['desc'],
             'images' => $images,
             'area' => $row['area'],
-            'capacity' => $capacity,
+            'capacity' => $row['capacity_desc'],
             'capacity_guest' => $capacity_guest,
             'capacity_cost' => $capacity_cost,
             'available' => $available_rooms,
-            'comfort_list' => $comfort_list,
-            'add_services' => $add_services_list,
+            'comfort_list' => explode(',', $row['comfort_list']),
+            'add_services' => explode(',', $row['add_services_list']),
         ];
     }
     unset($result);
 
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
-    die();
+//    echo '<pre>';
+//    print_r($data);
+//    echo '</pre>';
+//    die();
 
     header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
@@ -662,13 +628,11 @@ function hb_add_room_type()
     $capacity_desc = sanitize_text_field($_POST['capacity_text']);
     $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
     $capacity = json_encode($_POST['price']);
-    $images = '';
     $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
     $desc = sanitize_text_field($_POST['desc']);
 
     $wpdb->insert("{$wpdb->prefix}hb_room_types", [
         'title' => $title,
-        'images' => $images,
         'area' => $area,
         'capacity' => $capacity,
         'desc' => $desc,
@@ -781,14 +745,12 @@ function hb_edit_room_type()
     $capacity_desc = sanitize_text_field($_POST['capacity_text']);
     $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
     $capacity = json_encode($_POST['price']);
-    $images = '';
     $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
     $desc = sanitize_text_field($_POST['desc']);
 
     if (is_admin() && $id !== 0) {
         $wpdb->update("{$wpdb->prefix}hb_room_types", [
             'title' => $title,
-            'images' => $images,
             'area' => $area,
             'capacity' => $capacity,
             'desc' => $desc,

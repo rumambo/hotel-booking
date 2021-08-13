@@ -8,7 +8,7 @@ Vue.prototype.message = {
     breakfast: 'Breakfast',
     parking: 'Parking',
     arrival: 'Arrival Time',
-    price: 'Price / day',
+    price: 'Price',
     yes: 'Yes',
     no: 'No',
     promocode: 'Promo code',
@@ -186,43 +186,7 @@ const booking = new Vue({
             USD: '$'
         },
         currenciesRatio: {"UAH":"28.00","RUB":"38","USD":"1"},
-        rooms: [{
-            "id": "3",
-            "name": "Standart room",
-            "desc": "<p>The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.<\/p>",
-            "images": [{
-                "name": "https://via.placeholder.com/350x350"
-            }, {
-                "name": "https://via.placeholder.com/350x350"
-            }, {
-                "name": "https://via.placeholder.com/350x350"
-            }, {
-                "name": "https://via.placeholder.com/350x350"
-            }],
-            "area": "32",
-            "capacity": "1 man 2 доп. места",
-            "capacity_guest": [1, "1 + 2", "1 + 3"],
-            "capacity_cost": ["1200", "1600", "1800"],
-            "available": 1,
-            "comfort_list": ["Wifi", "Сonditioner", "холодильник", "сейф", "халат", "фен", "шкаф гардероб", "тапочки", "набор полотенец", "телевизор", "балкон"],
-            "add_services": ["Трансфер 3", "Массаж"],
-        }, {
-            "id": "4",
-            "name": "De luxe suite",
-            "desc": "Описание анг",
-            "images": [{
-                "name": "https://via.placeholder.com/350x350"
-            }, {
-                "name": "https://via.placeholder.com/350x350"
-            }],
-            "area": "64",
-            "capacity": "2 man 2 доп. места",
-            "capacity_guest": [1],
-            "capacity_cost": ["1300"],
-            "available": 1,
-            "comfort_list": ["Wifi", "Сonditioner", "холодильник", "сейф", "халат", "фен", "шкаф гардероб", "тапочки", "набор полотенец", "телевизор", "балкон"],
-            "add_services": ["Трансфер 3", "Массаж", "Обед", "Ужин"],
-        }],
+        rooms: [],
     },
     created: function () {
         var element = document.getElementById("loader");
@@ -232,6 +196,15 @@ const booking = new Vue({
         // var self = this;
         // let getJSON = '';
         // let getJSON2 = '{"UAH":"1.00","RUB":"0.38","USD":"25.00"}';
+
+        axios.get( ajaxurl + '?action=hb_get').then(response => {
+                // console.log(response.data);
+                this.rooms = response.data;
+            }).catch(error => {
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
 
         this.initDatePicker();
 
