@@ -37,14 +37,13 @@ class HotelBooking_Activator
                 `noty` varchar(255) DEFAULT NULL,
                 `status` tinyint(4) DEFAULT NULL,
                 `is_paid` tinyint(4) DEFAULT NULL,
-                `locale` varchar(2) DEFAULT NULL,
                 `cost` varchar(50) DEFAULT NULL,
                 `guest` varchar(50) DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}hb_orders` (`room`, `start_date`, `end_date`, `fullname`, `email`, `tel`, `noty`, `status`, `is_paid`, `locale`, `cost`, `guest`) VALUES
-                 (2, '2021-09-19', '2021-08-25', 'John Dou', '2', '3', '4', 2, 1, '', '', '');",
+                 (2, '2021-09-19', '2021-08-25', 'John Dou', '2', '3', '4', 2, 1, '', '');",
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_rooms` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,

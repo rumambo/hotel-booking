@@ -27,7 +27,6 @@ function hb_admin_scripts()
 
     wp_enqueue_script('main', ASSETS_DIR . 'backend.js', [], false, true);
 }
-
 add_action('admin_enqueue_scripts', 'hb_admin_scripts');
 
 
@@ -36,7 +35,6 @@ function wpse_remove_footer()
     add_filter('admin_footer_text', '__return_false', 11);
     add_filter('update_footer', '__return_false', 11);
 }
-
 add_action('admin_init', 'wpse_remove_footer');
 
 
@@ -51,8 +49,8 @@ function hb_menu()
         'dashicons-bank'
     );
 }
-
 add_action('admin_menu', 'hb_menu');
+
 
 function plugin_page()
 {

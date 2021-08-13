@@ -386,26 +386,22 @@ const Dashboard = {
 
 
     },
-    created () {
-
-    },
-    methods: {},
     template: `<div>
-            <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:600px;'>
-                <div class="dhx_cal_navline">
-                    <div style="font-size:16px;padding:4px 20px;">
-                        Filter by Type:
-                        <select id="room_filter" onchange='showRooms(this.value)'></select>
-                    </div>
-                    <div class="dhx_cal_prev_button">&nbsp;</div>
-                    <div class="dhx_cal_next_button">&nbsp;</div>
-                    <div class="dhx_cal_today_button"></div>
-                    <div class="dhx_cal_date"></div>
+        <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:600px;'>
+            <div class="dhx_cal_navline">
+                <div style="font-size:16px;padding:4px 20px;">
+                    Filter by Type:
+                    <select id="room_filter" onchange='showRooms(this.value)'></select>
                 </div>
-                <div class="dhx_cal_header"></div>
-                <div class="dhx_cal_data"></div>
+                <div class="dhx_cal_prev_button">&nbsp;</div>
+                <div class="dhx_cal_next_button">&nbsp;</div>
+                <div class="dhx_cal_today_button"></div>
+                <div class="dhx_cal_date"></div>
             </div>
-        </div>`
+            <div class="dhx_cal_header"></div>
+            <div class="dhx_cal_data"></div>
+        </div>
+    </div>`
 }
 
 const RoomTypes = {
@@ -525,6 +521,8 @@ const AddRoomType = {
                     } else {
                         this.getRoomTypeImages();
                     }
+
+                    this.$store.state.roomtypes = [];
                 }
             }
         },
@@ -559,27 +557,24 @@ const AddRoomType = {
         },
         deletePhoto(index) {
             if ( this.$route.params.id !== undefined ) {
-
                 var id = this.$route.params.id
-
-                // console.log('upd' + index, id)
-
             } else {
-
                 var id = 0;
-                console.log('add' + index)
-
             }
-
             axios
                 .post(ajaxurl + '?action=hb_delete_image', Qs.stringify({id: id, index: index}))
                 // .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
+
+            this.$store.state.roomtypes = [];
         },
     },
     mounted: function () {
         if ( this.$route.params.id !== undefined ) {
             // console.log( this.$route.params.id );
+
+            this.tmpRoomType.id = this.$route.params.id
+
             this.getRoomType();
         } else {
             this.getRoomTypeImages();

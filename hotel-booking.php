@@ -5,7 +5,7 @@ Plugin URI: https://github.com/utz0r2/hotel-booking
 Author: Igor Veselov
 Text Domain: hotel-booking
 Domain Path: hotel-booking
-Description: Plugin Hotel booking. The ideal solution for creating your hotel's booking system.
+Description: Plugin Hotel booking. Ideal solution for creating your own hotel's booking system.
 Version: 0.1.0
 Author URI: https://xfor.top/en
 */
