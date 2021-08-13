@@ -109,111 +109,8 @@ function hb_get_data()
     die();
 
 }
-
 add_action('wp_ajax_hb_get_data', 'hb_get_data');
-# add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');
-
-
-/*function hb_get_data()
-{
-     $data = [
-         "data" => [
-             [
-                 "room" => "1",
-                 "start_date" => "2021-08-02",
-                 "end_date" => "2021-08-23",
-                 "text" => "A-12",
-                 "id" => "1",
-                 "status" => "1",
-                 "is_paid" => "1"
-             ],
-         ],
-         "collections" => [
-             "roomType" => [
-                 [
-                     "id" => "1",
-                     "value" => "1",
-                     "label" => "1 bed"
-                 ],
-                 [
-                     "id" => "2",
-                     "value" => "2",
-                     "label" => "2 beds"
-                 ],
-                 [
-                     "id" => "3",
-                     "value" => "3",
-                     "label" => "3 beds"
-                 ],
-                 [
-                     "id" => "4",
-                     "value" => "4",
-                     "label" => "4 beds"
-                 ]
-             ],
-             "roomStatus" => [
-                 [
-                     "id" => "1",
-                     "value" => "1",
-                     "label" => "Ready"
-                 ],
-                 [
-                     "id" => "2",
-                     "value" => "2",
-                     "label" => "Dirty"
-                 ],
-                 [
-                     "id" => "3",
-                     "value" => "3",
-                     "label" => "Clean up"
-                 ]
-             ],
-             "bookingStatus" => [
-                 [
-                     "id" => "1",
-                     "value" => "1",
-                     "label" => "New"
-                 ],
-                 [
-                     "id" => "2",
-                     "value" => "2",
-                     "label" => "Confirmed"
-                 ],
-                 [
-                     "id" => "3",
-                     "value" => "3",
-                     "label" => "Arrived"
-                 ],
-                 [
-                     "id" => "4",
-                     "value" => "4",
-                     "label" => "Checked Out"
-                 ]
-             ],
-             "room" => [
-                 [
-                     "id" => "1",
-                     "value" => "1",
-                     "label" => "101",
-                     "type" => "1",
-                     "status" => "1"
-                 ],
-                 [
-                     "id" => "2",
-                     "value" => "2",
-                     "label" => "102",
-                     "type" => "1",
-                     "status" => "3"
-                 ],
-             ]
-         ]
-     ];
-    echo json_encode($data);
-    die();
-}
-
-add_action('wp_ajax_hb_get_data', 'hb_get_data');*/
-# add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');
+add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');
 
 
 function hb_get_rooms()
@@ -261,9 +158,8 @@ function hb_get_rooms()
     die();
 
 }
-
 add_action('wp_ajax_hb_get_rooms', 'hb_get_rooms');
-# add_action('wp_ajax_nopriv_hb_get_rooms', 'hb_get_rooms');
+add_action('wp_ajax_nopriv_hb_get_rooms', 'hb_get_rooms');
 
 
 function hb_get_orders()
@@ -293,9 +189,8 @@ function hb_get_orders()
     die();
 
 }
-
 add_action('wp_ajax_hb_get_orders', 'hb_get_orders');
-# add_action('wp_ajax_nopriv_hb_get_orders', 'hb_get_orders');
+add_action('wp_ajax_nopriv_hb_get_orders', 'hb_get_orders');
 
 
 function hb_get_room_types()
@@ -307,10 +202,16 @@ function hb_get_room_types()
         SELECT *
         FROM {$wpdb->prefix}hb_room_types
         ORDER BY id ASC",
-        ARRAY_A);
+    ARRAY_A);
 
     $data = [];
     foreach ($result as $row) {
+        if (empty($row['images'])) {
+            $row['images'] = plugin_dir_url(__DIR__) . 'assets/images/no_photo.png';
+        } else {
+            $img = explode(',', $row['images']);
+            $row['images'] = wp_get_attachment_image_src($img[0], 'thumbnail')[0];
+        }
         $data[] = $row;
     }
     unset($result);
@@ -325,9 +226,8 @@ function hb_get_room_types()
     die();
 
 }
-
 add_action('wp_ajax_hb_get_room_types', 'hb_get_room_types');
-# add_action('wp_ajax_nopriv_hb_get_room_types', 'hb_get_room_types');
+add_action('wp_ajax_nopriv_hb_get_room_types', 'hb_get_room_types');
 
 
 function hb_get_settings()
@@ -370,9 +270,8 @@ function hb_get_settings()
     die();
 
 }
-
 add_action('wp_ajax_hb_get_settings', 'hb_get_settings');
-# add_action('wp_ajax_nopriv_hb_get_settings', 'hb_get_settings');
+add_action('wp_ajax_nopriv_hb_get_settings', 'hb_get_settings');
 
 
 function hb_store_settings()
@@ -415,9 +314,8 @@ function hb_store_settings()
     echo hb_get_settings();
     die();
 }
-
 add_action('wp_ajax_hb_store_settings', 'hb_store_settings');
-# add_action('wp_ajax_nopriv_hb_store_settings', 'hb_store_settings');
+add_action('wp_ajax_nopriv_hb_store_settings', 'hb_store_settings');
 
 
 function hb_delete_order()
@@ -431,9 +329,8 @@ function hb_delete_order()
     echo 1;
     die();
 }
-
 add_action('wp_ajax_hb_delete_order', 'hb_delete_order');
-# add_action('wp_ajax_nopriv_hb_delete_order', 'hb_delete_order');
+add_action('wp_ajax_nopriv_hb_delete_order', 'hb_delete_order');
 
 
 function hb_add_room()
@@ -453,9 +350,8 @@ function hb_add_room()
     echo hb_get_rooms();
     die();
 }
-
 add_action('wp_ajax_hb_add_room', 'hb_add_room');
-# add_action('wp_ajax_nopriv_hb_add_room', 'hb_add_room');
+add_action('wp_ajax_nopriv_hb_add_room', 'hb_add_room');
 
 
 function hb_delete_room()
@@ -472,9 +368,8 @@ function hb_delete_room()
     echo 1;
     die();
 }
-
 add_action('wp_ajax_hb_delete_room', 'hb_delete_room');
-# add_action('wp_ajax_nopriv_hb_delete_room', 'hb_delete_room');
+add_action('wp_ajax_nopriv_hb_delete_room', 'hb_delete_room');
 
 
 function hb_switch_room_status()
@@ -499,9 +394,8 @@ function hb_switch_room_status()
     echo $status;
     die();
 }
-
 add_action('wp_ajax_hb_switch_room_status', 'hb_switch_room_status');
-# add_action('wp_ajax_nopriv_hb_switch_room_status', 'hb_switch_room_status');
+add_action('wp_ajax_nopriv_hb_switch_room_status', 'hb_switch_room_status');
 
 
 function hb_update_room()
@@ -526,9 +420,8 @@ function hb_update_room()
     echo 1;
     die();
 }
-
 add_action('wp_ajax_hb_update_room', 'hb_update_room');
-# add_action('wp_ajax_nopriv_hb_update_room', 'hb_update_room');
+add_action('wp_ajax_nopriv_hb_update_room', 'hb_update_room');
 
 
 function hb_check()
@@ -564,7 +457,6 @@ function hb_check()
     echo $res;
     die();
 }
-
 add_action('wp_ajax_hb_check', 'hb_check');
 add_action('wp_ajax_nopriv_hb_check', 'hb_check');
 
@@ -626,7 +518,6 @@ function hb_send()
     echo $wpdb->insert_id;
     die();
 }
-
 add_action('wp_ajax_hb_send', 'hb_send');
 add_action('wp_ajax_nopriv_hb_send', 'hb_send');
 
@@ -757,7 +648,6 @@ function hb_get()
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
 }
-
 add_action('wp_ajax_hb_get', 'hb_get');
 add_action('wp_ajax_nopriv_hb_get', 'hb_get');
 
@@ -791,9 +681,9 @@ function hb_add_room_type()
     echo hb_get_room_types();
     die();
 }
-
 add_action('wp_ajax_hb_add_room_type', 'hb_add_room_type');
 add_action('wp_ajax_nopriv_hb_add_room_type', 'hb_add_room_type');
+
 
 function hb_del_room_type()
 {
@@ -802,13 +692,26 @@ function hb_del_room_type()
     $id = (int)$_POST['id'];
 
     if (is_admin() && $id !== 0) {
+
+        $row = $wpdb->get_row("
+            SELECT images 
+            FROM {$wpdb->prefix}hb_room_types
+            WHERE type_id = $id
+        ");
+        if (!empty($row->images)) {
+            $images_data = explode(',', $row->images);
+            foreach ( $images_data as $value ) {
+                wp_delete_attachment($value, true );
+            }
+        }
         $wpdb->delete("{$wpdb->prefix}hb_room_types", ['id' => $id]);
+        $wpdb->delete("{$wpdb->prefix}hb_room_types_images", ['type_id' => $id]);
+
     }
 
     echo hb_get_room_types();
     die();
 }
-
 add_action('wp_ajax_hb_del_room_type', 'hb_del_room_type');
 add_action('wp_ajax_nopriv_hb_del_room_type', 'hb_del_room_type');
 
@@ -834,10 +737,21 @@ function hb_get_room_type()
             $price[$key] = $value;
         }
 
+        $images = [];
+        if (!empty($row->images)) {
+//            $images[] = plugin_dir_url(__DIR__) . 'assets/images/no_photo.png';
+//        } else {
+            $img = explode(',', $row->images);
+            foreach ( $img as $attach_id ) {
+                $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
+            }
+        }
+
         $data = [
             'id' => $row->id,
             'shortcode' => $row->shortcode,
             'title' => $row->title,
+            'images' => $images,
             'area' => $row->area,
             'capacity_text' => $row->capacity_desc,
             'add_services' => explode(',', $row->add_services_list),
@@ -851,7 +765,6 @@ function hb_get_room_type()
     echo json_encode($data);
     die();
 }
-
 add_action('wp_ajax_hb_get_room_type', 'hb_get_room_type');
 add_action('wp_ajax_nopriv_hb_get_room_type', 'hb_get_room_type');
 
@@ -888,16 +801,35 @@ function hb_edit_room_type()
     echo hb_get_room_types();
     die();
 }
-
 add_action('wp_ajax_hb_edit_room_type', 'hb_edit_room_type');
 add_action('wp_ajax_nopriv_hb_edit_room_type', 'hb_edit_room_type');
 
 
 function hb_upload_images()
 {
-    echo '<pre>';
-    print_r($_FILES);
-    echo '</pre>';
+    global $wpdb;
+
+//    echo '<pre>';
+//    print_r($_POST);
+//    print_r($_FILES);
+//    echo '</pre>';
+//    die();
+
+    $id = (int)$_POST['id'];
+
+    $images_data = [];
+    $is_set = false;
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}hb_room_types_images
+        WHERE type_id = $id
+    ");
+    if (!empty($row->images)) {
+        $images_data = explode(',', $row->images);
+        $is_set = true;
+    }
+
 
 //    require( __DIR__ . '/../../../wp-load.php' );
 
@@ -946,13 +878,144 @@ function hb_upload_images()
         wp_update_attachment_metadata($upload_id, wp_generate_attachment_metadata($upload_id, $new_file_path));
 
         // Show the uploaded file in browser
-        wp_redirect($wordpress_upload_dir['url'] . '/' . basename($new_file_path));
+//        wp_redirect($wordpress_upload_dir['url'] . '/' . basename($new_file_path));
+
+
+        array_push($images_data, $upload_id);
+        $images_data = implode(',', $images_data);
+
+        // add
+        if ($is_set === false) {
+
+            $wpdb->insert("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+                'type_id' => $id,
+            ]);
+
+            if ($id !== 0) {
+                $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                    'images' => $images_data,
+                ], ['id' => $id]);
+            }
+
+        } // update
+        else {
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                'images' => $images_data,
+            ], ['id' => $id]);
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+            ], ['type_id' => $id]);
+
+        }
 
     }
 
 
     die();
 }
-
 add_action('wp_ajax_hb_upload_images', 'hb_upload_images');
 add_action('wp_ajax_nopriv_hb_upload_images', 'hb_upload_images');
+
+
+function hb_delete_image()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+    $index = (int)$_POST['index'];
+
+    $images_data = [];
+    $is_set = false;
+
+//    echo $id;
+//    echo $index;
+//    die();
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}hb_room_types_images
+        WHERE type_id = $id
+    ");
+    if (!empty($row->images)) {
+        $images_data = explode(',', $row->images);
+        $is_set = true;
+    }
+
+    wp_delete_attachment($images_data[$index], true );
+
+    unset($images_data[$index]);
+
+    if (empty($images_data)) {
+
+        $wpdb->delete("{$wpdb->prefix}hb_room_types_images",
+            ['type_id' => $id]
+        );
+        if ( $id !== 0 ) {
+            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                'images' => '',
+            ], ['id' => $id]);
+        }
+
+    } else {
+
+        $images_data = implode(',', $images_data);
+
+        // add
+        if ($is_set === false) {
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+            ], ['type_id' => $id]);
+
+
+        } // update
+        else {
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                'images' => $images_data,
+            ], ['id' => $id]);
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+            ], ['type_id' => $id]);
+
+        }
+
+    }
+
+
+    echo 1;
+    die();
+}
+add_action('wp_ajax_hb_delete_image', 'hb_delete_image');
+add_action('wp_ajax_nopriv_hb_delete_image', 'hb_delete_image');
+
+
+function hb_get_room_type_images()
+{
+    global $wpdb;
+
+    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}hb_room_types_images
+        WHERE type_id = $id
+    ");
+
+    $images = [];
+    if (!empty($row->images)) {
+        $img = explode(',', $row->images);
+        foreach ( $img as $attach_id ) {
+            $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
+        }
+    }
+
+    echo json_encode($images);
+    die();
+}
+add_action('wp_ajax_hb_get_room_type_images', 'hb_get_room_type_images');
+add_action('wp_ajax_nopriv_hb_get_room_type_images', 'hb_get_room_type_images');

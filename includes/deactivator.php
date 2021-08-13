@@ -14,6 +14,7 @@ class HotelBooking_Deactivator
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_orders");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_rooms");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_room_types");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_room_types_images");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}hb_settings");
 
     }

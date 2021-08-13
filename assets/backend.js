@@ -439,7 +439,7 @@ const RoomTypes = {
             <tbody>
             <tr v-for="item in store.getters.allRoomTypes">
                 <td class="align-middle">
-                    #
+                    <img style="width:100%" :src="item.images" />
                 </td>
                 <td class="align-middle">
                     {{ item.shortcode }} -  
@@ -490,6 +490,7 @@ const AddRoomType = {
             tmpRoomType: {
                 id: null,
                 shortcode: '',
+                images: [],
                 title: '',
                 area: '',
                 capacity_text: '',
@@ -515,6 +516,15 @@ const AddRoomType = {
                 if (newFile.xhr) {
                     //  Get the response status code
                     console.log('status', newFile.xhr.status)
+
+                    this.files = [];
+
+                    if ( this.$route.params.id !== undefined ) {
+                        this.getRoomType();
+
+                    } else {
+                        this.getRoomTypeImages();
+                    }
                 }
             }
         },
@@ -532,19 +542,47 @@ const AddRoomType = {
             if (URL && URL.createObjectURL) {
                 newFile.blob = URL.createObjectURL(newFile.file)
             }
-        }
-    },
-    mounted: function () {
-        if ( this.$route.params.id !== undefined ) {
-            // console.log( this.$route.params.id );
-
+        },
+        getRoomType() {
             let id = this.$route.params.id;
 
             axios
                 .post(ajaxurl + '?action=hb_get_room_type', Qs.stringify({id: id}))
                 .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
+        },
+        getRoomTypeImages () {
+            axios
+                .post(ajaxurl + '?action=hb_get_room_type_images')
+                .then(response => (this.tmpRoomType.images = response.data))
+                .catch(error => console.log(error));
+        },
+        deletePhoto(index) {
+            if ( this.$route.params.id !== undefined ) {
 
+                var id = this.$route.params.id
+
+                // console.log('upd' + index, id)
+
+            } else {
+
+                var id = 0;
+                console.log('add' + index)
+
+            }
+
+            axios
+                .post(ajaxurl + '?action=hb_delete_image', Qs.stringify({id: id, index: index}))
+                // .then(response => (this.tmpRoomType = response.data))
+                .catch(error => console.log(error));
+        },
+    },
+    mounted: function () {
+        if ( this.$route.params.id !== undefined ) {
+            // console.log( this.$route.params.id );
+            this.getRoomType();
+        } else {
+            this.getRoomTypeImages();
         }
     },
     template: `<div>
@@ -582,12 +620,21 @@ const AddRoomType = {
            </div>
         </div>
        <div style="width:75%; float:right">
-          <h4 style="margin-bottom:5px;  margin-top:0">Pictures</h4>
+          <h4 style="margin-bottom:5px;  margin-top:0">Photos</h4>
+          
+          <div v-show="tmpRoomType.images">
+                <div v-for="(src, src_index) in tmpRoomType.images" style="float:left; margin-right:5px;position:relative;">
+                    <button @click="deletePhoto(src_index); tmpRoomType.images.splice(src_index, 1)" type="button" class="button button-small" style="position:absolute; top:0; right:0; background: rgb(220, 50, 50); border: 1px solid rgb(220, 50, 50); color:#fff;">x</button>
+                    <img :src="src" />
+                </div>
+                <div style="clear:both"></div>
+          </div>
           
   <ul>
     <li v-for="file in files">{{file.name}} - Error: {{file.error}}, Success: {{file.success}}</li>
   </ul>
   <file-upload
+    :data="{id: tmpRoomType.id}"
     class="button"
     ref="upload"
     v-model="files"
@@ -597,7 +644,7 @@ const AddRoomType = {
     @input-file="inputFile"
     @input-filter="inputFilter"
   >
-  Upload file
+  Choose photos
   </file-upload>
   <button class="button button-primary" v-show="!$refs.upload || !$refs.upload.active" @click.prevent="$refs.upload.active = true" type="button">Start upload</button>
   <button class="button button-primary" v-show="$refs.upload && $refs.upload.active" @click.prevent="$refs.upload.active = false" type="button">Stop upload</button>
@@ -631,7 +678,7 @@ const AddRoomType = {
 
         <div v-if="$route.params.id !== undefined">
         <button type="button" @click="editRoomType" class="button button-primary">
-            Edit
+            Save
         </button>
         </div>
         <div v-else>
@@ -1012,7 +1059,6 @@ const router = new VueRouter({
 });
 
 Vue.component('input-tag', vueInputTag.default)
-
 Vue.component('file-upload', VueUploadComponent)
 
 const app = new Vue({
@@ -1027,6 +1073,4 @@ const app = new Vue({
     mounted() {
         this.$store.dispatch('getSettings')
     },
-    created() {
-    }
 });

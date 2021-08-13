@@ -44,7 +44,7 @@ class HotelBooking_Activator
             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}hb_orders` (`room`, `start_date`, `end_date`, `fullname`, `email`, `tel`, `noty`, `status`, `is_paid`, `locale`, `cost`, `guest`) VALUES
-                 (2, '2021-08-19', '2021-08-25', 'Пупкин Иван Иванович', '2', '3', '4', 2, 1, '', '', '');",
+                 (2, '2021-09-19', '2021-08-25', 'John Dou', '2', '3', '4', 2, 1, '', '', '');",
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_rooms` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -76,11 +76,16 @@ class HotelBooking_Activator
             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}hb_room_types` (`title`, `images`, `area`, `capacity`, `desc`, `comfort_list`, `add_services_list`, `shortcode`, `capacity_desc`) VALUES
-                    ('Standart room', '', 32, '{\"1\":\"1200\",\"1 + 1\":\"\",\"1 + 2\":\"1600\",\"1 + 3\":\"1800\"}', '<p>The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.</p>', '5,6,7,8,9,10,11,12,13,14,15', '2,3', 'STN', '1 man 2 доп. места'),
-('De luxe suite', '', 64, '{\"1\":\"1300\",\"1 + 1\":\"\",\"1 + 2\":\"\",\"1 + 3\":\"\"}', 'Описание анг', '5,6,7,8,9,10,11,12,13,14,15', '2,3,4,5', 'LUX', '2 man 2 доп. места');",
+                    ('Standart room', '', 32, '{\"1\":\"1200\",\"1 + 1\":\"\",\"1 + 2\":\"1600\",\"1 + 3\":\"1800\"}', 'The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.', 'Wifi,Safe,Slippers,Bathrobe,Conditioner,TV,Balcony,Hair dryer,Refrigerator', 'Transfer,Massage,Dinner,Supper', 'STN', '1 man 2 add place'),
+('De luxe suite', '', 64, '{\"1\":\"1300\",\"1 + 1\":\"\",\"1 + 2\":\"\",\"1 + 3\":\"\"}', 'Описание анг', 'Wifi,Slippers,Conditioner,TV,Refrigerator,Balcony', 'Transfer,Dinner', 'LUX', '2 man 2 add place');",
 
 
-
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_room_types_images` (
+                `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+                `images` text DEFAULT NULL,
+                `type_id` tinyint(4) DEFAULT NULL,
+                PRIMARY KEY (`id`)
+            ) $collate;",
 
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_settings` (
