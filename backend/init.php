@@ -46,7 +46,8 @@ function hb_menu()
         8,
         'hb-console',
         'plugin_page',
-        'dashicons-bank'
+        'dashicons-bank',
+        3
     );
 }
 add_action('admin_menu', 'hb_menu');

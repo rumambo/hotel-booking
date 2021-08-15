@@ -119,9 +119,9 @@
                 {{ message.price }}
             </div>
             <div class="col-md-4">
-
+                {{ currencies_sign[currentCurrency] }}
                 <h5 class="d-inline-block" ref="cost" :id="'cost_'+room.id">{{ parseInt(room.capacity_cost[0]/currenciesRatio[currentCurrency]) }}</h5>
-                    {{ currencies_sign[currentCurrency] }} per night
+                     per night
 
             </div>
             <div class="col-md-3 pr-3">
