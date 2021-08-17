@@ -2,28 +2,28 @@
 
 function hb_admin_scripts()
 {
-    wp_enqueue_script('vue', ASSETS_DIR . 'vue.js');
-    wp_enqueue_script('vue-router', ASSETS_DIR . 'vue-router.min.js');
-    wp_enqueue_script('vue-input-tag', ASSETS_DIR . 'vueInputTag.umd.min.js');
-    wp_enqueue_script('qs', ASSETS_DIR . 'qs.js');
-    wp_enqueue_script('axios', ASSETS_DIR . 'axios.min.js');
-    wp_enqueue_script('vuex', ASSETS_DIR . 'vuex.min.js');
+    wp_enqueue_script('vue', LIBS_DIR . 'vue.js');
+    wp_enqueue_script('vue-router', LIBS_DIR . 'vue-router.min.js');
+    wp_enqueue_script('vue-input-tag', LIBS_DIR . 'vueInputTag.umd.min.js');
+    wp_enqueue_script('qs', LIBS_DIR . 'qs.js');
+    wp_enqueue_script('axios', LIBS_DIR . 'axios.min.js');
+    wp_enqueue_script('vuex', LIBS_DIR . 'vuex.min.js');
 
-    wp_enqueue_script('vue-image-upload', ASSETS_DIR . 'vue-upload-component.min.js');
+    wp_enqueue_script('vue-image-upload', LIBS_DIR . 'vue-upload-component.min.js');
 
-    wp_enqueue_script('dx', ASSETS_DIR . 'dx/dhtmlxscheduler.js');
-    wp_enqueue_script('dx-limit', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_limit.js');
-    wp_enqueue_script('dx-collision', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_collision.js');
-    wp_enqueue_script('dx-timeline', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_timeline.js');
-    wp_enqueue_script('dx-editors', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_editors.js');
-    wp_enqueue_script('dx-minical', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_minical.js');
-    wp_enqueue_script('dx-tooltip', ASSETS_DIR . 'dx/ext/dhtmlxscheduler_tooltip.js');
+    wp_enqueue_script('dx', LIBS_DIR . 'dx/dhtmlxscheduler.js');
+    wp_enqueue_script('dx-limit', LIBS_DIR . 'dx/ext/dhtmlxscheduler_limit.js');
+    wp_enqueue_script('dx-collision', LIBS_DIR . 'dx/ext/dhtmlxscheduler_collision.js');
+    wp_enqueue_script('dx-timeline', LIBS_DIR . 'dx/ext/dhtmlxscheduler_timeline.js');
+    wp_enqueue_script('dx-editors', LIBS_DIR . 'dx/ext/dhtmlxscheduler_editors.js');
+    wp_enqueue_script('dx-minical', LIBS_DIR . 'dx/ext/dhtmlxscheduler_minical.js');
+    wp_enqueue_script('dx-tooltip', LIBS_DIR . 'dx/ext/dhtmlxscheduler_tooltip.js');
 
-    wp_enqueue_style('dx', ASSETS_DIR . 'dx/dhtmlxscheduler_material.css');
+    wp_enqueue_style('dx', LIBS_DIR . 'dx/dhtmlxscheduler_material.css');
     wp_enqueue_style('styles', ASSETS_DIR . 'backend.css');
 
-    wp_enqueue_script('np', ASSETS_DIR . 'nprogress/nprogress.min.js');
-    wp_enqueue_style('np', ASSETS_DIR . 'nprogress/nprogress.min.css');
+    wp_enqueue_script('np', LIBS_DIR . 'nprogress/nprogress.min.js');
+    wp_enqueue_style('np', LIBS_DIR . 'nprogress/nprogress.min.css');
 
     wp_enqueue_script('main', ASSETS_DIR . 'backend.js', [], false, true);
 }

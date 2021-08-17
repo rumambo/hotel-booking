@@ -12,20 +12,20 @@ add_shortcode('hotel_booking', 'hotel_booking');
 
 function front_style()
 {
-    wp_enqueue_script('vue', ASSETS_DIR . 'vue.js');
-    wp_enqueue_script('axios', ASSETS_DIR . 'axios.min.js');
+    wp_enqueue_script('vue', LIBS_DIR . 'vue.js');
+    wp_enqueue_script('axios', LIBS_DIR . 'axios.min.js');
 
-    wp_enqueue_script('fecha', ASSETS_DIR . 'datepicker/js/fecha.min.js');
-    wp_enqueue_script('datepicker', ASSETS_DIR . 'datepicker/js/hotel-datepicker.min.js');
-    wp_enqueue_style('datepicker', ASSETS_DIR . 'datepicker/css/hotel-datepicker.css');
+    wp_enqueue_script('fecha', LIBS_DIR . 'datepicker/js/fecha.min.js');
+    wp_enqueue_script('datepicker', LIBS_DIR . 'datepicker/js/hotel-datepicker.min.js');
+    wp_enqueue_style('datepicker', LIBS_DIR . 'datepicker/css/hotel-datepicker.css');
 
-    wp_enqueue_script('swiper', ASSETS_DIR . 'swiper/swiper.min.js');
-    wp_enqueue_style('swiper', ASSETS_DIR . 'swiper/swiper.min.css');
+    wp_enqueue_script('swiper', LIBS_DIR . 'swiper/swiper.min.js');
+    wp_enqueue_style('swiper', LIBS_DIR . 'swiper/swiper.min.css');
 
-    wp_enqueue_script('vue-swiper', ASSETS_DIR . 'vue-awesome-swiper.js');
+    wp_enqueue_script('vue-swiper', LIBS_DIR . 'vue-awesome-swiper.js');
 
-    wp_enqueue_script('lightbox', ASSETS_DIR . 'lightbox/lightbox.js');
-    wp_enqueue_style('lightbox', ASSETS_DIR . 'lightbox/lightbox.css');
+    wp_enqueue_script('lightbox', LIBS_DIR . 'lightbox/lightbox.js');
+    wp_enqueue_style('lightbox', LIBS_DIR . 'lightbox/lightbox.css');
 
 //    wp_enqueue_style('bootstrap', ASSETS_DIR . 'bootstrap.min.css');
 

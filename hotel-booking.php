@@ -18,6 +18,7 @@ define('INC_DIR', plugin_dir_path(__FILE__) . 'includes/');
 define('CLASSES_DIR', plugin_dir_path(__FILE__) . 'backend/classes/');
 define('VIEWS_DIR', plugin_dir_path(__FILE__) . 'backend/views/');
 define('ASSETS_DIR', plugin_dir_url(__FILE__) . 'assets/');
+define('LIBS_DIR', plugin_dir_url(__FILE__) . 'assets/libs/');
 
 function hb_activate_plugin_name()
 {
