@@ -116,6 +116,9 @@ class helper
 
         $rooms_busy_list = [];
 
+        $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
+        $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
+
         $rooms = $wpdb->get_results("
             SELECT room as room_id
             FROM " . $wpdb->prefix . "hb_orders
@@ -133,6 +136,10 @@ class helper
                 }
             }
         }
+
+        echo '<pre>';
+        print_r($rooms_list);
+        echo '</pre>';
 
         return $rooms_list;
     }

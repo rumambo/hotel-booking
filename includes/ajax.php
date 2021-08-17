@@ -485,7 +485,6 @@ function hb_send()
     $noty = strip_tags(trim($_POST['noty']));
     $status = 1;
     $is_paid = 0;
-    $locale = strip_tags(trim($_POST['locale']));
     $cost = strip_tags(trim($_POST['cost']));
     $guest = strip_tags(trim($_POST['guest']));
 
