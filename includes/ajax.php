@@ -1,5 +1,6 @@
 <?php
 
+// Dashboard
 function hb_get_data()
 {
     global $wpdb;
@@ -110,9 +111,10 @@ function hb_get_data()
 
 }
 add_action('wp_ajax_hb_get_data', 'hb_get_data');
-add_action('wp_ajax_nopriv_hb_get_data', 'hb_get_data');
 
 
+
+// Rooms
 function hb_get_rooms()
 {
 
@@ -159,9 +161,93 @@ function hb_get_rooms()
 
 }
 add_action('wp_ajax_hb_get_rooms', 'hb_get_rooms');
-add_action('wp_ajax_nopriv_hb_get_rooms', 'hb_get_rooms');
+
+function hb_add_room()
+{
+    global $wpdb;
+
+    if (is_admin()) {
+//        print_r($_POST);
+        $wpdb->insert("{$wpdb->prefix}hb_rooms", [
+            'name' => $_POST['name'],
+            'type_id' => (int)$_POST['type_id'],
+            'cleaner' => $_POST['cleaner'],
+            'status' => (int)$_POST['status'],
+        ]);
+    }
+
+    echo hb_get_rooms();
+    die();
+}
+add_action('wp_ajax_hb_add_room', 'hb_add_room');
+
+function hb_delete_room()
+{
+    global $wpdb;
+
+//    print_r($_POST);
+//    die();
+
+    if (is_admin()) {
+        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['id' => (int)$_POST['id']]);
+    }
+
+    echo 1;
+    die();
+}
+add_action('wp_ajax_hb_delete_room', 'hb_delete_room');
+
+function hb_switch_room_status()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+    $status = (int)$_POST['status'] === 1 ? 0 : 1;
+
+//    print_r($_POST);
+//    die();
+
+    if (is_admin()) {
+
+        $wpdb->update("{$wpdb->prefix}hb_rooms",
+            ['status' => $status],
+            ['id' => $id]
+        );
+
+    }
+
+    echo $status;
+    die();
+}
+add_action('wp_ajax_hb_switch_room_status', 'hb_switch_room_status');
+
+function hb_update_room()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+    $cleaner = sanitize_text_field($_POST['cleaner']);
+
+//    print_r($_POST);
+//    die();
+
+    if (is_admin()) {
+
+        $wpdb->update("{$wpdb->prefix}hb_rooms",
+            ['cleaner' => $cleaner],
+            ['id' => $id]
+        );
+
+    }
+
+    echo 1;
+    die();
+}
+add_action('wp_ajax_hb_update_room', 'hb_update_room');
 
 
+
+// Orders
 function hb_get_orders()
 {
 
@@ -190,9 +276,23 @@ function hb_get_orders()
 
 }
 add_action('wp_ajax_hb_get_orders', 'hb_get_orders');
-add_action('wp_ajax_nopriv_hb_get_orders', 'hb_get_orders');
+
+function hb_delete_order()
+{
+    global $wpdb;
+
+    if (is_admin()) {
+        $wpdb->delete("{$wpdb->prefix}hb_orders", ['id' => (int)$_POST['id']]);
+    }
+
+    echo 1;
+    die();
+}
+add_action('wp_ajax_hb_delete_order', 'hb_delete_order');
 
 
+
+// Room Types
 function hb_get_room_types()
 {
 
@@ -227,9 +327,364 @@ function hb_get_room_types()
 
 }
 add_action('wp_ajax_hb_get_room_types', 'hb_get_room_types');
-add_action('wp_ajax_nopriv_hb_get_room_types', 'hb_get_room_types');
+
+function hb_add_room_type()
+{
+    global $wpdb;
+
+    $shortcode = sanitize_text_field($_POST['shortcode']);
+    $title = sanitize_text_field($_POST['title']);
+    $area = sanitize_text_field($_POST['area']);
+    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
+    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
+    $capacity = json_encode($_POST['price']);
+    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
+    $desc = sanitize_text_field($_POST['desc']);
+
+    $wpdb->insert("{$wpdb->prefix}hb_room_types", [
+        'title' => $title,
+        'area' => $area,
+        'capacity' => $capacity,
+        'desc' => $desc,
+        'comfort_list' => $comfort_list,
+        'add_services_list' => $add_services,
+        'shortcode' => $shortcode,
+        'capacity_desc' => $capacity_desc,
+    ]);
+
+    echo hb_get_room_types();
+    die();
+}
+add_action('wp_ajax_hb_add_room_type', 'hb_add_room_type');
+
+function hb_del_room_type()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+
+    if (is_admin() && $id !== 0) {
+
+        $row = $wpdb->get_row("
+            SELECT images 
+            FROM {$wpdb->prefix}hb_room_types
+            WHERE type_id = $id
+        ");
+        if (!empty($row->images)) {
+            $images_data = explode(',', $row->images);
+            foreach ( $images_data as $value ) {
+                wp_delete_attachment($value, true );
+            }
+        }
+        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['type_id' => $id]);
+        $wpdb->delete("{$wpdb->prefix}hb_room_types", ['id' => $id]);
+        $wpdb->delete("{$wpdb->prefix}hb_room_types_images", ['type_id' => $id]);
+
+    }
+
+    echo hb_get_room_types();
+    die();
+}
+add_action('wp_ajax_hb_del_room_type', 'hb_del_room_type');
+
+function hb_get_room_type()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+
+    $data = [];
+    if (is_admin() && $id !== 0) {
+
+        $row = $wpdb->get_row("
+            SELECT * 
+            FROM {$wpdb->prefix}hb_room_types 
+            WHERE id = $id
+        ");
+
+        $capacity = json_decode($row->capacity, true);
+        $price = [];
+        foreach ($capacity as $key => $value) {
+            $price[$key] = $value;
+        }
+
+        $images = [];
+        if (!empty($row->images)) {
+//            $images[] = plugin_dir_url(__DIR__) . 'assets/images/no_photo.png';
+//        } else {
+            $img = explode(',', $row->images);
+            foreach ( $img as $attach_id ) {
+                $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
+            }
+        }
+
+        $data = [
+            'id' => $row->id,
+            'shortcode' => $row->shortcode,
+            'title' => $row->title,
+            'images' => $images,
+            'area' => $row->area,
+            'capacity_text' => $row->capacity_desc,
+            'add_services' => explode(',', $row->add_services_list),
+            'price' => $price,
+            'photos' => '',
+            'comfort_list' => explode(',', $row->comfort_list),
+            'desc' => $row->desc,
+        ];
+    }
+
+    echo json_encode($data);
+    die();
+}
+add_action('wp_ajax_hb_get_room_type', 'hb_get_room_type');
+
+function hb_edit_room_type()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+    $shortcode = sanitize_text_field($_POST['shortcode']);
+    $title = sanitize_text_field($_POST['title']);
+    $area = sanitize_text_field($_POST['area']);
+    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
+    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
+    $capacity = json_encode($_POST['price']);
+    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
+    $desc = sanitize_text_field($_POST['desc']);
+
+    if (is_admin() && $id !== 0) {
+        $wpdb->update("{$wpdb->prefix}hb_room_types", [
+            'title' => $title,
+            'area' => $area,
+            'capacity' => $capacity,
+            'desc' => $desc,
+            'comfort_list' => $comfort_list,
+            'add_services_list' => $add_services,
+            'shortcode' => $shortcode,
+            'capacity_desc' => $capacity_desc,
+        ], ['id' => $id]);
+    }
+
+    echo hb_get_room_types();
+    die();
+}
+add_action('wp_ajax_hb_edit_room_type', 'hb_edit_room_type');
+
+function hb_upload_images()
+{
+    global $wpdb;
+
+//    echo '<pre>';
+//    print_r($_POST);
+//    print_r($_FILES);
+//    echo '</pre>';
+//    die();
+
+    $id = (int)$_POST['id'];
+
+    $images_data = [];
+    $is_set = false;
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}hb_room_types_images
+        WHERE type_id = $id
+    ");
+    if (!empty($row->images)) {
+        $images_data = explode(',', $row->images);
+        $is_set = true;
+    }
 
 
+//    require( __DIR__ . '/../../../wp-load.php' );
+
+    $wordpress_upload_dir = wp_upload_dir();
+    $i = 1;
+
+    $photo = $_FILES['file'];
+    $new_file_path = $wordpress_upload_dir['path'] . '/' . $photo['name'];
+    $new_file_mime = mime_content_type($photo['tmp_name']);
+
+    if (empty($photo)) {
+        die('File is not selected.');
+    }
+
+    if ($photo['error']) {
+        die($photo['error']);
+    }
+
+    if ($photo['size'] > wp_max_upload_size()) {
+        die('It is too large than expected.');
+    }
+
+    if (!in_array($new_file_mime, get_allowed_mime_types())) {
+        die('WordPress doesn\'t allow this type of uploads.');
+    }
+
+    while (file_exists($new_file_path)) {
+        $i++;
+        $new_file_path = $wordpress_upload_dir['path'] . '/' . $i . '_' . $photo['name'];
+    }
+
+    if (move_uploaded_file($photo['tmp_name'], $new_file_path)) {
+
+        $upload_id = wp_insert_attachment([
+            'guid' => $new_file_path,
+            'post_mime_type' => $new_file_mime,
+            'post_title' => preg_replace('/\.[^.]+$/', '', $photo['name']),
+            'post_content' => '',
+            'post_status' => 'inherit'
+        ], $new_file_path);
+
+        // wp_generate_attachment_metadata() won't work if you do not include this file
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        // Generate and save the attachment metas into the database
+        wp_update_attachment_metadata($upload_id, wp_generate_attachment_metadata($upload_id, $new_file_path));
+
+        // Show the uploaded file in browser
+//        wp_redirect($wordpress_upload_dir['url'] . '/' . basename($new_file_path));
+
+
+        array_push($images_data, $upload_id);
+        $images_data = implode(',', $images_data);
+
+        // add
+        if ($is_set === false) {
+
+            $wpdb->insert("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+                'type_id' => $id,
+            ]);
+
+            if ($id !== 0) {
+                $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                    'images' => $images_data,
+                ], ['id' => $id]);
+            }
+
+        } // update
+        else {
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                'images' => $images_data,
+            ], ['id' => $id]);
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+            ], ['type_id' => $id]);
+
+        }
+
+    }
+
+
+    die();
+}
+add_action('wp_ajax_hb_upload_images', 'hb_upload_images');
+
+function hb_delete_image()
+{
+    global $wpdb;
+
+    $id = (int)$_POST['id'];
+    $index = (int)$_POST['index'];
+
+    $images_data = [];
+    $is_set = false;
+
+//    echo $id;
+//    echo $index;
+//    die();
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}hb_room_types_images
+        WHERE type_id = $id
+    ");
+    if (!empty($row->images)) {
+        $images_data = explode(',', $row->images);
+        $is_set = true;
+    }
+
+    wp_delete_attachment($images_data[$index], true );
+
+    unset($images_data[$index]);
+
+    if (empty($images_data)) {
+
+        $wpdb->delete("{$wpdb->prefix}hb_room_types_images",
+            ['type_id' => $id]
+        );
+        if ( $id !== 0 ) {
+            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                'images' => '',
+            ], ['id' => $id]);
+        }
+
+    } else {
+
+        $images_data = implode(',', $images_data);
+
+        // add
+        if ($is_set === false) {
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+            ], ['type_id' => $id]);
+
+
+        } // update
+        else {
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                'images' => $images_data,
+            ], ['id' => $id]);
+
+            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+                'images' => $images_data,
+            ], ['type_id' => $id]);
+
+        }
+
+    }
+
+
+    echo 1;
+    die();
+}
+add_action('wp_ajax_hb_delete_image', 'hb_delete_image');
+
+function hb_get_room_type_images()
+{
+    global $wpdb;
+
+    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}hb_room_types_images
+        WHERE type_id = $id
+    ");
+
+    $images = [];
+    if (!empty($row->images)) {
+        $img = explode(',', $row->images);
+        foreach ( $img as $attach_id ) {
+            $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
+        }
+    }
+
+    echo json_encode($images);
+    die();
+}
+add_action('wp_ajax_hb_get_room_type_images', 'hb_get_room_type_images');
+add_action('wp_ajax_nopriv_hb_get_room_type_images', 'hb_get_room_type_images');
+
+
+
+
+// Settings
 function hb_get_settings()
 {
 
@@ -271,7 +726,6 @@ function hb_get_settings()
 
 }
 add_action('wp_ajax_hb_get_settings', 'hb_get_settings');
-add_action('wp_ajax_nopriv_hb_get_settings', 'hb_get_settings');
 
 
 function hb_store_settings()
@@ -315,113 +769,8 @@ function hb_store_settings()
     die();
 }
 add_action('wp_ajax_hb_store_settings', 'hb_store_settings');
-add_action('wp_ajax_nopriv_hb_store_settings', 'hb_store_settings');
 
 
-function hb_delete_order()
-{
-    global $wpdb;
-
-    if (is_admin()) {
-        $wpdb->delete("{$wpdb->prefix}hb_orders", ['id' => (int)$_POST['id']]);
-    }
-
-    echo 1;
-    die();
-}
-add_action('wp_ajax_hb_delete_order', 'hb_delete_order');
-add_action('wp_ajax_nopriv_hb_delete_order', 'hb_delete_order');
-
-
-function hb_add_room()
-{
-    global $wpdb;
-
-    if (is_admin()) {
-//        print_r($_POST);
-        $wpdb->insert("{$wpdb->prefix}hb_rooms", [
-            'name' => $_POST['name'],
-            'type_id' => (int)$_POST['type_id'],
-            'cleaner' => $_POST['cleaner'],
-            'status' => (int)$_POST['status'],
-        ]);
-    }
-
-    echo hb_get_rooms();
-    die();
-}
-add_action('wp_ajax_hb_add_room', 'hb_add_room');
-add_action('wp_ajax_nopriv_hb_add_room', 'hb_add_room');
-
-
-function hb_delete_room()
-{
-    global $wpdb;
-
-//    print_r($_POST);
-//    die();
-
-    if (is_admin()) {
-        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['id' => (int)$_POST['id']]);
-    }
-
-    echo 1;
-    die();
-}
-add_action('wp_ajax_hb_delete_room', 'hb_delete_room');
-add_action('wp_ajax_nopriv_hb_delete_room', 'hb_delete_room');
-
-
-function hb_switch_room_status()
-{
-    global $wpdb;
-
-    $id = (int)$_POST['id'];
-    $status = (int)$_POST['status'] === 1 ? 0 : 1;
-
-//    print_r($_POST);
-//    die();
-
-    if (is_admin()) {
-
-        $wpdb->update("{$wpdb->prefix}hb_rooms",
-            ['status' => $status],
-            ['id' => $id]
-        );
-
-    }
-
-    echo $status;
-    die();
-}
-add_action('wp_ajax_hb_switch_room_status', 'hb_switch_room_status');
-add_action('wp_ajax_nopriv_hb_switch_room_status', 'hb_switch_room_status');
-
-
-function hb_update_room()
-{
-    global $wpdb;
-
-    $id = (int)$_POST['id'];
-    $cleaner = sanitize_text_field($_POST['cleaner']);
-
-//    print_r($_POST);
-//    die();
-
-    if (is_admin()) {
-
-        $wpdb->update("{$wpdb->prefix}hb_rooms",
-            ['cleaner' => $cleaner],
-            ['id' => $id]
-        );
-
-    }
-
-    echo 1;
-    die();
-}
-add_action('wp_ajax_hb_update_room', 'hb_update_room');
-add_action('wp_ajax_nopriv_hb_update_room', 'hb_update_room');
 
 
 function hb_check()
@@ -664,368 +1013,3 @@ function hb_get()
 add_action('wp_ajax_hb_get', 'hb_get');
 add_action('wp_ajax_nopriv_hb_get', 'hb_get');
 
-
-function hb_add_room_type()
-{
-    global $wpdb;
-
-    $shortcode = sanitize_text_field($_POST['shortcode']);
-    $title = sanitize_text_field($_POST['title']);
-    $area = sanitize_text_field($_POST['area']);
-    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
-    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
-    $capacity = json_encode($_POST['price']);
-    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
-    $desc = sanitize_text_field($_POST['desc']);
-
-    $wpdb->insert("{$wpdb->prefix}hb_room_types", [
-        'title' => $title,
-        'area' => $area,
-        'capacity' => $capacity,
-        'desc' => $desc,
-        'comfort_list' => $comfort_list,
-        'add_services_list' => $add_services,
-        'shortcode' => $shortcode,
-        'capacity_desc' => $capacity_desc,
-    ]);
-
-    echo hb_get_room_types();
-    die();
-}
-add_action('wp_ajax_hb_add_room_type', 'hb_add_room_type');
-add_action('wp_ajax_nopriv_hb_add_room_type', 'hb_add_room_type');
-
-
-function hb_del_room_type()
-{
-    global $wpdb;
-
-    $id = (int)$_POST['id'];
-
-    if (is_admin() && $id !== 0) {
-
-        $row = $wpdb->get_row("
-            SELECT images 
-            FROM {$wpdb->prefix}hb_room_types
-            WHERE type_id = $id
-        ");
-        if (!empty($row->images)) {
-            $images_data = explode(',', $row->images);
-            foreach ( $images_data as $value ) {
-                wp_delete_attachment($value, true );
-            }
-        }
-        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['type_id' => $id]);
-        $wpdb->delete("{$wpdb->prefix}hb_room_types", ['id' => $id]);
-        $wpdb->delete("{$wpdb->prefix}hb_room_types_images", ['type_id' => $id]);
-
-    }
-
-    echo hb_get_room_types();
-    die();
-}
-add_action('wp_ajax_hb_del_room_type', 'hb_del_room_type');
-add_action('wp_ajax_nopriv_hb_del_room_type', 'hb_del_room_type');
-
-
-function hb_get_room_type()
-{
-    global $wpdb;
-
-    $id = (int)$_POST['id'];
-
-    $data = [];
-    if (is_admin() && $id !== 0) {
-
-        $row = $wpdb->get_row("
-            SELECT * 
-            FROM {$wpdb->prefix}hb_room_types 
-            WHERE id = $id
-        ");
-
-        $capacity = json_decode($row->capacity, true);
-        $price = [];
-        foreach ($capacity as $key => $value) {
-            $price[$key] = $value;
-        }
-
-        $images = [];
-        if (!empty($row->images)) {
-//            $images[] = plugin_dir_url(__DIR__) . 'assets/images/no_photo.png';
-//        } else {
-            $img = explode(',', $row->images);
-            foreach ( $img as $attach_id ) {
-                $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
-            }
-        }
-
-        $data = [
-            'id' => $row->id,
-            'shortcode' => $row->shortcode,
-            'title' => $row->title,
-            'images' => $images,
-            'area' => $row->area,
-            'capacity_text' => $row->capacity_desc,
-            'add_services' => explode(',', $row->add_services_list),
-            'price' => $price,
-            'photos' => '',
-            'comfort_list' => explode(',', $row->comfort_list),
-            'desc' => $row->desc,
-        ];
-    }
-
-    echo json_encode($data);
-    die();
-}
-add_action('wp_ajax_hb_get_room_type', 'hb_get_room_type');
-add_action('wp_ajax_nopriv_hb_get_room_type', 'hb_get_room_type');
-
-
-function hb_edit_room_type()
-{
-    global $wpdb;
-
-    $id = (int)$_POST['id'];
-    $shortcode = sanitize_text_field($_POST['shortcode']);
-    $title = sanitize_text_field($_POST['title']);
-    $area = sanitize_text_field($_POST['area']);
-    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
-    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
-    $capacity = json_encode($_POST['price']);
-    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
-    $desc = sanitize_text_field($_POST['desc']);
-
-    if (is_admin() && $id !== 0) {
-        $wpdb->update("{$wpdb->prefix}hb_room_types", [
-            'title' => $title,
-            'area' => $area,
-            'capacity' => $capacity,
-            'desc' => $desc,
-            'comfort_list' => $comfort_list,
-            'add_services_list' => $add_services,
-            'shortcode' => $shortcode,
-            'capacity_desc' => $capacity_desc,
-        ], ['id' => $id]);
-    }
-
-    echo hb_get_room_types();
-    die();
-}
-add_action('wp_ajax_hb_edit_room_type', 'hb_edit_room_type');
-add_action('wp_ajax_nopriv_hb_edit_room_type', 'hb_edit_room_type');
-
-
-function hb_upload_images()
-{
-    global $wpdb;
-
-//    echo '<pre>';
-//    print_r($_POST);
-//    print_r($_FILES);
-//    echo '</pre>';
-//    die();
-
-    $id = (int)$_POST['id'];
-
-    $images_data = [];
-    $is_set = false;
-
-    $row = $wpdb->get_row("
-        SELECT images 
-        FROM {$wpdb->prefix}hb_room_types_images
-        WHERE type_id = $id
-    ");
-    if (!empty($row->images)) {
-        $images_data = explode(',', $row->images);
-        $is_set = true;
-    }
-
-
-//    require( __DIR__ . '/../../../wp-load.php' );
-
-    $wordpress_upload_dir = wp_upload_dir();
-    $i = 1;
-
-    $photo = $_FILES['file'];
-    $new_file_path = $wordpress_upload_dir['path'] . '/' . $photo['name'];
-    $new_file_mime = mime_content_type($photo['tmp_name']);
-
-    if (empty($photo)) {
-        die('File is not selected.');
-    }
-
-    if ($photo['error']) {
-        die($photo['error']);
-    }
-
-    if ($photo['size'] > wp_max_upload_size()) {
-        die('It is too large than expected.');
-    }
-
-    if (!in_array($new_file_mime, get_allowed_mime_types())) {
-        die('WordPress doesn\'t allow this type of uploads.');
-    }
-
-    while (file_exists($new_file_path)) {
-        $i++;
-        $new_file_path = $wordpress_upload_dir['path'] . '/' . $i . '_' . $photo['name'];
-    }
-
-    if (move_uploaded_file($photo['tmp_name'], $new_file_path)) {
-
-        $upload_id = wp_insert_attachment([
-            'guid' => $new_file_path,
-            'post_mime_type' => $new_file_mime,
-            'post_title' => preg_replace('/\.[^.]+$/', '', $photo['name']),
-            'post_content' => '',
-            'post_status' => 'inherit'
-        ], $new_file_path);
-
-        // wp_generate_attachment_metadata() won't work if you do not include this file
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
-
-        // Generate and save the attachment metas into the database
-        wp_update_attachment_metadata($upload_id, wp_generate_attachment_metadata($upload_id, $new_file_path));
-
-        // Show the uploaded file in browser
-//        wp_redirect($wordpress_upload_dir['url'] . '/' . basename($new_file_path));
-
-
-        array_push($images_data, $upload_id);
-        $images_data = implode(',', $images_data);
-
-        // add
-        if ($is_set === false) {
-
-            $wpdb->insert("{$wpdb->prefix}hb_room_types_images", [
-                'images' => $images_data,
-                'type_id' => $id,
-            ]);
-
-            if ($id !== 0) {
-                $wpdb->update("{$wpdb->prefix}hb_room_types", [
-                    'images' => $images_data,
-                ], ['id' => $id]);
-            }
-
-        } // update
-        else {
-
-            $wpdb->update("{$wpdb->prefix}hb_room_types", [
-                'images' => $images_data,
-            ], ['id' => $id]);
-
-            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
-                'images' => $images_data,
-            ], ['type_id' => $id]);
-
-        }
-
-    }
-
-
-    die();
-}
-add_action('wp_ajax_hb_upload_images', 'hb_upload_images');
-add_action('wp_ajax_nopriv_hb_upload_images', 'hb_upload_images');
-
-
-function hb_delete_image()
-{
-    global $wpdb;
-
-    $id = (int)$_POST['id'];
-    $index = (int)$_POST['index'];
-
-    $images_data = [];
-    $is_set = false;
-
-//    echo $id;
-//    echo $index;
-//    die();
-
-    $row = $wpdb->get_row("
-        SELECT images 
-        FROM {$wpdb->prefix}hb_room_types_images
-        WHERE type_id = $id
-    ");
-    if (!empty($row->images)) {
-        $images_data = explode(',', $row->images);
-        $is_set = true;
-    }
-
-    wp_delete_attachment($images_data[$index], true );
-
-    unset($images_data[$index]);
-
-    if (empty($images_data)) {
-
-        $wpdb->delete("{$wpdb->prefix}hb_room_types_images",
-            ['type_id' => $id]
-        );
-        if ( $id !== 0 ) {
-            $wpdb->update("{$wpdb->prefix}hb_room_types", [
-                'images' => '',
-            ], ['id' => $id]);
-        }
-
-    } else {
-
-        $images_data = implode(',', $images_data);
-
-        // add
-        if ($is_set === false) {
-
-            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
-                'images' => $images_data,
-            ], ['type_id' => $id]);
-
-
-        } // update
-        else {
-
-            $wpdb->update("{$wpdb->prefix}hb_room_types", [
-                'images' => $images_data,
-            ], ['id' => $id]);
-
-            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
-                'images' => $images_data,
-            ], ['type_id' => $id]);
-
-        }
-
-    }
-
-
-    echo 1;
-    die();
-}
-add_action('wp_ajax_hb_delete_image', 'hb_delete_image');
-add_action('wp_ajax_nopriv_hb_delete_image', 'hb_delete_image');
-
-
-function hb_get_room_type_images()
-{
-    global $wpdb;
-
-    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-
-    $row = $wpdb->get_row("
-        SELECT images 
-        FROM {$wpdb->prefix}hb_room_types_images
-        WHERE type_id = $id
-    ");
-
-    $images = [];
-    if (!empty($row->images)) {
-        $img = explode(',', $row->images);
-        foreach ( $img as $attach_id ) {
-            $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
-        }
-    }
-
-    echo json_encode($images);
-    die();
-}
-add_action('wp_ajax_hb_get_room_type_images', 'hb_get_room_type_images');
-add_action('wp_ajax_nopriv_hb_get_room_type_images', 'hb_get_room_type_images');
