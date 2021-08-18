@@ -235,7 +235,7 @@ const Dashboard = {
             return ["<div class='timeline_item_separator'></div>",
                 "<div class='timeline_item_cell'>" + label + "</div>",
                 "<div class='timeline_item_separator'></div>",
-                "<div class='timeline_item_cell'>" + getRoomType(section.type) + "</div>",
+                "<div class='timeline_item_cell'>" + getRoomType(section.type_id) + "</div>",
                 "<div class='timeline_item_separator'></div>",
                 "<div class='timeline_item_cell room_status'>",
                 "<span class='room_status_indicator room_status_indicator_" + roomStatus.id + "'></span>",
@@ -291,7 +291,7 @@ const Dashboard = {
             html.push("Room: <b>" + room.label + "</b>");
             html.push("Check-in: <b>" + eventDateFormat(start) + "</b>");
             html.push("Check-out: <b>" + eventDateFormat(end) + "</b>");
-            html.push(getBookingStatus(event.status) + ", " + getPaidStatus(event.is_paid));
+            html.push(event.status + ", " + getPaidStatus(event.is_paid));
             return html.join("<br>")
         };
 
@@ -863,7 +863,7 @@ const Orders = {
                  <td>{{ item.id }}</td>
                 <td>
                     {{ item.fullname }}<br>
-                    Email: {{ item.email }} <br>Noty: {{ item.noty }}, дней: 2, доп.услуги(Трансфер 1|) , прибытие: 12:00, завтрак: yes, парковка: yes
+                    Email: {{ item.email }} <br>Noty: {{ item.noty }}
                 </td>
                 <td>
                     {{ item.tel }}

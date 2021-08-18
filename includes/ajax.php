@@ -46,7 +46,7 @@ function hb_get_data()
     // data
     $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}hb_orders", ARRAY_A);
     foreach ($result as $row) {
-        $row['is_paid'] = (int)$row['is_paid'] == 0 ? false : true;
+        $row['is_paid'] = (int)$row['is_paid'] !== 0;
         $data['data'][] = $row;
     }
     unset($result);
@@ -86,9 +86,9 @@ function hb_get_data()
     // room
     $result = $wpdb->get_results("
         SELECT
-            id as value,
+            name as value,
             name as label,
-            type_id as type,
+            type_id,
             cleaner as status
         FROM {$wpdb->prefix}hb_rooms
         WHERE `status` = 1
@@ -468,8 +468,13 @@ function hb_send()
     $_POST = json_decode(file_get_contents('php://input'), true);
 
     $room_type_id = (int)$_POST['room_type_id'];
-    $start_date = date('Y-m-d', strtotime(strip_tags(trim($_POST['datestart']))));
-    $end_date = date('Y-m-d', strtotime(strip_tags(trim($_POST['dateend']))));
+
+    $start_date = strip_tags(trim($_POST['datestart']));
+    $end_date = strip_tags(trim($_POST['dateend']));
+
+    $start_date = date('Y-m-d', \DateTime::createFromFormat('d.m.Y', $start_date)->getTimestamp());
+    $end_date = date('Y-m-d', \DateTime::createFromFormat('d.m.Y', $end_date)->getTimestamp());
+
     $rooms_all_list = helper::getAvailableRoomsByRoomTypeId(
         $room_type_id, $start_date, $end_date
     );
@@ -477,13 +482,15 @@ function hb_send()
         die('Error not found available room');
     }
 
-    $room_id = $rooms_all_list[0];
+    $room = array_shift($rooms_all_list);
+
+//    print_r($room);
 
     $fullname = strip_tags(trim($_POST['fullname']));
     $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim($_POST['tel'])));
     $email = strip_tags(trim($_POST['email']));
     $noty = strip_tags(trim($_POST['noty']));
-    $status = 1;
+    $status = 'New';
     $is_paid = 0;
     $cost = strip_tags(trim($_POST['cost']));
     $guest = strip_tags(trim($_POST['guest']));
@@ -501,7 +508,7 @@ function hb_send()
     $noty .= ', parking: ' . strip_tags(trim($_POST['parking']));
 
     $wpdb->insert("{$wpdb->prefix}hb_orders", [
-        'room' => $room_id,
+        'room' => $room,
         'start_date' => $start_date,
         'end_date' => $end_date,
         'fullname' => $fullname,
@@ -529,6 +536,32 @@ function hb_get()
     $end_date = '';
     $promocode = 0;
 
+    if ( file_get_contents('php://input') ) {
+        $_POST = json_decode(file_get_contents('php://input'), true);
+
+        if ( isset($_POST['range']) && !empty($_POST['range']) ) {
+            $range = explode(' - ', $_POST['range']);
+            $start_date = date('Y-m-d', strtotime($range[0]));
+            $end_date = date('Y-m-d', strtotime($range[1]));
+        }
+
+        if ( isset($_POST['promocode']) && !empty($_POST['promocode']) ) {
+            $promocode = trim($_POST['promocode']);
+            $settings_promo = $wpdb->get_row("
+                SELECT `value`
+                FROM ". $wpdb->prefix ."hb_settings
+                WHERE param = 'PROMO'
+            ");
+
+            $settings_promo = json_decode($settings_promo->value, true);
+            foreach ( $settings_promo as $key => $value ) {
+                if ( $value[0] === $promocode && $value[2] === 1 ) {
+                    $promocode = (float)$value[1];
+                }
+            }
+        }
+    }
+
     $data = [];
     $rooms_list = [];
 
@@ -545,13 +578,18 @@ function hb_get()
         $result = $wpdb->get_results("
             SELECT *
             FROM " . $wpdb->prefix . "hb_rooms
-            WHERE id IN ($rooms_all_list) AND status = 1
+            WHERE name IN ($rooms_all_list) AND status = 1
         ");
         foreach ($result as $row) {
-            $rooms_list[$row->type_id][] = $row->id;
+            $rooms_list[$row->type_id][] = $row->name;
         }
         unset($result);
     }
+
+//    echo '<pre>';
+//    print_r($rooms_list);
+//    echo '</pre>';
+//    die();
 
     $result = $wpdb->get_results("
         SELECT * FROM " . $wpdb->prefix . "hb_room_types
@@ -604,13 +642,23 @@ function hb_get()
     }
     unset($result);
 
+    $res['rooms'] = $data;
+
+    $result = $wpdb->get_row("
+        SELECT `value`
+        FROM {$wpdb->prefix}hb_settings
+        WHERE param = 'CUR'",
+    ARRAY_A);
+
+    $res['currencies'] = json_decode($result['value'], true);
+
 //    echo '<pre>';
-//    print_r($data);
+//    print_r($res);
 //    echo '</pre>';
 //    die();
 
     header('Content-Type: application/json');
-    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    echo json_encode($res, JSON_UNESCAPED_UNICODE);
     die();
 }
 add_action('wp_ajax_hb_get', 'hb_get');

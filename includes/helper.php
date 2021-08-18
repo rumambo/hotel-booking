@@ -106,26 +106,23 @@ class helper
         $rooms = $wpdb->get_results("
             SELECT *
             FROM " . $wpdb->prefix . "hb_rooms
-            WHERE types_id = $type_id AND status = 1
+            WHERE type_id = $type_id AND status = 1
             ORDER BY cleaner ASC
         ");
         foreach ($rooms as $row) {
-            $rooms_list[] = $row->id;
+            $rooms_list[$row->name] = $row->name;
         }
         unset($rooms);
 
         $rooms_busy_list = [];
 
-        $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
-        $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
-
         $rooms = $wpdb->get_results("
-            SELECT room as room_id
+            SELECT room
             FROM " . $wpdb->prefix . "hb_orders
-            WHERE start_date >= $start_date  AND end_date <= $end_date
+            WHERE start_date >= '$start_date'  AND end_date <= '$end_date'
         ");
         foreach ($rooms as $row) {
-            $rooms_busy_list[] = $row->room_id;
+            $rooms_busy_list[$row->room] = $row->room;
         }
         unset($rooms);
 
@@ -137,9 +134,9 @@ class helper
             }
         }
 
-        echo '<pre>';
-        print_r($rooms_list);
-        echo '</pre>';
+//        echo '<pre>';
+//        print_r($rooms_busy_list);
+//        echo '</pre>';
 
         return $rooms_list;
     }
@@ -162,14 +159,14 @@ class helper
             ORDER BY cleaner ASC
         ");
         foreach ($rooms as $row) {
-            $rooms_list[] = $row->id;
+            $rooms_list[$row->name] = $row->name;
         }
         unset($rooms);
 
         $rooms_busy_list = [];
 
         $rooms = $wpdb->get_results("
-            SELECT room as room_id
+            SELECT room
             FROM " . $wpdb->prefix . "hb_orders
             WHERE 
                 start_date BETWEEN '$start_date' AND '$end_date' OR 
@@ -177,7 +174,7 @@ class helper
                 (start_date <= '$start_date' AND end_date >= '$end_date')
         ");
         foreach ($rooms as $row) {
-            $rooms_busy_list[] = $row->room_id;
+            $rooms_busy_list[$row->room] = $row->room;
         }
         unset($rooms);
 
@@ -188,6 +185,10 @@ class helper
                 }
             }
         }
+
+//        echo '<pre>';
+//        print_r($rooms_list);
+//        echo '</pre>';
 
         return $rooms_list;
     }

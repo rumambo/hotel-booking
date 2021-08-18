@@ -39,12 +39,12 @@ Vue.prototype.message = {
 
 Vue.prototype.datepicker_lang = {
 
-        night: 'Night',
-        nights: 'Nights',
-        'day-names-short': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        'day-names': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        'month-names-short': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        'month-names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    night: 'Night',
+    nights: 'Nights',
+    'day-names-short': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    'day-names': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    'month-names-short': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    'month-names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
 };
 
@@ -62,7 +62,7 @@ Vue.component('modal0', {
         submit() {
             // this.errors = {};
             axios.post(ajaxurl + '?action=hb_check', this.fields).then(response => {
-                document.getElementById('check_result').innerHTML = '<div class="mt-3">'+response.data+'</div>';
+                document.getElementById('check_result').innerHTML = '<div class="mt-3">' + response.data + '</div>';
                 // console.log(response.data);
             }).catch(error => {
                 if (error.response.status === 422) {
@@ -91,7 +91,7 @@ Vue.component('modal1', {
             bookingImage: this.$root.$data.bookingImage,
             add_services_list: this.$root.$data.add_services_list,
             currentCurrency: this.$root.$data.currentCurrency,
-            currencies_sign: this.$root.$data.currencies_sign,
+            currencies: this.$root.$data.currencies,
             selected_cost: this.$root.$data.selected_cost,
             selected_guest: this.$root.$data.selected_guest,
         }
@@ -102,8 +102,8 @@ Vue.component('modal1', {
             let inputElements = document.getElementsByClassName('add_services');
             let a = 0;
             this.booking.add_services = {};
-            for(let i=0; inputElements[i]; i++ ){
-                if( inputElements[i].checked ){
+            for (let i = 0; inputElements[i]; i++) {
+                if (inputElements[i].checked) {
                     this.booking.add_services[a] = inputElements[i].value;
                     a++;
                 }
@@ -128,11 +128,18 @@ Vue.component('modal1', {
             axios.post(ajaxurl + '?action=hb_send', this.booking)
                 .then(function (response) {
                     console.log(response.data);
-                    this.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >'+ this.booking.message.order_success +'</h1> <a class="btn btn-success" href="">'+ this.booking.message.return +'</a></div>';
+                    this.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >' + this.booking.message.order_success + '</h1> <a class="btn btn-success" href="">' + this.booking.message.return + '</a></div>';
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+        },
+        getCurrencySign() {
+            for (var i = 0; i < this.currencies.length; i++) {
+                if (this.currencies[i][0] === this.currentCurrency) {
+                    return this.currencies[i][1]
+                }
+            }
         },
     }
 });
@@ -170,22 +177,7 @@ const booking = new Vue({
         showModalCheckBooking: false,
         showModalBooking: false,
         currentCurrency: 'USD',
-        // locales: [
-        //     {id: 'ru', name: 'Русский'},
-        //     {id: 'ua', name: 'Українська'},
-        //     {id: 'en', name: 'English'}
-        // ],
-        currencies: [
-            {id: 'UAH', name: '₴ UAH'},
-            {id: 'RUB', name: '₽ RUB'},
-            {id: 'USD', name: '$ USD'}
-        ],
-        currencies_sign: {
-            UAH: '₴',
-            RUB: '₽',
-            USD: '$'
-        },
-        currenciesRatio: {"UAH":"28.00","RUB":"38","USD":"1"},
+        currencies: [],
         rooms: [],
     },
     created: function () {
@@ -193,18 +185,16 @@ const booking = new Vue({
         element.parentNode.removeChild(element);
     },
     mounted() {
-        // var self = this;
-        // let getJSON = '';
-        // let getJSON2 = '{"UAH":"1.00","RUB":"0.38","USD":"25.00"}';
 
-        axios.get( ajaxurl + '?action=hb_get').then(response => {
-                // console.log(response.data);
-                this.rooms = response.data;
-            }).catch(error => {
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
-            });
+        axios.get(ajaxurl + '?action=hb_get').then(response => {
+            // console.log(response.data);
+            this.rooms = response.data.rooms;
+            this.currencies = response.data.currencies;
+        }).catch(error => {
+            if (error.response.status === 422) {
+                this.errors = error.response.data.errors || {};
+            }
+        });
 
         this.initDatePicker();
 
@@ -223,7 +213,21 @@ const booking = new Vue({
 
     },
     methods: {
-        search () {
+        getCurrencySign() {
+            for (var i = 0; i < this.currencies.length; i++) {
+                if (this.currencies[i][0] === this.currentCurrency) {
+                    return this.currencies[i][1]
+                }
+            }
+        },
+        getCurrencyRatio() {
+            for (var i = 0; i < this.currencies.length; i++) {
+                if (this.currencies[i][0] === this.currentCurrency) {
+                    return this.currencies[i][2]
+                }
+            }
+        },
+        search() {
             // console.log(event);
             console.log(this.date_range);
             console.log(this.promocode);
@@ -233,14 +237,14 @@ const booking = new Vue({
                 'promocode': this.promocode,
             };
 
-            // axios.post('http://'+domain+'/rooms.json', data).then(response => {
-            //     // console.log(response.data);
-            //     this.rooms = response.data;
-            // }).catch(error => {
-            //     if (error.response.status === 422) {
-            //         this.errors = error.response.data.errors || {};
-            //     }
-            // });
+            axios.post(ajaxurl + '?action=hb_get', data).then(response => {
+                // console.log(response.data);
+                this.rooms = response.data;
+            }).catch(error => {
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
 
             // event.preventDefault();
             // return;
@@ -275,10 +279,10 @@ const booking = new Vue({
             this.$refs.cost[item].innerText = e.target.value;
         },
         currentCurrencyChange: function () {
-            let i = 0 ;
-            while ( i < this.rooms.length ) {
+            let i = 0;
+            while (i < this.rooms.length) {
                 this.$el.getElementsByClassName('guest')[i].selectedIndex = 0;
-                let selectedCost = parseInt(this.rooms[i].capacity_cost[0]/this.currenciesRatio[this.currentCurrency]);
+                let selectedCost = parseInt(this.rooms[i].capacity_cost[0] * this.getCurrencyRatio());
                 this.$refs.cost[i].innerText = selectedCost;
                 i++;
             }

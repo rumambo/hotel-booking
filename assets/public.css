@@ -97,6 +97,14 @@
     padding-left:0;
 }
 
+#hotel-booking .text-center {
+    text-align:center !important;
+}
+
+#hotel-booking .text-danger {
+    color:red;
+}
+
 #hotel-booking .list-inline-item:not(:last-child) {
     margin-right: .5rem;
 }

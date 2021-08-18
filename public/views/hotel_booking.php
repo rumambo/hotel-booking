@@ -1,30 +1,36 @@
 <div id="hotel-booking">
 
     <div class="row mb-3">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <select class="custom-select" v-model="currentCurrency"  @change="currentCurrencyChange">
-                <option v-for="currency in currencies" :value="currency.id">
-                    {{currency.name}}
+                <option v-for="currency in currencies" :value="currency[0]">
+                    {{currency[1]}} {{currency[0]}}
                 </option>
             </select>
         </div>
         <div class="col-md-3">
-            <input id="input-id" v-model="date_range" type="text" class="form-control text-center" :placeholder="message.arrival_date+' - '+message.departure_date" required>
-        </div>
-        <div class="col-md-2">
-            <input type="text" v-model="promocode" class="form-control" :placeholder="message.promocode">
-        </div>
-        <div class="col-md-3">
-            <button type="button" @click="search" class="btn btn-block btn-primary">
-                {{ message.check_availability }}
-            </button>
-        </div>
-        <div class="col-md-2">
             <button type="button" class="btn btn-block btn-secondary" @click="showModalCheckBooking=true">
                 {{ message.my_reserv }}
             </button>
         </div>
     </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <input id="input-id" v-model="date_range" type="text" class="form-control text-center" :placeholder="message.arrival_date+' - '+message.departure_date" required>
+        </div>
+        <div class="col-md-3">
+            <input type="text" v-model="promocode" class="form-control" :placeholder="message.promocode">
+        </div>
+        <div class="col-md-4">
+            <button type="button" @click="search" class="btn btn-block btn-primary">
+                {{ message.check_availability }}
+            </button>
+        </div>
+    </div>
+
+
 
     <div v-for="(room, item) in rooms" class="" style="border:1px solid #ced4da; margin-bottom:15px; padding:15px; background:#fff;">
         <div class="row">
@@ -76,7 +82,7 @@
                     </label>
                     <div class="col-md-7">
                         <select class="custom-select guest mb-2" ref="guest" @change="changeGuest($event, item)" :id="'guest_'+room.id">
-                            <option v-for="(guest, opt) in room.capacity_guest" :value="parseInt(room.capacity_cost[opt]/currenciesRatio[currentCurrency])">{{ guest }}</option>
+                            <option v-for="(guest, opt) in room.capacity_guest" :value="parseInt(room.capacity_cost[opt]*getCurrencyRatio())">{{ guest }}</option>
                         </select>
                     </div>
 
@@ -119,8 +125,8 @@
                 {{ message.price }}
             </div>
             <div class="col-md-4">
-                {{ currencies_sign[currentCurrency] }}
-                <h5 class="d-inline-block" ref="cost" :id="'cost_'+room.id">{{ parseInt(room.capacity_cost[0]/currenciesRatio[currentCurrency]) }}</h5>
+                {{ getCurrencySign() }}
+                <h5 class="d-inline-block" ref="cost" :id="'cost_'+room.id">{{ parseInt(room.capacity_cost[0]*getCurrencyRatio()) }}</h5>
                      per night
 
             </div>
@@ -148,7 +154,7 @@
                 >{{ message.to_book }}</button>
                 </span>
                 <span v-if="room.available == 0">
-                    <b class="text-danger text-right pr-3 pt-2 d-block">
+                    <b class="text-danger">
                         {{ message.sorry }}
                     </b>
                 </span>
@@ -245,7 +251,7 @@
                                         {{ message.qty_night }} <b class="float-right">{{ selected_days }}</b>
                                     </li>
                                     <li class="list-group-item py-1">
-                                        {{ message.price }} <b class="float-right">{{ selected_cost }} {{ currencies_sign[currentCurrency] }}</b>
+                                        {{ message.price }} <b class="float-right">{{ selected_cost }} {{ getCurrencySign() }}</b>
                                     </li>
 
                                     <li class="list-group-item py-1">
@@ -304,7 +310,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" @click="$emit('close')">{{ message.back }}</button>
+                        <button type="button" class="btn btn-warning" style="margin-right:15px; color:white;" @click="$emit('close')">{{ message.back }}</button>
                         <button class="btn btn-success" type="submit">{{ message.send }}</button>
                     </div>
                 </form>
