@@ -51,7 +51,7 @@ Vue.prototype.datepicker_lang = {
 Vue.use(VueAwesomeSwiper);
 
 Vue.component('modal0', {
-    template: '#modal-checkBooking',
+    // template: '#modal-checkBooking',
     data() {
         return {
             fields: {},
@@ -70,14 +70,46 @@ Vue.component('modal0', {
                 }
             });
         },
-    }
+    },
+    template: `
+      <div>
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">{{ message.check_booking }}</h5>
+                <button type="button" class="close" @click="$emit('close')" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="checkBooking">
+                <form class="row" @submit.prevent="submit">
+                  <div class="col-4">
+                    <input type="text" v-model="fields.tel" class="form-control" :placeholder="message.tel" required/>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" v-model="fields.order_id" class="form-control" :placeholder="message.order_id"
+                           required/>
+                  </div>
+                  <div class="col-4">
+                    <button class="btn btn-primary btn-block" type="submit">{{ message.check }}</button>
+                  </div>
+                </form>
+                <div id="check_result"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>`
 });
 
 Vue.component('modal1', {
-    template: '#modal-booking',
+    // template: '#modal-booking',
     data() {
         return {
-            fields: {},
+            // fields: {},
             errors: {},
             booking: {},
             selected_days: this.$root.$data.selected_days,
@@ -88,7 +120,7 @@ Vue.component('modal1', {
             selected_arrival: this.$root.$data.selected_arrival,
             selected_breakfast: this.$root.$data.selected_breakfast,
             selected_parking: this.$root.$data.selected_parking,
-            bookingImage: this.$root.$data.bookingImage,
+            // bookingImage: this.$root.$data.bookingImage,
             add_services_list: this.$root.$data.add_services_list,
             currentCurrency: this.$root.$data.currentCurrency,
             currencies: this.$root.$data.currencies,
@@ -128,27 +160,123 @@ Vue.component('modal1', {
             axios.post(ajaxurl + '?action=hb_send', this.booking)
                 .then(function (response) {
                     console.log(response.data);
-                    this.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >' + this.booking.message.order_success + '</h1> <a class="btn btn-success" href="">' + this.booking.message.return + '</a></div>';
+                    window.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >' + Vue.prototype.message.order_success + '</h1> <a class="btn btn-success" style="text-decoration:none" href="">' + Vue.prototype.message.back + '</a><br/><br/></div>';
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
         },
         getCurrencySign() {
-            for (var i = 0; i < this.currencies.length; i++) {
+            for (let i = 0; i < this.currencies.length; i++) {
                 if (this.currencies[i][0] === this.currentCurrency) {
                     return this.currencies[i][1]
                 }
             }
         },
-    }
+    },
+    template: `
+      <div>
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <form class="modal-content" @submit.prevent="submit">
+              <div class="modal-header">
+                <h5 class="modal-title">{{ message.order }} - {{ selected_room_type }}</h5>
+                <button type="button" class="close" @click="$emit('close')" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-4">
+                    <!-- <img :src="bookingImage" class="img-fluid" /> -->
+                    <ul class="list-group">
+                      <li class="list-group-item py-1">
+                        {{ message.arrival_date }} <b class="float-right">{{ selected_datestart }}</b><br/>
+                        <b class="float-right">{{ selected_arrival }}</b>
+                      </li>
+                      <li class="list-group-item py-1">
+                        {{ message.departure_date }} <b class="float-right">{{ selected_dateend }}</b>
+                      </li>
+
+                      <li class="list-group-item py-1">
+                        {{ message.qty_night }} <b class="float-right">{{ selected_days }}</b>
+                      </li>
+                      <li class="list-group-item py-1">
+                        {{ message.price }} <b class="float-right">{{ selected_cost }} {{ getCurrencySign() }}</b>
+                      </li>
+
+                      <li class="list-group-item py-1">
+                        {{ message.breakfast }} <b class="float-right">{{ message[selected_breakfast] }}</b>
+                      </li>
+                      <li class="list-group-item py-1">
+                        {{ message.parking }} <b class="float-right">{{ message[selected_parking] }}</b>
+                      </li>
+                      <li class="list-group-item py-1">
+                        {{ message.guests }} <b class="float-right">{{ selected_guest }}</b>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-8">
+                    <div class="mb-3 row">
+                      <label class="col-form-label col-3">{{ message.fullname }}</label>
+                      <div class="col-9">
+                        <input type="text" v-model="booking.fullname" class="form-control"
+                               :placeholder="message.fullname" required/>
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-form-label col-3">{{ message.tel }}</label>
+                      <div class="col-6">
+                        <input type="text" v-model="booking.tel" class="form-control" :placeholder="message.tel"
+                               required/>
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-form-label col-3">{{ message.email }}</label>
+                      <div class="col-6">
+                        <input type="email" v-model="booking.email" class="form-control" placeholder="E-mail"/>
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-form-label col-3">{{ message.add_services }}</label>
+                      <div class="col-9">
+                        <div v-for="list in add_services_list">
+                          <label class="d-inline">
+                            <input class="add_services" type="checkbox" :value="list"/>
+                            {{ list }}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-form-label col-3">{{ message.noty }}</label>
+                      <div class="col-9">
+                        <textarea class="form-control" v-model="booking.noty" rows="3"
+                                  :placeholder="message.noty"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-warning" style="margin-right:15px; color:white;"
+                        @click="$emit('close')">{{ message.back }}
+                </button>
+                <button class="btn btn-success" type="submit">{{ message.send }}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      </div>`
 });
 
 const booking = new Vue({
     el: '#hotel-booking',
     data: {
         add_services_list: {},
-        bookingImage: '',
+        // bookingImage: '',
         datepicker: {},
         selected_days: 0,
         selected_datestart: 0,
@@ -179,10 +307,10 @@ const booking = new Vue({
         currentCurrency: 'USD',
         currencies: [],
         rooms: [],
+        showLoader: true,
     },
     created: function () {
-        var element = document.getElementById("loader");
-        element.parentNode.removeChild(element);
+        this.showLoader = false
     },
     mounted() {
 
@@ -213,6 +341,21 @@ const booking = new Vue({
 
     },
     methods: {
+        toBook(room) {
+            this.showModalBooking = true;
+            this.selected_room_type = room.name;
+            this.selected_room_type_id = room.id;
+            // this.bookingImage = room.images[0].name;
+            this.selected_arrival = window.document.getElementById('time_' + room.id).value;
+            this.selected_breakfast = window.document.getElementById('breakfast_' + room.id).value;
+            this.selected_parking = window.document.getElementById('parking_' + room.id).value;
+            this.add_services_list = room.add_services;
+            this.selected_cost = window.document.getElementById('guest_' + room.id).value;
+            this.selected_guest = window.document.getElementById('guest_' + room.id).options[window.document.getElementById('guest_' + room.id).selectedIndex].text;
+            // this.selected_days = this.selected_days;
+            // this.selected_datestart = selected_datestart;
+            // this.selected_dateend = selected_dateend;
+        },
         getCurrencySign() {
             for (var i = 0; i < this.currencies.length; i++) {
                 if (this.currencies[i][0] === this.currentCurrency) {
@@ -237,17 +380,18 @@ const booking = new Vue({
                 'promocode': this.promocode,
             };
 
+            this.showLoader = true
+
             axios.post(ajaxurl + '?action=hb_get', data).then(response => {
                 // console.log(response.data);
-                this.rooms = response.data;
+                this.rooms = response.data.rooms;
+                this.showLoader = false
             }).catch(error => {
                 if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
                 }
             });
 
-            // event.preventDefault();
-            // return;
         },
         getNight() {
             this.selected_days = datepicker.getNights();
@@ -261,10 +405,6 @@ const booking = new Vue({
             // console.log(imageName.name, index);
             this.$refs.lightbox[index].show(imageName);
         },
-        // changeLang: function () {
-        //     this.initDatePicker().destroy();
-        //     this.initDatePicker();
-        // },
         initDatePicker() {
             datepicker = new HotelDatepicker(document.getElementById('input-id'), {
                 format: 'DD.MM.YYYY',
@@ -278,7 +418,7 @@ const booking = new Vue({
         changeGuest: function (e, item) {
             this.$refs.cost[item].innerText = e.target.value;
         },
-        currentCurrencyChange: function () {
+        changeCurrentCurrency: function () {
             let i = 0;
             while (i < this.rooms.length) {
                 this.$el.getElementsByClassName('guest')[i].selectedIndex = 0;

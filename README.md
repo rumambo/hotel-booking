@@ -2,26 +2,29 @@
 The best free hotel booking plugin on the earth! The simplest and fastest.
 
 #### Features
-<ul>
-<li>Flexible settings</li>
-<li>Meny params</li>
-<li>Promocodes</li>
-<li>Cross Browser Support</li>
-<li>Simple but Powerful admin panel (SPA)</li>
-<li>Dashboard</li>
-<li>Thumbnail & Multiple Images for Room</li>
-<li>Unlimited Room adding System</li>
-<li>Ready to use</li>
-<li>Realtime checkout calculations</li>
-<li>Email notifications</li>
-<li>Instant search</li>
-<li>Does not use dependencies</li>
-<li>and much more…</li>
-</ul>
+- Flexible settings
+- Meny params
+- Promocodes
+- Cross Browser Support
+- Powerful admin panel (SPA)
+- Dashboard
+- Thumbnail & Multiple Images for Room
+- Unlimited Room adding System
+- Ready to use
+- Realtime checkout calculations
+- Email notifications
+- Instant search
+- Does not use dependencies
+- and much more
 
 
 ## Installation
-TODO
+Like standard plugin in wordpress.
+
+
+## How to use
+After activation on plugin page. Go to hotel booking page and fill the data about your hotel. Create page Room Reservation and paste short code [hotel_booking]. That is all, enjoy =)
+
 
 ## Video Presentation
 TODO

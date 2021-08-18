@@ -199,10 +199,6 @@
     margin-bottom: .5rem !important;
 }
 
-#hotel-booking .form-group {
-    margin-bottom: 1rem;
-}
-
 #hotel-booking textarea {
     overflow: auto;
     resize: vertical;
@@ -310,56 +306,56 @@
     margin-left: -15px;
 }
 
-#hotel-booking .col, #hotel-booking .col-1, #hotel-booking .col-10, #hotel-booking .col-11, #hotel-booking .col-12, #hotel-booking .col-2, #hotel-booking .col-3, #hotel-booking .col-4, #hotel-booking .col-5, #hotel-booking .col-6, #hotel-booking .col-7, #hotel-booking .col-8, #hotel-booking .col-9, #hotel-booking .col-auto, #hotel-booking .col-lg, #hotel-booking .col-lg-1, #hotel-booking .col-lg-10, #hotel-booking .col-lg-11, #hotel-booking .col-lg-12, #hotel-booking .col-lg-2, #hotel-booking .col-lg-3, #hotel-booking .col-lg-4, #hotel-booking .col-lg-5, #hotel-booking .col-lg-6, #hotel-booking .col-lg-7, #hotel-booking .col-lg-8, #hotel-booking .col-lg-9, #hotel-booking .col-lg-auto, #hotel-booking .col-md, #hotel-booking .col-md-1, #hotel-booking .col-md-10, #hotel-booking .col-md-11, #hotel-booking .col-md-12, #hotel-booking .col-md-2, #hotel-booking .col-md-3, #hotel-booking .col-md-4, #hotel-booking .col-md-5, #hotel-booking .col-md-6, #hotel-booking .col-md-7, #hotel-booking .col-md-8, #hotel-booking .col-md-9, #hotel-booking .col-md-auto, #hotel-booking .col-sm, #hotel-booking .col-sm-1, #hotel-booking .col-sm-10, #hotel-booking .col-sm-11, #hotel-booking .col-sm-12, #hotel-booking .col-sm-2, #hotel-booking .col-sm-3, #hotel-booking .col-sm-4, #hotel-booking .col-sm-5, #hotel-booking .col-sm-6, #hotel-booking .col-sm-7, #hotel-booking .col-sm-8, #hotel-booking .col-sm-9, #hotel-booking .col-sm-auto, #hotel-booking .col-xl, #hotel-booking .col-xl-1, #hotel-booking .col-xl-10, #hotel-booking .col-xl-11, #hotel-booking .col-xl-12, #hotel-booking .col-xl-2, #hotel-booking .col-xl-3, #hotel-booking .col-xl-4, #hotel-booking .col-xl-5, #hotel-booking .col-xl-6, #hotel-booking .col-xl-7, #hotel-booking .col-xl-8, #hotel-booking .col-xl-9, #hotel-booking .col-xl-auto {
+#hotel-booking .col, #hotel-booking .col-1, #hotel-booking .col-10, #hotel-booking .col-11, #hotel-booking .col-12, #hotel-booking .col-2, #hotel-booking .col-3, #hotel-booking .col-4, #hotel-booking .col-5, #hotel-booking .col-6, #hotel-booking .col-7, #hotel-booking .col-8, #hotel-booking .col-9 {
     position: relative;
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
 }
 
-#hotel-booking .col-md-2 {
+#hotel-booking .col-2 {
     -ms-flex: 0 0 16.666667%;
     flex: 0 0 16.666667%;
     max-width: 16.666667%;
 }
 
-#hotel-booking .col-md-3 {
+#hotel-booking .col-3 {
     -ms-flex: 0 0 25%;
     flex: 0 0 25%;
     max-width: 25%;
 }
 
-#hotel-booking .col-md-4 {
+#hotel-booking .col-4 {
     -ms-flex: 0 0 33.333333%;
     flex: 0 0 33.333333%;
     max-width: 33.333333%;
 }
 
-#hotel-booking .col-md-5 {
+#hotel-booking .col-5 {
     -ms-flex: 0 0 41.666667%;
     flex: 0 0 41.666667%;
     max-width: 41.666667%;
 }
 
-#hotel-booking .col-md-6 {
+#hotel-booking .col-6 {
     -ms-flex: 0 0 50%;
     flex: 0 0 50%;
     max-width: 50%;
 }
 
-#hotel-booking .col-md-7 {
+#hotel-booking .col-7 {
     -ms-flex: 0 0 58.333333%;
     flex: 0 0 58.333333%;
     max-width: 58.333333%;
 }
 
-#hotel-booking .col-md-8 {
+#hotel-booking .col-8 {
     -ms-flex: 0 0 66.666667%;
     flex: 0 0 66.666667%;
     max-width: 66.666667%;
 }
 
-#hotel-booking .col-md-9 {
+#hotel-booking .col-9 {
     -ms-flex: 0 0 75%;
     flex: 0 0 75%;
     max-width: 75%;
