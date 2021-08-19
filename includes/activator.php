@@ -46,7 +46,7 @@ class HotelBooking_Activator
             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}hb_orders` (`room`, `start_date`, `end_date`, `fullname`, `email`, `tel`, `noty`, `status`, `is_paid`, `cost`, `guest`) VALUES
-                 ('103', '$start_date', '$end_date', 'John Dou', 'john@mail.com', '99999999', 'i like sleep', 'Ready', 1, '1000', '1');",
+                 ('103', '$start_date', '$end_date', 'John Dou', 'john@mail.com', '99999999', 'i like sleep', 'New', 1, '1000', '1');",
 
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_rooms` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,

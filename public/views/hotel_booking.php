@@ -15,7 +15,6 @@
         </div>
     </div>
 
-
     <div class="row mb-3">
         <div class="col-5">
             <input id="input-id" v-model="date_range" type="text" class="form-control text-center" :placeholder="message.arrival_date+' - '+message.departure_date" required>
