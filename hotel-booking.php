@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Hotel Booking Xfor
-Plugin URI: https://github.com/utz0r2/hotel-booking-xfor
+Plugin Name: Hotel Booking by Xfor
+Plugin URI: https://github.com/utz0r2/hotel-booking
 Author: Igor Veselov
-Text Domain: hotel-booking-xfor
-Domain Path: hotel-booking-xfor
+Text Domain: hotel-booking
+Domain Path: hotel-booking
 Description: Plugin Hotel booking. Ideal solution for creating your own hotel's booking system.
 Version: 0.1.0
 Author URI: https://xfor.top/en
