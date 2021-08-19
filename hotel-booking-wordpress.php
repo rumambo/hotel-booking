@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Hotel Booking
+Plugin Name: Hotel Booking Wordpress
 Plugin URI: https://github.com/utz0r2/hotel-booking-wordpress
 Author: Igor Veselov
 Text Domain: hotel-booking-wordpress
