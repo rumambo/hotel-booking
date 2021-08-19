@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Hotel Booking
-Plugin URI: https://github.com/utz0r2/hotel-booking
+Plugin URI: https://github.com/utz0r2/hotel-booking-wordpress
 Author: Igor Veselov
-Text Domain: hotel-booking
-Domain Path: hotel-booking
+Text Domain: hotel-booking-wordpress
+Domain Path: hotel-booking-wordpress
 Description: Plugin Hotel booking. Ideal solution for creating your own hotel's booking system.
 Version: 0.1.0
 Author URI: https://xfor.top/en
