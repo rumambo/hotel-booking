@@ -29,7 +29,8 @@ After activation on plugin page. Go to hotel booking page and fill the data abou
 
 
 ## Video Presentation
-TODO
+[![Watch the video](https://img.youtube.com/vi/cFf2_BGcI1E/0.jpg)](https://www.youtube.com/watch?v=cFf2_BGcI1E)
+
 
 ## Screenshots
 <kbd><img src="https://i.imgur.com/4fwXrnh.png" alt="front" width="100%"/></kbd><br/><br/>
