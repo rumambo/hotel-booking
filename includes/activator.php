@@ -1,13 +1,20 @@
 <?php
+/**
+ *=====================================================
+ * @author Hotel Booking by Xfor.top
+ *=====================================================
+ **/
 
-class HotelBooking_Activator
+namespace XFOR_HB_Activator;
+
+class HotelBOokingActivator
 {
 
     public static function activate(): void
     {
 
         $admin = get_role('administrator');
-        $admin->add_cap('hb_options');
+        $admin->add_cap('xfor_options');
 
         // create tables
         global $wpdb;
@@ -29,7 +36,7 @@ class HotelBooking_Activator
 
         $table_schema = [
 
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_orders` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}xfor_orders` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `room` varchar(250) DEFAULT NULL,
                 `start_date` date DEFAULT NULL,
@@ -45,10 +52,10 @@ class HotelBooking_Activator
                 PRIMARY KEY (`id`)
             ) $collate;",
 
-            "INSERT INTO `{$wpdb->prefix}hb_orders` (`room`, `start_date`, `end_date`, `fullname`, `email`, `tel`, `noty`, `status`, `is_paid`, `cost`, `guest`) VALUES
+            "INSERT INTO `{$wpdb->prefix}xfor_orders` (`room`, `start_date`, `end_date`, `fullname`, `email`, `tel`, `noty`, `status`, `is_paid`, `cost`, `guest`) VALUES
                  ('103', '$start_date', '$end_date', 'John Dou', 'john@mail.com', '99999999', 'i like sleep', 'New', 1, '1000', '1');",
 
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_rooms` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}xfor_rooms` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
                 `name` varchar(250) DEFAULT NULL,
                 `type_id` smallint(6) DEFAULT NULL,
@@ -57,13 +64,13 @@ class HotelBooking_Activator
                 PRIMARY KEY (`id`)
             ) $collate;",
 
-            "INSERT INTO `{$wpdb->prefix}hb_rooms` (`name`, `type_id`, `status`, `cleaner`) VALUES
+            "INSERT INTO `{$wpdb->prefix}xfor_rooms` (`name`, `type_id`, `status`, `cleaner`) VALUES
                     (101, 1, 1, 'Ready'),
                     (201, 2, 1, 'Cleaning'),
                     (102, 1, 1, 'Dirty'),
                     (103, 1, 1, 'Ready');",
 
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_room_types` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}xfor_room_types` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
                 `title` varchar(250) DEFAULT NULL,
                 `images` text DEFAULT NULL,
@@ -77,12 +84,12 @@ class HotelBooking_Activator
                 PRIMARY KEY (`id`)
             ) $collate;",
 
-            "INSERT INTO `{$wpdb->prefix}hb_room_types` (`title`, `images`, `area`, `capacity`, `desc`, `comfort_list`, `add_services_list`, `shortcode`, `capacity_desc`) VALUES
+            "INSERT INTO `{$wpdb->prefix}xfor_room_types` (`title`, `images`, `area`, `capacity`, `desc`, `comfort_list`, `add_services_list`, `shortcode`, `capacity_desc`) VALUES
                     ('Standart room', '', 32, '{\"1\":\"100\",\"1 + 1\":\"\",\"1 + 2\":\"160\",\"1 + 3\":\"180\"}', 'The standard double rooms with a double bed or twin beds are simple and functional, tastefully furnished. The rooms offer views of the quiet courtyard.', 'Wifi,Safe,Slippers,Bathrobe,Conditioner,TV,Balcony,Hair dryer,Refrigerator', 'Transfer,Massage,Dinner,Supper', 'STN', '1 man 2 add place'),
 ('De luxe suite', '', 64, '{\"1\":\"130\",\"1 + 1\":\"\",\"1 + 2\":\"\",\"1 + 3\":\"\"}', 'Description', 'Wifi,Slippers,Conditioner,TV,Refrigerator,Balcony', 'Transfer,Dinner', 'LUX', '2 man 2 add place');",
 
 
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_room_types_images` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}xfor_room_types_images` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
                 `images` text DEFAULT NULL,
                 `type_id` tinyint(4) DEFAULT NULL,
@@ -90,14 +97,14 @@ class HotelBooking_Activator
             ) $collate;",
 
 
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}hb_settings` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}xfor_settings` (
                 `id` tinyint(4) NOT NULL AUTO_INCREMENT,
                 `param` varchar(20) DEFAULT NULL,
                 `value` text DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) $collate;",
 
-            "INSERT INTO `{$wpdb->prefix}hb_settings` (`param`, `value`) VALUES
+            "INSERT INTO `{$wpdb->prefix}xfor_settings` (`param`, `value`) VALUES
                  ('ROOM_STATUSES', 'Ready,Cleaning,Dirty'),                  
                  ('BOOKING_STATUS', 'New,Confirmed,Arrived,Freed'),
                  ('COMFORTS_LIST', 'Wifi,Conditioner,Refrigerator,Safe,Bathrobe,Hair dryer,Slippers,TV,Balcony'),

@@ -16,13 +16,13 @@ const store = new Vuex.Store({
     mutations: {
         getSettings(state) {
             axios
-                .get(ajaxurl + '?action=hb_get_settings')
+                .get(ajaxurl + '?action=xfor_get_settings')
                 .then(response => (state.settings = response.data))
                 .catch(error => console.log(error));
         },
         storeSettings(state) {
             axios
-                .post(ajaxurl + '?action=hb_store_settings', Qs.stringify(state.settings))
+                .post(ajaxurl + '?action=xfor_store_settings', Qs.stringify(state.settings))
                 .then(response => state.settings = response.data)
                 .catch(error => console.log(error));
         },
@@ -35,7 +35,7 @@ const store = new Vuex.Store({
         getRooms(state) {
             if (state.rooms.length === 0) {
                 axios
-                    .get(ajaxurl + '?action=hb_get_rooms')
+                    .get(ajaxurl + '?action=xfor_get_rooms')
                     .then(response => (state.rooms = response.data))
                     .catch(error => console.log(error));
             }
@@ -43,14 +43,14 @@ const store = new Vuex.Store({
         getRoomTypes(state) {
             if (state.roomtypes.length === 0) {
                 axios
-                    .get(ajaxurl + '?action=hb_get_room_types')
+                    .get(ajaxurl + '?action=xfor_get_room_types')
                     .then(response => (state.roomtypes = response.data))
                     .catch(error => console.log(error));
             }
         },
         addRoomType(state, tmp) {
             axios
-                .post(ajaxurl + '?action=hb_add_room_type', Qs.stringify(tmp))
+                .post(ajaxurl + '?action=xfor_add_room_type', Qs.stringify(tmp))
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -60,7 +60,7 @@ const store = new Vuex.Store({
         },
         editRoomType(state, tmp) {
             axios
-                .post(ajaxurl + '?action=hb_edit_room_type', Qs.stringify(tmp))
+                .post(ajaxurl + '?action=xfor_edit_room_type', Qs.stringify(tmp))
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -70,7 +70,7 @@ const store = new Vuex.Store({
         },
         delRoomType(state, id) {
             axios
-                .post(ajaxurl + '?action=hb_del_room_type', Qs.stringify({id: id}))
+                .post(ajaxurl + '?action=xfor_del_room_type', Qs.stringify({id: id}))
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -79,7 +79,7 @@ const store = new Vuex.Store({
         },
         addRoom(state, tmp) {
             axios
-                .post(ajaxurl + '?action=hb_add_room', Qs.stringify(tmp))
+                .post(ajaxurl + '?action=xfor_add_room', Qs.stringify(tmp))
                 .then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
         },
@@ -88,7 +88,7 @@ const store = new Vuex.Store({
         },
         // delRoom(state, {id}) {
         //     axios
-        //         .post(ajaxurl + '?action=hb_delete_room', Qs.stringify({'id':id}))
+        //         .post(ajaxurl + '?action=xfor_delete_room', Qs.stringify({'id':id}))
         //         // .then(response => state.settings = response.data)
         //         .catch(error => console.log(error));
         // },
@@ -147,11 +147,9 @@ const Dashboard = {
         scheduler.xy.scale_height = 30;
         scheduler.config.details_on_create = true;
         scheduler.config.details_on_dblclick = true;
-        //scheduler.config.prevent_cache = true;
         scheduler.config.show_loading = true;
         scheduler.config.buttons_left = ["dhx_delete_btn"];
         scheduler.config.buttons_right = ["dhx_save_btn", "dhx_cancel_btn"];
-        //scheduler.config.drag_lightbox = false;
 
         var roomsArr = scheduler.serverList("room");
         var roomTypesArr = scheduler.serverList("roomType");
@@ -216,9 +214,6 @@ const Dashboard = {
         }
 
         function getRoomType(key) {
-
-            // console.log(key);
-
             return findInArray(roomTypesArr, key).label;
         }
 
@@ -243,11 +238,6 @@ const Dashboard = {
                 "</div>"].join("");
         };
 
-        // scheduler.date.timeline_start = scheduler.date.month_start;
-        // scheduler.date.add_timeline = function (date, step) {
-        //     return scheduler.date.add(date, step, "month");
-        // };
-
         scheduler.attachEvent("onBeforeViewChange", function (old_mode, old_date, mode, date) {
             var year = date.getFullYear();
             var month = (date.getMonth() + 1);
@@ -262,10 +252,10 @@ const Dashboard = {
             return "event_" + (event.status || "");
         };
 
-        function getBookingStatus(key) {
-            var bookingStatus = findInArray(bookingStatusesArr, key);
-            return !bookingStatus ? '' : bookingStatus.label;
-        }
+        // function getBookingStatus(key) {
+        //     var bookingStatus = findInArray(bookingStatusesArr, key);
+        //     return !bookingStatus ? '' : bookingStatus.label;
+        // }
 
         function getPaidStatus(isPaid) {
             return isPaid ? "💶" : "";
@@ -273,21 +263,14 @@ const Dashboard = {
 
         var eventDateFormat = scheduler.date.date_to_str("%d %M %Y");
         scheduler.templates.event_bar_text = function (start, end, event) {
-            // return '';
             var paidStatus = getPaidStatus(event.is_paid);
-            var startDate = eventDateFormat(event.start_date);
-            var endDate = eventDateFormat(event.end_date);
             return [event.text + "<br />",
-                // startDate + " - " + endDate,
-                // "<div class='booking_status booking-option'>" + getBookingStatus(event.status) + "</div>",
                 "<div class='booking_paid booking-option'>" + paidStatus + "</div>"].join("");
         };
 
         scheduler.templates.tooltip_text = function (start, end, event) {
-            var room = getRoom(event.room) || { label: "" };
-
+            var room = getRoom(event.room) || {label: ""};
             var html = [];
-            // html.push("Booking: <b>" + event.text + "</b>");
             html.push("Room: <b>" + room.label + "</b>");
             html.push("Check-in: <b>" + eventDateFormat(start) + "</b>");
             html.push("Check-out: <b>" + eventDateFormat(end) + "</b>");
@@ -315,11 +298,10 @@ const Dashboard = {
             var ev = scheduler.getEvent(event_id);
             ev.status = 1;
             ev.is_paid = false;
-            // ev.text = 'New booking';
             ev.text = '';
         });
 
-        scheduler.addMarkedTimespan({ days: [0, 6], zones: "fullday", css: "timeline_weekend" });
+        scheduler.addMarkedTimespan({days: [0, 6], zones: "fullday", css: "timeline_weekend"});
 
         window.showRooms = function showRooms(value) {
             var currentRoomsArr = [];
@@ -338,8 +320,6 @@ const Dashboard = {
         scheduler.attachEvent("onLoadEnd", function () {
             showRooms("all");
 
-            // console.log(roomTypesArr);
-
             var select = document.getElementById("room_filter");
             var selectHTML = ["<option value='all'>All</option>"];
             for (var i = 0; i < roomTypesArr.length; i++) {
@@ -356,26 +336,12 @@ const Dashboard = {
             }
             return true;
         });
-/*        var dhxMessageConfig = {
-            position: "top-right",
-            text: "Changes saved in the database",
-            expire: 1500,
-            node: "scheduler_here"
-        };
-
-        scheduler.attachEvent("onEventChanged", function (id, ev) {
-            dhx.message(dhxMessageConfig);
-        });
-
-        scheduler.attachEvent("onEventDeleted", function (id, ev) {
-            dhx.message(dhxMessageConfig);
-        });*/
 
         scheduler.clearAll();
         scheduler.init('scheduler_here', new Date(), "timeline");
-        scheduler.load(ajaxurl + "?action=hb_get_data", "json");
+        scheduler.load(ajaxurl + "?action=xfor_dashboard", "json");
         if (typeof window.dp == 'undefined') {
-            window.dp = new dataProcessor(ajaxurl + "?action=hb_get_data");
+            window.dp = new dataProcessor(ajaxurl + "?action=xfor_dashboard");
             dp.init(scheduler);
             // disable style updates on add/upd/del
             dp.styles = "";
@@ -479,7 +445,7 @@ const AddRoomType = {
     data() {
         return {
             files: [],
-            postAction: ajaxurl+'?action=hb_upload_images',
+            postAction: ajaxurl + '?action=xfor_upload_images',
             tmpRoomType: {
                 id: null,
                 shortcode: '',
@@ -512,7 +478,7 @@ const AddRoomType = {
 
                     this.files = [];
 
-                    if ( this.$route.params.id !== undefined ) {
+                    if (this.$route.params.id !== undefined) {
                         this.getRoomType();
 
                     } else {
@@ -548,24 +514,23 @@ const AddRoomType = {
             let id = this.$route.params.id;
 
             axios
-                .post(ajaxurl + '?action=hb_get_room_type', Qs.stringify({id: id}))
+                .post(ajaxurl + '?action=xfor_get_room_type', Qs.stringify({id: id}))
                 .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
         },
-        getRoomTypeImages () {
+        getRoomTypeImages() {
             axios
-                .post(ajaxurl + '?action=hb_get_room_type_images')
+                .post(ajaxurl + '?action=xfor_get_room_type_images')
                 .then(response => (this.tmpRoomType.images = response.data))
                 .catch(error => console.log(error));
         },
         deletePhoto(index) {
-            if ( this.$route.params.id !== undefined ) {
-                var id = this.$route.params.id
-            } else {
-                var id = 0;
+            var id = 0;
+            if (this.$route.params.id !== undefined) {
+                id = this.$route.params.id
             }
             axios
-                .post(ajaxurl + '?action=hb_delete_image', Qs.stringify({id: id, index: index}))
+                .post(ajaxurl + '?action=xfor_delete_image', Qs.stringify({id: id, index: index}))
                 // .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
 
@@ -573,11 +538,8 @@ const AddRoomType = {
         },
     },
     mounted: function () {
-        if ( this.$route.params.id !== undefined ) {
-            // console.log( this.$route.params.id );
-
+        if (this.$route.params.id !== undefined) {
             this.tmpRoomType.id = this.$route.params.id
-
             this.getRoomType();
         } else {
             this.getRoomTypeImages();
@@ -703,10 +665,9 @@ const Rooms = {
             jQuery('#TB_closeWindowButton').click();
         },
         delRoom(id, index0, index1) {
-            // this.$store.dispatch("delRoom", {id});
 
             axios
-                .post(ajaxurl + '?action=hb_delete_room', Qs.stringify({'id': id}))
+                .post(ajaxurl + '?action=xfor_delete_room', Qs.stringify({'id': id}))
                 //.then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
 
@@ -715,7 +676,7 @@ const Rooms = {
         },
         switchRoomStatus(id, status) {
             axios
-                .post(ajaxurl + '?action=hb_switch_room_status', Qs.stringify({'id': id, 'status': status}))
+                .post(ajaxurl + '?action=xfor_switch_room_status', Qs.stringify({'id': id, 'status': status}))
                 //.then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
         },
@@ -724,7 +685,7 @@ const Rooms = {
             // console.log(id, cleaner)
 
             axios
-                .post(ajaxurl + '?action=hb_update_room', Qs.stringify({'id': id, 'cleaner': cleaner}))
+                .post(ajaxurl + '?action=xfor_update_room', Qs.stringify({'id': id, 'cleaner': cleaner}))
                 //.then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
 
@@ -825,7 +786,7 @@ const Orders = {
     methods: {
         delOrder(id, index) {
             axios
-                .post(ajaxurl + '?action=hb_delete_order', Qs.stringify({'id': id}))
+                .post(ajaxurl + '?action=xfor_delete_order', Qs.stringify({'id': id}))
                 // .then(response => state.settings = response.data)
                 .catch(error => console.log(error));
 
@@ -833,7 +794,7 @@ const Orders = {
         },
         getOrder() {
             axios
-                .get(ajaxurl + '?action=hb_get_orders')
+                .get(ajaxurl + '?action=xfor_get_orders')
                 .then(response => (this.orders = response.data))
                 .catch(error => console.log(error));
         },
@@ -897,9 +858,6 @@ const Settings = {
             tmpCur: {},
             tmpPromo: {},
         }
-    },
-    mounted() {
-
     },
     methods: {
         changeData() {

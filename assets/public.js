@@ -60,10 +60,9 @@ Vue.component('modal0', {
     },
     methods: {
         submit() {
-            // this.errors = {};
-            axios.post(ajaxurl + '?action=hb_check', this.fields).then(response => {
+
+            axios.post(ajaxurl + '?action=xfor_check', this.fields).then(response => {
                 document.getElementById('check_result').innerHTML = '<div class="mt-3">' + response.data + '</div>';
-                // console.log(response.data);
             }).catch(error => {
                 if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
@@ -157,7 +156,7 @@ Vue.component('modal1', {
             this.booking.guest = this.selected_guest;
 
             this.errors = {};
-            axios.post(ajaxurl + '?action=hb_send', this.booking)
+            axios.post(ajaxurl + '?action=xfor_send', this.booking)
                 .then(function (response) {
                     console.log(response.data);
                     window.document.getElementsByClassName('modal-content')[0].innerHTML = '<div class="text-center p-5"><h1 >' + Vue.prototype.message.order_success + '</h1> <a class="btn btn-success" style="text-decoration:none" href="">' + Vue.prototype.message.back + '</a><br/><br/></div>';
@@ -314,8 +313,7 @@ const booking = new Vue({
     },
     mounted() {
 
-        axios.get(ajaxurl + '?action=hb_get').then(response => {
-            // console.log(response.data);
+        axios.get(ajaxurl + '?action=xfor_get').then(response => {
             this.rooms = response.data.rooms;
             this.currencies = response.data.currencies;
         }).catch(error => {
@@ -345,16 +343,12 @@ const booking = new Vue({
             this.showModalBooking = true;
             this.selected_room_type = room.name;
             this.selected_room_type_id = room.id;
-            // this.bookingImage = room.images[0].name;
             this.selected_arrival = window.document.getElementById('time_' + room.id).value;
             this.selected_breakfast = window.document.getElementById('breakfast_' + room.id).value;
             this.selected_parking = window.document.getElementById('parking_' + room.id).value;
             this.add_services_list = room.add_services;
             this.selected_cost = window.document.getElementById('guest_' + room.id).value;
             this.selected_guest = window.document.getElementById('guest_' + room.id).options[window.document.getElementById('guest_' + room.id).selectedIndex].text;
-            // this.selected_days = this.selected_days;
-            // this.selected_datestart = selected_datestart;
-            // this.selected_dateend = selected_dateend;
         },
         getCurrencySign() {
             for (var i = 0; i < this.currencies.length; i++) {
@@ -371,10 +365,6 @@ const booking = new Vue({
             }
         },
         search() {
-            // console.log(event);
-            console.log(this.date_range);
-            console.log(this.promocode);
-
             let data = {
                 'range': this.date_range,
                 'promocode': this.promocode,
@@ -382,8 +372,7 @@ const booking = new Vue({
 
             this.showLoader = true
 
-            axios.post(ajaxurl + '?action=hb_get', data).then(response => {
-                // console.log(response.data);
+            axios.post(ajaxurl + '?action=xfor_get', data).then(response => {
                 this.rooms = response.data.rooms;
                 this.showLoader = false
             }).catch(error => {
@@ -402,18 +391,16 @@ const booking = new Vue({
             this.selected_dateend = dateRange[1];
         },
         showLightbox(imageName, index) {
-            // console.log(imageName.name, index);
             this.$refs.lightbox[index].show(imageName);
         },
         initDatePicker() {
-            datepicker = new HotelDatepicker(document.getElementById('input-id'), {
+            return new HotelDatepicker(document.getElementById('input-id'), {
                 format: 'DD.MM.YYYY',
                 startOfWeek: 'monday',
                 showTopbar: false,
                 selectForward: true,
                 i18n: this.datepicker_lang,
             });
-            return datepicker;
         },
         changeGuest: function (e, item) {
             this.$refs.cost[item].innerText = e.target.value;

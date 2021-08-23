@@ -1,8 +1,8 @@
 === Hotel Booking by Xfor ===
 Tags: room reservation, hotel booking
-Requires at least: 4.7
-Tested up to: 5.4
-Stable tag: 0.1.0
+Requires at least: 5.0
+Tested up to: 5.8
+Stable tag: 0.1.1
 Requires PHP: 7.0
 License: MIT
 License URI: http://opensource.org/licenses/MIT
@@ -36,15 +36,18 @@ An answer to that question.
 
 == Screenshots ==
 
-1.png
-2.png
-3.png
-4.png
-5.png
-6.png
-7.png
+screenshots/1.png
+screenshots/2.png
+screenshots/3.png
+screenshots/4.png
+screenshots/5.png
+screenshots/6.png
+screenshots/7.png
 
 == Changelog ==
+
+= 0.1.1 =
+* refactor to wordpress catalog, fix some issue
 
 = 0.1.0 =
 * Ready to product

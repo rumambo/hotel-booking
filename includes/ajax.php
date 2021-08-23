@@ -1,32 +1,43 @@
 <?php
+/**
+ *=====================================================
+ * @author Hotel Booking by Xfor.top
+ *=====================================================
+ **/
 
-// Dashboard
-function hb_get_data()
+use XFOR_Helper\Helper;
+
+
+/**
+ * Dashboard
+ */
+function xfor_dashboard()
 {
     global $wpdb;
 
     if (isset($_POST['ids'])) {
 
-        $command = helper::parseRequestArguments($_POST);
+        $command = Helper::parseRequestArguments($_POST);
 
         switch ($command['action']) {
             case 'inserted':
-                helper::insertEvent($wpdb, $command['event']);
+                Helper::insertEvent($wpdb, $command['event']);
                 break;
             case 'updated':
-                helper::updateEvent($wpdb, $command['event']);
+                Helper::updateEvent($wpdb, $command['event']);
                 break;
             case 'deleted':
-                helper::deleteEvent($wpdb, $command['event']);
+                Helper::deleteEvent($wpdb, $command['event']);
+                break;
+            default:
                 break;
         }
 
-        $data = [
+        echo json_encode([
             'action' => $command['action'],
             'tid' => $command['event']['id'],
             'sid' => $command['event']['id'],
-        ];
-        echo json_encode($data);
+        ]);
         die();
     }
 
@@ -38,14 +49,14 @@ function hb_get_data()
 
     // settings
     $settings = [];
-    $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}hb_settings", ARRAY_A);
+    $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}xfor_settings", ARRAY_A);
     foreach ($result as $row) {
         $settings[$row['param']] = $row['value'];
     }
     unset($result);
 
     // data
-    $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}hb_orders", ARRAY_A);
+    $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}xfor_orders", ARRAY_A);
     foreach ($result as $row) {
         $row['is_paid'] = (int)$row['is_paid'] !== 0;
         $data['data'][] = $row;
@@ -57,7 +68,7 @@ function hb_get_data()
         SELECT DISTINCT 
                a.id, a.id as value, 
                a.shortcode as label 
-        FROM {$wpdb->prefix}hb_room_types a, {$wpdb->prefix}hb_rooms as b
+        FROM {$wpdb->prefix}xfor_room_types a, {$wpdb->prefix}xfor_rooms as b
         WHERE a.id = b.type_id AND b.status = 1
         ",
         ARRAY_A);
@@ -86,12 +97,8 @@ function hb_get_data()
 
     // room
     $result = $wpdb->get_results("
-        SELECT
-            name as value,
-            name as label,
-            type_id,
-            cleaner as status
-        FROM {$wpdb->prefix}hb_rooms
+        SELECT name as value, name as label, type_id, cleaner as status
+        FROM {$wpdb->prefix}xfor_rooms
         WHERE `status` = 1
         ORDER BY name ASC, type_id ASC
     ", ARRAY_A);
@@ -100,22 +107,17 @@ function hb_get_data()
     }
     unset($result);
 
-//    echo '<pre>';
-//    print_R($data);
-//    echo '</pre>';
-//    die();
-
-//    header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
-
 }
-add_action('wp_ajax_hb_get_data', 'hb_get_data');
+
+add_action('wp_ajax_xfor_dashboard', 'xfor_dashboard');
 
 
-
-// Rooms
-function hb_get_rooms()
+/**
+ * Rooms
+ */
+function xfor_get_rooms()
 {
 
     global $wpdb;
@@ -126,7 +128,7 @@ function hb_get_rooms()
     // roomType
     $result = $wpdb->get_results("
         SELECT id, title
-        FROM {$wpdb->prefix}hb_room_types",
+        FROM {$wpdb->prefix}xfor_room_types",
         ARRAY_A);
     foreach ($result as $row) {
         $data[$row['title'] . '|' . $row['id']] = [];
@@ -136,126 +138,124 @@ function hb_get_rooms()
 
     // room
     $result = $wpdb->get_results("
-        SELECT * FROM {$wpdb->prefix}hb_rooms
+        SELECT * FROM {$wpdb->prefix}xfor_rooms
     ", ARRAY_A);
     foreach ($result as $row) {
         $type_title = $types[$row['type_id']];
+        $title_and_id = $type_title . '|' . $row['type_id'];
 
-        $data[$type_title . '|' . $row['type_id']][$row['id']]['id'] = $row['id'];
-        $data[$type_title . '|' . $row['type_id']][$row['id']]['name'] = $row['name'];
-        $data[$type_title . '|' . $row['type_id']][$row['id']]['type_id'] = $row['type_id'];
-        $data[$type_title . '|' . $row['type_id']][$row['id']]['type'] = $type_title;
-        $data[$type_title . '|' . $row['type_id']][$row['id']]['status'] = $row['status'];
-        $data[$type_title . '|' . $row['type_id']][$row['id']]['cleaner'] = $row['cleaner'];
+        $data[$title_and_id][$row['id']]['id'] = $row['id'];
+        $data[$title_and_id][$row['id']]['name'] = $row['name'];
+        $data[$title_and_id][$row['id']]['type_id'] = $row['type_id'];
+        $data[$title_and_id][$row['id']]['type'] = $type_title;
+        $data[$title_and_id][$row['id']]['status'] = $row['status'];
+        $data[$title_and_id][$row['id']]['cleaner'] = $row['cleaner'];
     }
     unset($result);
 
-//    echo '<pre>';
-//    print_r($data);
-//    echo '</pre>';
-//    die();
-
-    header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
-
 }
-add_action('wp_ajax_hb_get_rooms', 'hb_get_rooms');
 
-function hb_add_room()
+add_action('wp_ajax_xfor_get_rooms', 'xfor_get_rooms');
+
+
+/**
+ * Room Add
+ */
+function xfor_add_room()
 {
     global $wpdb;
 
     if (is_admin()) {
-//        print_r($_POST);
-        $wpdb->insert("{$wpdb->prefix}hb_rooms", [
-            'name' => $_POST['name'],
+        $wpdb->insert("{$wpdb->prefix}xfor_rooms", [
+            'name' => sanitize_text_field($_POST['name']),
             'type_id' => (int)$_POST['type_id'],
-            'cleaner' => $_POST['cleaner'],
+            'cleaner' => sanitize_text_field($_POST['cleaner']),
             'status' => (int)$_POST['status'],
         ]);
     }
 
-    echo hb_get_rooms();
+    xfor_get_rooms();
     die();
 }
-add_action('wp_ajax_hb_add_room', 'hb_add_room');
 
-function hb_delete_room()
+add_action('wp_ajax_xfor_add_room', 'xfor_add_room');
+
+
+/**
+ * Room Delete
+ */
+function xfor_delete_room()
 {
     global $wpdb;
 
-//    print_r($_POST);
-//    die();
-
     if (is_admin()) {
-        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['id' => (int)$_POST['id']]);
+        $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['id' => (int)$_POST['id']]);
     }
 
     echo 1;
     die();
 }
-add_action('wp_ajax_hb_delete_room', 'hb_delete_room');
 
-function hb_switch_room_status()
+add_action('wp_ajax_xfor_delete_room', 'xfor_delete_room');
+
+
+/**
+ * Room Switch status
+ */
+function xfor_switch_room_status()
 {
     global $wpdb;
 
-    $id = (int)$_POST['id'];
     $status = (int)$_POST['status'] === 1 ? 0 : 1;
 
-//    print_r($_POST);
-//    die();
-
     if (is_admin()) {
-
-        $wpdb->update("{$wpdb->prefix}hb_rooms",
+        $wpdb->update("{$wpdb->prefix}xfor_rooms",
             ['status' => $status],
-            ['id' => $id]
+            ['id' => (int)$_POST['id']]
         );
-
     }
 
-    echo $status;
+    echo esc_html($status);
     die();
 }
-add_action('wp_ajax_hb_switch_room_status', 'hb_switch_room_status');
 
-function hb_update_room()
+add_action('wp_ajax_xfor_switch_room_status', 'xfor_switch_room_status');
+
+
+/**
+ * Room Update
+ */
+function xfor_update_room()
 {
     global $wpdb;
 
-    $id = (int)$_POST['id'];
-    $cleaner = sanitize_text_field($_POST['cleaner']);
-
-//    print_r($_POST);
-//    die();
-
     if (is_admin()) {
-
-        $wpdb->update("{$wpdb->prefix}hb_rooms",
-            ['cleaner' => $cleaner],
-            ['id' => $id]
+        $wpdb->update("{$wpdb->prefix}xfor_rooms",
+            ['cleaner' => sanitize_text_field($_POST['cleaner'])],
+            ['id' => (int)$_POST['id']]
         );
-
     }
 
     echo 1;
     die();
 }
-add_action('wp_ajax_hb_update_room', 'hb_update_room');
+
+add_action('wp_ajax_xfor_update_room', 'xfor_update_room');
 
 
-
-// Orders
-function hb_get_orders()
+/**
+ * Orders
+ */
+function xfor_get_orders()
 {
 
     global $wpdb;
 
     $result = $wpdb->get_results("
         SELECT *
-        FROM {$wpdb->prefix}hb_orders
+        FROM {$wpdb->prefix}xfor_orders
         ORDER BY id DESC",
         ARRAY_A);
 
@@ -265,44 +265,44 @@ function hb_get_orders()
     }
     unset($result);
 
-//    echo '<pre>';
-//    print_r($data);
-//    echo '</pre>';
-//    die();
-
-    header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
-
 }
-add_action('wp_ajax_hb_get_orders', 'hb_get_orders');
 
-function hb_delete_order()
+add_action('wp_ajax_xfor_get_orders', 'xfor_get_orders');
+
+
+/**
+ * Order Delete
+ */
+function xfor_delete_order()
 {
     global $wpdb;
 
     if (is_admin()) {
-        $wpdb->delete("{$wpdb->prefix}hb_orders", ['id' => (int)$_POST['id']]);
+        $wpdb->delete("{$wpdb->prefix}xfor_orders", ['id' => (int)$_POST['id']]);
     }
 
     echo 1;
     die();
 }
-add_action('wp_ajax_hb_delete_order', 'hb_delete_order');
+
+add_action('wp_ajax_xfor_delete_order', 'xfor_delete_order');
 
 
-
-// Room Types
-function hb_get_room_types()
+/**
+ * Room Types
+ */
+function xfor_get_room_types()
 {
 
     global $wpdb;
 
     $result = $wpdb->get_results("
         SELECT *
-        FROM {$wpdb->prefix}hb_room_types
+        FROM {$wpdb->prefix}xfor_room_types
         ORDER BY id ASC",
-    ARRAY_A);
+        ARRAY_A);
 
     $data = [];
     foreach ($result as $row) {
@@ -316,48 +316,45 @@ function hb_get_room_types()
     }
     unset($result);
 
-//    echo '<pre>';
-//    print_r($data);
-//    echo '</pre>';
-//    die();
-
-    header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
 
 }
-add_action('wp_ajax_hb_get_room_types', 'hb_get_room_types');
 
-function hb_add_room_type()
+add_action('wp_ajax_xfor_get_room_types', 'xfor_get_room_types');
+
+
+/**
+ * Room Type Add
+ */
+function xfor_add_room_type()
 {
     global $wpdb;
 
-    $shortcode = sanitize_text_field($_POST['shortcode']);
-    $title = sanitize_text_field($_POST['title']);
-    $area = sanitize_text_field($_POST['area']);
-    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
-    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
-    $capacity = json_encode($_POST['price']);
-    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
-    $desc = sanitize_text_field($_POST['desc']);
+    if (is_admin()) {
+        $wpdb->insert("{$wpdb->prefix}xfor_room_types", [
+            'title' => sanitize_text_field($_POST['title']),
+            'area' => sanitize_text_field($_POST['area']),
+            'capacity' => json_encode($_POST['price']),
+            'desc' => sanitize_text_field($_POST['desc']),
+            'comfort_list' => sanitize_text_field(implode(',', $_POST['comfort_list'])),
+            'add_services_list' => sanitize_text_field(implode(',', $_POST['add_services'])),
+            'shortcode' => sanitize_text_field($_POST['shortcode']),
+            'capacity_desc' => sanitize_text_field($_POST['capacity_text']),
+        ]);
+    }
 
-    $wpdb->insert("{$wpdb->prefix}hb_room_types", [
-        'title' => $title,
-        'area' => $area,
-        'capacity' => $capacity,
-        'desc' => $desc,
-        'comfort_list' => $comfort_list,
-        'add_services_list' => $add_services,
-        'shortcode' => $shortcode,
-        'capacity_desc' => $capacity_desc,
-    ]);
-
-    echo hb_get_room_types();
+    xfor_get_room_types();
     die();
 }
-add_action('wp_ajax_hb_add_room_type', 'hb_add_room_type');
 
-function hb_del_room_type()
+add_action('wp_ajax_xfor_add_room_type', 'xfor_add_room_type');
+
+
+/**
+ * Room Type Delete
+ */
+function xfor_del_room_type()
 {
     global $wpdb;
 
@@ -367,27 +364,32 @@ function hb_del_room_type()
 
         $row = $wpdb->get_row("
             SELECT images 
-            FROM {$wpdb->prefix}hb_room_types
+            FROM {$wpdb->prefix}xfor_room_types
             WHERE type_id = $id
         ");
         if (!empty($row->images)) {
             $images_data = explode(',', $row->images);
-            foreach ( $images_data as $value ) {
-                wp_delete_attachment($value, true );
+            foreach ($images_data as $value) {
+                wp_delete_attachment($value, true);
             }
         }
-        $wpdb->delete("{$wpdb->prefix}hb_rooms", ['type_id' => $id]);
-        $wpdb->delete("{$wpdb->prefix}hb_room_types", ['id' => $id]);
-        $wpdb->delete("{$wpdb->prefix}hb_room_types_images", ['type_id' => $id]);
+        $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['type_id' => $id]);
+        $wpdb->delete("{$wpdb->prefix}xfor_room_types", ['id' => $id]);
+        $wpdb->delete("{$wpdb->prefix}xfor_room_types_images", ['type_id' => $id]);
 
     }
 
-    echo hb_get_room_types();
+    xfor_get_room_types();
     die();
 }
-add_action('wp_ajax_hb_del_room_type', 'hb_del_room_type');
 
-function hb_get_room_type()
+add_action('wp_ajax_xfor_del_room_type', 'xfor_del_room_type');
+
+
+/**
+ * Room Type
+ */
+function xfor_get_room_type()
 {
     global $wpdb;
 
@@ -398,7 +400,7 @@ function hb_get_room_type()
 
         $row = $wpdb->get_row("
             SELECT * 
-            FROM {$wpdb->prefix}hb_room_types 
+            FROM {$wpdb->prefix}xfor_room_types 
             WHERE id = $id
         ");
 
@@ -410,10 +412,8 @@ function hb_get_room_type()
 
         $images = [];
         if (!empty($row->images)) {
-//            $images[] = plugin_dir_url(__DIR__) . 'assets/images/no_photo.png';
-//        } else {
             $img = explode(',', $row->images);
-            foreach ( $img as $attach_id ) {
+            foreach ($img as $attach_id) {
                 $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
             }
         }
@@ -436,67 +436,62 @@ function hb_get_room_type()
     echo json_encode($data);
     die();
 }
-add_action('wp_ajax_hb_get_room_type', 'hb_get_room_type');
 
-function hb_edit_room_type()
+add_action('wp_ajax_xfor_get_room_type', 'xfor_get_room_type');
+
+
+/**
+ * Room Type Edit
+ */
+function xfor_edit_room_type()
 {
     global $wpdb;
 
     $id = (int)$_POST['id'];
-    $shortcode = sanitize_text_field($_POST['shortcode']);
-    $title = sanitize_text_field($_POST['title']);
-    $area = sanitize_text_field($_POST['area']);
-    $capacity_desc = sanitize_text_field($_POST['capacity_text']);
-    $add_services = sanitize_text_field(implode(',', $_POST['add_services']));
-    $capacity = json_encode($_POST['price']);
-    $comfort_list = sanitize_text_field(implode(',', $_POST['comfort_list']));
-    $desc = sanitize_text_field($_POST['desc']);
-
     if (is_admin() && $id !== 0) {
-        $wpdb->update("{$wpdb->prefix}hb_room_types", [
-            'title' => $title,
-            'area' => $area,
-            'capacity' => $capacity,
-            'desc' => $desc,
-            'comfort_list' => $comfort_list,
-            'add_services_list' => $add_services,
-            'shortcode' => $shortcode,
-            'capacity_desc' => $capacity_desc,
+        $wpdb->update("{$wpdb->prefix}xfor_room_types", [
+            'title' => sanitize_text_field($_POST['title']),
+            'area' => sanitize_text_field($_POST['area']),
+            'capacity' => json_encode($_POST['price']),
+            'desc' => sanitize_text_field($_POST['desc']),
+            'comfort_list' => sanitize_text_field(implode(',', $_POST['comfort_list'])),
+            'add_services_list' => sanitize_text_field(implode(',', $_POST['add_services'])),
+            'shortcode' => sanitize_text_field($_POST['shortcode']),
+            'capacity_desc' => sanitize_text_field($_POST['capacity_text']),
         ], ['id' => $id]);
     }
 
-    echo hb_get_room_types();
+    xfor_get_room_types();
     die();
 }
-add_action('wp_ajax_hb_edit_room_type', 'hb_edit_room_type');
 
-function hb_upload_images()
+add_action('wp_ajax_xfor_edit_room_type', 'xfor_edit_room_type');
+
+
+/**
+ * Image Upload
+ */
+function xfor_upload_images()
 {
     global $wpdb;
 
-//    echo '<pre>';
-//    print_r($_POST);
-//    print_r($_FILES);
-//    echo '</pre>';
-//    die();
+    if (!is_admin()) {
+        die();
+    }
 
     $id = (int)$_POST['id'];
-
     $images_data = [];
     $is_set = false;
 
     $row = $wpdb->get_row("
         SELECT images 
-        FROM {$wpdb->prefix}hb_room_types_images
+        FROM {$wpdb->prefix}xfor_room_types_images
         WHERE type_id = $id
     ");
     if (!empty($row->images)) {
         $images_data = explode(',', $row->images);
         $is_set = true;
     }
-
-
-//    require( __DIR__ . '/../../../wp-load.php' );
 
     $wordpress_upload_dir = wp_upload_dir();
     $i = 1;
@@ -542,23 +537,19 @@ function hb_upload_images()
         // Generate and save the attachment metas into the database
         wp_update_attachment_metadata($upload_id, wp_generate_attachment_metadata($upload_id, $new_file_path));
 
-        // Show the uploaded file in browser
-//        wp_redirect($wordpress_upload_dir['url'] . '/' . basename($new_file_path));
-
-
         array_push($images_data, $upload_id);
         $images_data = implode(',', $images_data);
 
         // add
         if ($is_set === false) {
 
-            $wpdb->insert("{$wpdb->prefix}hb_room_types_images", [
+            $wpdb->insert("{$wpdb->prefix}xfor_room_types_images", [
                 'images' => $images_data,
                 'type_id' => $id,
             ]);
 
             if ($id !== 0) {
-                $wpdb->update("{$wpdb->prefix}hb_room_types", [
+                $wpdb->update("{$wpdb->prefix}xfor_room_types", [
                     'images' => $images_data,
                 ], ['id' => $id]);
             }
@@ -566,11 +557,11 @@ function hb_upload_images()
         } // update
         else {
 
-            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+            $wpdb->update("{$wpdb->prefix}xfor_room_types", [
                 'images' => $images_data,
             ], ['id' => $id]);
 
-            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+            $wpdb->update("{$wpdb->prefix}xfor_room_types_images", [
                 'images' => $images_data,
             ], ['type_id' => $id]);
 
@@ -578,14 +569,22 @@ function hb_upload_images()
 
     }
 
-
     die();
 }
-add_action('wp_ajax_hb_upload_images', 'hb_upload_images');
 
-function hb_delete_image()
+add_action('wp_ajax_xfor_upload_images', 'xfor_upload_images');
+
+
+/**
+ * Image Delete
+ */
+function xfor_delete_image()
 {
     global $wpdb;
+
+    if (!is_admin()) {
+        die();
+    }
 
     $id = (int)$_POST['id'];
     $index = (int)$_POST['index'];
@@ -593,13 +592,9 @@ function hb_delete_image()
     $images_data = [];
     $is_set = false;
 
-//    echo $id;
-//    echo $index;
-//    die();
-
     $row = $wpdb->get_row("
         SELECT images 
-        FROM {$wpdb->prefix}hb_room_types_images
+        FROM {$wpdb->prefix}xfor_room_types_images
         WHERE type_id = $id
     ");
     if (!empty($row->images)) {
@@ -607,17 +602,17 @@ function hb_delete_image()
         $is_set = true;
     }
 
-    wp_delete_attachment($images_data[$index], true );
+    wp_delete_attachment($images_data[$index], true);
 
     unset($images_data[$index]);
 
     if (empty($images_data)) {
 
-        $wpdb->delete("{$wpdb->prefix}hb_room_types_images",
+        $wpdb->delete("{$wpdb->prefix}xfor_room_types_images",
             ['type_id' => $id]
         );
-        if ( $id !== 0 ) {
-            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+        if ($id !== 0) {
+            $wpdb->update("{$wpdb->prefix}xfor_room_types", [
                 'images' => '',
             ], ['id' => $id]);
         }
@@ -629,7 +624,7 @@ function hb_delete_image()
         // add
         if ($is_set === false) {
 
-            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+            $wpdb->update("{$wpdb->prefix}xfor_room_types_images", [
                 'images' => $images_data,
             ], ['type_id' => $id]);
 
@@ -637,11 +632,11 @@ function hb_delete_image()
         } // update
         else {
 
-            $wpdb->update("{$wpdb->prefix}hb_room_types", [
+            $wpdb->update("{$wpdb->prefix}xfor_room_types", [
                 'images' => $images_data,
             ], ['id' => $id]);
 
-            $wpdb->update("{$wpdb->prefix}hb_room_types_images", [
+            $wpdb->update("{$wpdb->prefix}xfor_room_types_images", [
                 'images' => $images_data,
             ], ['type_id' => $id]);
 
@@ -649,13 +644,17 @@ function hb_delete_image()
 
     }
 
-
     echo 1;
     die();
 }
-add_action('wp_ajax_hb_delete_image', 'hb_delete_image');
 
-function hb_get_room_type_images()
+add_action('wp_ajax_xfor_delete_image', 'xfor_delete_image');
+
+
+/**
+ * Images
+ */
+function xfor_get_room_type_images()
 {
     global $wpdb;
 
@@ -663,14 +662,14 @@ function hb_get_room_type_images()
 
     $row = $wpdb->get_row("
         SELECT images 
-        FROM {$wpdb->prefix}hb_room_types_images
+        FROM {$wpdb->prefix}xfor_room_types_images
         WHERE type_id = $id
     ");
 
     $images = [];
     if (!empty($row->images)) {
         $img = explode(',', $row->images);
-        foreach ( $img as $attach_id ) {
+        foreach ($img as $attach_id) {
             $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
         }
     }
@@ -678,21 +677,21 @@ function hb_get_room_type_images()
     echo json_encode($images);
     die();
 }
-add_action('wp_ajax_hb_get_room_type_images', 'hb_get_room_type_images');
-add_action('wp_ajax_nopriv_hb_get_room_type_images', 'hb_get_room_type_images');
+
+add_action('wp_ajax_xfor_get_room_type_images', 'xfor_get_room_type_images');
+add_action('wp_ajax_nopriv_xfor_get_room_type_images', 'xfor_get_room_type_images');
 
 
-
-
-// Settings
-function hb_get_settings()
+/**
+ * Settings
+ */
+function xfor_get_settings()
 {
-
     global $wpdb;
 
     $result = $wpdb->get_results("
         SELECT *
-        FROM {$wpdb->prefix}hb_settings
+        FROM {$wpdb->prefix}xfor_settings
         ORDER BY id ASC",
         ARRAY_A);
 
@@ -711,26 +710,26 @@ function hb_get_settings()
         } else {
             $data[$row['param']] = $row['value'];
         }
-
     }
     unset($result);
 
-//    echo '<pre>';
-//    print_r($data);
-//    echo '</pre>';
-//    die();
-
-    header('Content-Type: application/json');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();
-
 }
-add_action('wp_ajax_hb_get_settings', 'hb_get_settings');
+
+add_action('wp_ajax_xfor_get_settings', 'xfor_get_settings');
 
 
-function hb_store_settings()
+/**
+ * Settings Store
+ */
+function xfor_store_settings()
 {
     global $wpdb;
+
+    if (!is_admin()) {
+        die();
+    }
 
     foreach ($_POST as $key => $value) {
 
@@ -742,49 +741,46 @@ function hb_store_settings()
             $key === 'SETS_LIST'
         ) {
 
-            $wpdb->update("{$wpdb->prefix}hb_settings",
-                ['value' => implode(',', $value)],
+            $wpdb->update("{$wpdb->prefix}xfor_settings",
+                ['value' => implode(',', sanitize_text_field($value))],
                 ['param' => $key]
             );
         } elseif ($key === 'CUR' || $key === 'PROMO') {
-            $wpdb->update("{$wpdb->prefix}hb_settings",
+            $wpdb->update("{$wpdb->prefix}xfor_settings",
                 ['value' => json_encode($value)],
                 ['param' => $key]
             );
         } else {
-            $wpdb->update("{$wpdb->prefix}hb_settings",
-                ['value' => $value],
+            $wpdb->update("{$wpdb->prefix}xfor_settings",
+                ['value' => sanitize_text_field($value)],
                 ['param' => $key]
             );
         }
 
     }
 
-//    echo '<pre>';
-//    print_r($_POST);
-//    echo '</pre>';
-//    die();
-
-    echo hb_get_settings();
+    xfor_get_settings();
     die();
 }
-add_action('wp_ajax_hb_store_settings', 'hb_store_settings');
+
+add_action('wp_ajax_xfor_store_settings', 'xfor_store_settings');
 
 
-
-
-function hb_check()
+/**
+ * Order Check
+ */
+function xfor_check()
 {
     global $wpdb;
 
-    $_POST = json_decode(file_get_contents('php://input'), true);
+    $_POST = Helper::getRequest();
 
     $order_id = (int)$_POST['order_id'];
-    $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim($_POST['tel'])));
+    $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim(sanitize_text_field($_POST['tel']))));
 
     $check = $wpdb->get_row("
         SELECT *
-        FROM " . $wpdb->prefix . "hb_orders
+        FROM " . $wpdb->prefix . "xfor_orders
         WHERE id = $order_id AND tel = $tel
     ");
 
@@ -793,8 +789,7 @@ function hb_check()
         die();
     }
 
-//    print_r($check);
-    $res = '
+    echo '
     <ul>
         <li>Arrival: ' . $check->start_date . '</li>
         <li>Departure: ' . $check->end_date . '</li>
@@ -803,28 +798,30 @@ function hb_check()
         <li>Guests: ' . $check->guest . '</li>
     </ul>
     ';
-    echo $res;
     die();
 }
-add_action('wp_ajax_hb_check', 'hb_check');
-add_action('wp_ajax_nopriv_hb_check', 'hb_check');
+
+add_action('wp_ajax_xfor_check', 'xfor_check');
+add_action('wp_ajax_nopriv_xfor_check', 'xfor_check');
 
 
-function hb_send()
+/**
+ * Order Send
+ */
+function xfor_send()
 {
     global $wpdb;
 
-    $_POST = json_decode(file_get_contents('php://input'), true);
+    $_POST = Helper::getRequest();
 
     $room_type_id = (int)$_POST['room_type_id'];
-
-    $start_date = strip_tags(trim($_POST['datestart']));
-    $end_date = strip_tags(trim($_POST['dateend']));
+    $start_date = sanitize_text_field(trim($_POST['datestart']));
+    $end_date = sanitize_text_field(trim($_POST['dateend']));
 
     $start_date = date('Y-m-d', \DateTime::createFromFormat('d.m.Y', $start_date)->getTimestamp());
     $end_date = date('Y-m-d', \DateTime::createFromFormat('d.m.Y', $end_date)->getTimestamp());
 
-    $rooms_all_list = helper::getAvailableRoomsByRoomTypeId(
+    $rooms_all_list = Helper::getAvailableRoomsByRoomTypeId(
         $room_type_id, $start_date, $end_date
     );
     if (!count($rooms_all_list)) {
@@ -833,30 +830,28 @@ function hb_send()
 
     $room = array_shift($rooms_all_list);
 
-//    print_r($room);
-
-    $fullname = strip_tags(trim($_POST['fullname']));
-    $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim($_POST['tel'])));
-    $email = strip_tags(trim($_POST['email']));
-    $noty = strip_tags(trim($_POST['noty']));
+    $fullname = sanitize_text_field(trim($_POST['fullname']));
+    $tel = str_replace(['+', ' ', ' ', ')', '('], '', sanitize_text_field(trim($_POST['tel'])));
+    $email = sanitize_email(trim($_POST['email']));
+    $noty = sanitize_text_field(trim($_POST['noty']));
     $status = 'New';
     $is_paid = 0;
-    $cost = strip_tags(trim($_POST['cost']));
-    $guest = strip_tags(trim($_POST['guest']));
+    $cost = sanitize_text_field(trim($_POST['cost']));
+    $guest = sanitize_text_field(trim($_POST['guest']));
 
     $noty .= ', days: ' . (int)$_POST['days'];
     if (count($_POST['add_services'])) {
         $services = '';
         foreach ($_POST['add_services'] as $item) {
-            $services .= $item . '|';
+            $services .= sanitize_text_field($item) . '|';
         }
         $noty .= ', add.services(' . $services . ') ';
     }
-    $noty .= ', arrival: ' . strip_tags(trim($_POST['arrival']));
-    $noty .= ', breakfast: ' . strip_tags(trim($_POST['breakfast']));
-    $noty .= ', parking: ' . strip_tags(trim($_POST['parking']));
+    $noty .= ', arrival: ' . sanitize_text_field(trim($_POST['arrival']));
+    $noty .= ', breakfast: ' . sanitize_text_field(trim($_POST['breakfast']));
+    $noty .= ', parking: ' . sanitize_text_field(trim($_POST['parking']));
 
-    $wpdb->insert("{$wpdb->prefix}hb_orders", [
+    $wpdb->insert("{$wpdb->prefix}xfor_orders", [
         'room' => $room,
         'start_date' => $start_date,
         'end_date' => $end_date,
@@ -870,63 +865,38 @@ function hb_send()
         'guest' => $guest,
     ]);
 
-    echo $wpdb->insert_id;
+    echo esc_html($wpdb->insert_id);
     die();
 }
-add_action('wp_ajax_hb_send', 'hb_send');
-add_action('wp_ajax_nopriv_hb_send', 'hb_send');
+
+add_action('wp_ajax_xfor_send', 'xfor_send');
+add_action('wp_ajax_nopriv_xfor_send', 'xfor_send');
 
 
-function hb_get()
+/**
+ *  Available Room
+ */
+function xfor_get()
 {
     global $wpdb;
 
-    $start_date = '';
-    $end_date = '';
-    $promocode = 0;
+    $search_data = Helper::preparePublicSearchData();
 
-    if ( file_get_contents('php://input') ) {
-        $_POST = json_decode(file_get_contents('php://input'), true);
-
-        if ( isset($_POST['range']) && !empty($_POST['range']) ) {
-            $range = explode(' - ', $_POST['range']);
-            $start_date = date('Y-m-d', strtotime($range[0]));
-            $end_date = date('Y-m-d', strtotime($range[1]));
-        }
-
-        if ( isset($_POST['promocode']) && !empty($_POST['promocode']) ) {
-            $promocode = trim($_POST['promocode']);
-            $settings_promo = $wpdb->get_row("
-                SELECT `value`
-                FROM ". $wpdb->prefix ."hb_settings
-                WHERE param = 'PROMO'
-            ");
-
-            $settings_promo = json_decode($settings_promo->value, true);
-            foreach ( $settings_promo as $key => $value ) {
-                if ( $value[0] === $promocode && $value[2] === 1 ) {
-                    $promocode = (float)$value[1];
-                }
-            }
-        }
-    }
+    $start_date = $search_data['start_date'];
+    $end_date = $search_data['end_date'];
+    $promocode = $search_data['promocode'];
 
     $data = [];
     $rooms_list = [];
 
-    $rooms_all_list = helper::getAvailableRoomsList($start_date, $end_date);
-
-//    echo '<pre>';
-//    print_r($rooms_all_list);
-//    echo '</pre>';
-//    die();
+    $rooms_all_list = Helper::getAvailableRoomsList($start_date, $end_date);
 
     if (count($rooms_all_list) > 0) {
         $rooms_all_list = implode(',', $rooms_all_list);
 
         $result = $wpdb->get_results("
             SELECT *
-            FROM " . $wpdb->prefix . "hb_rooms
+            FROM " . $wpdb->prefix . "xfor_rooms
             WHERE name IN ($rooms_all_list) AND status = 1
         ");
         foreach ($result as $row) {
@@ -935,30 +905,12 @@ function hb_get()
         unset($result);
     }
 
-//    echo '<pre>';
-//    print_r($rooms_list);
-//    echo '</pre>';
-//    die();
-
     $result = $wpdb->get_results("
-        SELECT * FROM " . $wpdb->prefix . "hb_room_types
+        SELECT * FROM " . $wpdb->prefix . "xfor_room_types
     ", ARRAY_A);
     foreach ($result as $row) {
 
-        $images = [];
-        if (!empty($row['images'])) {
-            $img = explode(',', $row['images']);
-            foreach ( $img as $attach_id ) {
-                $images[] = [
-                    'name' => wp_get_attachment_image_src($attach_id, 'full')[0],
-                ];
-            }
-        } else {
-            $images[] = [
-                'name' => plugin_dir_url(__DIR__) . 'assets/images/no_photo.png',
-            ];
-        }
-
+        $images = Helper::getPublicImages($row['images']);
         $capacity_data = json_decode($row['capacity'], true);
         $capacity_guest = [];
         $capacity_cost = [];
@@ -971,7 +923,7 @@ function hb_get()
         }
 
         $available_rooms = 0;
-        if (isset($rooms_list[$row['id']]) && count($rooms_list[$row['id']])) {
+        if (isset($rooms_list[$row['id']])) {
             $available_rooms = count($rooms_list[$row['id']]);
         }
 
@@ -995,21 +947,16 @@ function hb_get()
 
     $result = $wpdb->get_row("
         SELECT `value`
-        FROM {$wpdb->prefix}hb_settings
+        FROM {$wpdb->prefix}xfor_settings
         WHERE param = 'CUR'",
-    ARRAY_A);
+        ARRAY_A);
 
     $res['currencies'] = json_decode($result['value'], true);
 
-//    echo '<pre>';
-//    print_r($res);
-//    echo '</pre>';
-//    die();
-
-    header('Content-Type: application/json');
     echo json_encode($res, JSON_UNESCAPED_UNICODE);
     die();
 }
-add_action('wp_ajax_hb_get', 'hb_get');
-add_action('wp_ajax_nopriv_hb_get', 'hb_get');
+
+add_action('wp_ajax_xfor_get', 'xfor_get');
+add_action('wp_ajax_nopriv_xfor_get', 'xfor_get');
 
