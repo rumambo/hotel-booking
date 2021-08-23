@@ -167,6 +167,8 @@ function xfor_add_room()
 {
     global $wpdb;
 
+    $_POST = Helper::getRequest();
+
     if (is_admin()) {
         $wpdb->insert("{$wpdb->prefix}xfor_rooms", [
             'name' => sanitize_text_field($_POST['name']),
@@ -190,6 +192,8 @@ function xfor_delete_room()
 {
     global $wpdb;
 
+    $_POST = Helper::getRequest();
+
     if (is_admin()) {
         $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['id' => (int)$_POST['id']]);
     }
@@ -207,6 +211,8 @@ add_action('wp_ajax_xfor_delete_room', 'xfor_delete_room');
 function xfor_switch_room_status()
 {
     global $wpdb;
+
+    $_POST = Helper::getRequest();
 
     $status = (int)$_POST['status'] === 1 ? 0 : 1;
 
@@ -230,6 +236,8 @@ add_action('wp_ajax_xfor_switch_room_status', 'xfor_switch_room_status');
 function xfor_update_room()
 {
     global $wpdb;
+
+    $_POST = Helper::getRequest();
 
     if (is_admin()) {
         $wpdb->update("{$wpdb->prefix}xfor_rooms",
@@ -278,6 +286,8 @@ add_action('wp_ajax_xfor_get_orders', 'xfor_get_orders');
 function xfor_delete_order()
 {
     global $wpdb;
+
+    $_POST = Helper::getRequest();
 
     if (is_admin()) {
         $wpdb->delete("{$wpdb->prefix}xfor_orders", ['id' => (int)$_POST['id']]);
@@ -331,6 +341,8 @@ function xfor_add_room_type()
 {
     global $wpdb;
 
+    $_POST = Helper::getRequest();
+
     if (is_admin()) {
         $wpdb->insert("{$wpdb->prefix}xfor_room_types", [
             'title' => sanitize_text_field($_POST['title']),
@@ -357,6 +369,8 @@ add_action('wp_ajax_xfor_add_room_type', 'xfor_add_room_type');
 function xfor_del_room_type()
 {
     global $wpdb;
+
+    $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
 
@@ -392,6 +406,8 @@ add_action('wp_ajax_xfor_del_room_type', 'xfor_del_room_type');
 function xfor_get_room_type()
 {
     global $wpdb;
+
+    $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
 
@@ -446,6 +462,8 @@ add_action('wp_ajax_xfor_get_room_type', 'xfor_get_room_type');
 function xfor_edit_room_type()
 {
     global $wpdb;
+
+    $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
     if (is_admin() && $id !== 0) {
@@ -585,6 +603,8 @@ function xfor_delete_image()
     if (!is_admin()) {
         die();
     }
+
+    $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
     $index = (int)$_POST['index'];
@@ -730,6 +750,8 @@ function xfor_store_settings()
     if (!is_admin()) {
         die();
     }
+
+    $_POST = Helper::getRequest();
 
     foreach ($_POST as $key => $value) {
 

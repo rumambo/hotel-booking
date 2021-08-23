@@ -22,7 +22,7 @@ const store = new Vuex.Store({
         },
         storeSettings(state) {
             axios
-                .post(ajaxurl + '?action=xfor_store_settings', Qs.stringify(state.settings))
+                .post(ajaxurl + '?action=xfor_store_settings', state.settings)
                 .then(response => state.settings = response.data)
                 .catch(error => console.log(error));
         },
@@ -50,7 +50,7 @@ const store = new Vuex.Store({
         },
         addRoomType(state, tmp) {
             axios
-                .post(ajaxurl + '?action=xfor_add_room_type', Qs.stringify(tmp))
+                .post(ajaxurl + '?action=xfor_add_room_type', tmp)
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -60,7 +60,7 @@ const store = new Vuex.Store({
         },
         editRoomType(state, tmp) {
             axios
-                .post(ajaxurl + '?action=xfor_edit_room_type', Qs.stringify(tmp))
+                .post(ajaxurl + '?action=xfor_edit_room_type', tmp)
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -70,7 +70,7 @@ const store = new Vuex.Store({
         },
         delRoomType(state, id) {
             axios
-                .post(ajaxurl + '?action=xfor_del_room_type', Qs.stringify({id: id}))
+                .post(ajaxurl + '?action=xfor_del_room_type', {id: id})
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -79,7 +79,7 @@ const store = new Vuex.Store({
         },
         addRoom(state, tmp) {
             axios
-                .post(ajaxurl + '?action=xfor_add_room', Qs.stringify(tmp))
+                .post(ajaxurl + '?action=xfor_add_room', tmp)
                 .then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
         },
@@ -514,7 +514,7 @@ const AddRoomType = {
             let id = this.$route.params.id;
 
             axios
-                .post(ajaxurl + '?action=xfor_get_room_type', Qs.stringify({id: id}))
+                .post(ajaxurl + '?action=xfor_get_room_type', {id: id})
                 .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
         },
@@ -530,7 +530,7 @@ const AddRoomType = {
                 id = this.$route.params.id
             }
             axios
-                .post(ajaxurl + '?action=xfor_delete_image', Qs.stringify({id: id, index: index}))
+                .post(ajaxurl + '?action=xfor_delete_image', {id: id, index: index})
                 // .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
 
@@ -667,7 +667,7 @@ const Rooms = {
         delRoom(id, index0, index1) {
 
             axios
-                .post(ajaxurl + '?action=xfor_delete_room', Qs.stringify({'id': id}))
+                .post(ajaxurl + '?action=xfor_delete_room', {'id': id})
                 //.then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
 
@@ -676,7 +676,7 @@ const Rooms = {
         },
         switchRoomStatus(id, status) {
             axios
-                .post(ajaxurl + '?action=xfor_switch_room_status', Qs.stringify({'id': id, 'status': status}))
+                .post(ajaxurl + '?action=xfor_switch_room_status', {'id': id, 'status': status})
                 //.then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
         },
@@ -685,7 +685,7 @@ const Rooms = {
             // console.log(id, cleaner)
 
             axios
-                .post(ajaxurl + '?action=xfor_update_room', Qs.stringify({'id': id, 'cleaner': cleaner}))
+                .post(ajaxurl + '?action=xfor_update_room', {'id': id, 'cleaner': cleaner})
                 //.then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
 
@@ -786,7 +786,7 @@ const Orders = {
     methods: {
         delOrder(id, index) {
             axios
-                .post(ajaxurl + '?action=xfor_delete_order', Qs.stringify({'id': id}))
+                .post(ajaxurl + '?action=xfor_delete_order', {'id': id})
                 // .then(response => state.settings = response.data)
                 .catch(error => console.log(error));
 

@@ -11,7 +11,6 @@ function xfor_admin_scripts()
     wp_enqueue_script('vue', XFOR_LIBS_DIR . 'vue.js');
     wp_enqueue_script('vue-router', XFOR_LIBS_DIR . 'vue-router.min.js');
     wp_enqueue_script('vue-input-tag', XFOR_LIBS_DIR . 'vueInputTag.umd.min.js');
-    wp_enqueue_script('qs', XFOR_LIBS_DIR . 'qs.js');
     wp_enqueue_script('axios', XFOR_LIBS_DIR . 'axios.min.js');
     wp_enqueue_script('vuex', XFOR_LIBS_DIR . 'vuex.min.js');
 
