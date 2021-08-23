@@ -175,20 +175,13 @@ const Dashboard = {
             name: "timeline",
             y_property: "room",
             render: 'tree',
-            // render: 'bar',
             x_unit: "day",
             x_date: "%d",
             x_size: 31,
-            // x_step: 1,
-            // x_size: 2,
-            // x_start: 0,
-            // x_length: 2,
             dy: 32,
             event_dy: 'full',
-            // event_dy: 48,
             section_autoheight: false,
             round_position: true,
-            // scrollable: true,
             y_unit: scheduler.serverList("currentRooms"),
             second_scale: {
                 x_unit: "month",
@@ -981,7 +974,7 @@ const Settings = {
         </div>`
 }
 
-NProgress.configure({parent: '#app'});
+NProgress.configure({parent: '#hotel_bookin_xfor'});
 
 axios.interceptors.request.use(config => {
     NProgress.start()
@@ -1010,16 +1003,20 @@ const router = new VueRouter({
 Vue.component('input-tag', vueInputTag.default)
 Vue.component('file-upload', VueUploadComponent)
 
-const app = new Vue({
-    router,
-    store,
-    el: '#app',
-    data() {
-        return {
-            settings: {},
-        }
-    },
-    mounted() {
-        this.$store.dispatch('getSettings')
-    },
-});
+if(document.getElementById("hotel_bookin_xfor")) {
+
+    new Vue({
+        router,
+        store,
+        el: '#hotel_bookin_xfor',
+        data() {
+            return {
+                settings: {},
+            }
+        },
+        mounted() {
+            this.$store.dispatch('getSettings')
+        },
+    });
+
+}

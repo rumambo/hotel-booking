@@ -762,9 +762,8 @@ function xfor_store_settings()
             $key === 'SERVICES_LIST' ||
             $key === 'SETS_LIST'
         ) {
-
             $wpdb->update("{$wpdb->prefix}xfor_settings",
-                ['value' => implode(',', sanitize_text_field($value))],
+                ['value' => sanitize_text_field(implode(',', $value))],
                 ['param' => $key]
             );
         } elseif ($key === 'CUR' || $key === 'PROMO') {
