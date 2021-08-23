@@ -303,7 +303,7 @@ const Dashboard = {
                 return
             }
             for (var i = 0; i < roomsArr.length; i++) {
-                if (value == roomsArr[i].type) {
+                if (value == roomsArr[i].type_id) {
                     currentRoomsArr.push(roomsArr[i]);
                 }
             }

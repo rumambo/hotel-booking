@@ -88,7 +88,7 @@ class Helper
             SELECT *
             FROM " . $wpdb->prefix . "xfor_rooms
             WHERE type_id = $type_id AND status = 1
-            ORDER BY cleaner ASC
+            ORDER BY cleaner DESC
         ");
         foreach ($rooms as $row) {
             $rooms_list[$row->name] = $row->name;

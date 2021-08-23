@@ -271,148 +271,155 @@ Vue.component('modal1', {
       </div>`
 });
 
-const booking = new Vue({
-    el: '#hotel-booking',
-    data: {
-        add_services_list: {},
-        // bookingImage: '',
-        datepicker: {},
-        selected_days: 0,
-        selected_datestart: 0,
-        selected_dateend: 0,
-        selected_room_type: '',
-        selected_room_type_id: '',
-        selected_arrival: '',
-        selected_breakfast: '',
-        selected_parking: '',
-        selected_cost: '',
-        selected_guest: '',
-        cost_item: 0,
-        date_range: '',
-        promocode: '',
-        swiperOption: {
-            pagination: {
-                el: '.swiper-pagination',
-                dynamicBullets: true
+if(document.getElementById("hotel-booking")) {
+
+    const hotel_booking = new Vue({
+        el: '#hotel-booking',
+        data: {
+            add_services_list: {},
+            datepicker: {},
+            selected_days: 0,
+            selected_datestart: 0,
+            selected_dateend: 0,
+            selected_room_type: '',
+            selected_room_type_id: '',
+            selected_arrival: '',
+            selected_breakfast: '',
+            selected_parking: '',
+            selected_cost: '',
+            selected_guest: '',
+            cost_item: 0,
+            date_range: '',
+            promocode: '',
+            swiperOption: {
+                pagination: {
+                    el: '.swiper-pagination',
+                    dynamicBullets: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                },
+                loop: true,
             },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev'
-            },
-            loop: true,
+            showModalCheckBooking: false,
+            showModalBooking: false,
+            currentCurrency: 'USD',
+            currencies: [],
+            rooms: [],
+            showLoader: true,
         },
-        showModalCheckBooking: false,
-        showModalBooking: false,
-        currentCurrency: 'USD',
-        currencies: [],
-        rooms: [],
-        showLoader: true,
-    },
-    created: function () {
-        this.showLoader = false
-    },
-    mounted() {
-
-        axios.get(ajaxurl + '?action=xfor_get').then(response => {
-            this.rooms = response.data.rooms;
-            this.currencies = response.data.currencies;
-        }).catch(error => {
-            if (error.response.status === 422) {
-                this.errors = error.response.data.errors || {};
-            }
-        });
-
-        this.initDatePicker();
-
-        let today = new Date();
-        let tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        let input1 = document.querySelector('#input-id');
-        input1.value = fecha.format(today, 'DD.MM.YYYY') + ' - ' + fecha.format(tomorrow, 'DD.MM.YYYY');
-        this.date_range = input1.value;
-
-        this.selected_datestart = fecha.format(today, 'DD.MM.YYYY');
-        this.selected_dateend = fecha.format(tomorrow, 'DD.MM.YYYY');
-        this.selected_days = datepicker.getNights();
-
-        input1.addEventListener('afterClose', this.getNight, false);
-
-    },
-    methods: {
-        toBook(room) {
-            this.showModalBooking = true;
-            this.selected_room_type = room.name;
-            this.selected_room_type_id = room.id;
-            this.selected_arrival = window.document.getElementById('time_' + room.id).value;
-            this.selected_breakfast = window.document.getElementById('breakfast_' + room.id).value;
-            this.selected_parking = window.document.getElementById('parking_' + room.id).value;
-            this.add_services_list = room.add_services;
-            this.selected_cost = window.document.getElementById('guest_' + room.id).value;
-            this.selected_guest = window.document.getElementById('guest_' + room.id).options[window.document.getElementById('guest_' + room.id).selectedIndex].text;
+        created: function () {
+            this.showLoader = false
         },
-        getCurrencySign() {
-            for (var i = 0; i < this.currencies.length; i++) {
-                if (this.currencies[i][0] === this.currentCurrency) {
-                    return this.currencies[i][1]
-                }
-            }
-        },
-        getCurrencyRatio() {
-            for (var i = 0; i < this.currencies.length; i++) {
-                if (this.currencies[i][0] === this.currentCurrency) {
-                    return this.currencies[i][2]
-                }
-            }
-        },
-        search() {
-            let data = {
-                'range': this.date_range,
-                'promocode': this.promocode,
-            };
+        mounted() {
 
-            this.showLoader = true
-
-            axios.post(ajaxurl + '?action=xfor_get', data).then(response => {
+            axios.get(ajaxurl + '?action=xfor_get').then(response => {
                 this.rooms = response.data.rooms;
-                this.showLoader = false
+                this.currencies = response.data.currencies;
             }).catch(error => {
                 if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
                 }
             });
 
-        },
-        getNight() {
+            this.initDatePicker();
+
+            let today = new Date();
+            let tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            let input1 = document.querySelector('#input-id');
+            input1.value = fecha.format(today, 'DD.MM.YYYY') + ' - ' + fecha.format(tomorrow, 'DD.MM.YYYY');
+            this.date_range = input1.value;
+
+            this.selected_datestart = fecha.format(today, 'DD.MM.YYYY');
+            this.selected_dateend = fecha.format(tomorrow, 'DD.MM.YYYY');
             this.selected_days = datepicker.getNights();
-            let dateRange = document.querySelector('#input-id').value;
-            this.date_range = dateRange;
-            dateRange = dateRange.split(' - ');
-            this.selected_datestart = dateRange[0];
-            this.selected_dateend = dateRange[1];
+
+            input1.addEventListener('afterClose', this.getNight, false);
+
         },
-        showLightbox(imageName, index) {
-            this.$refs.lightbox[index].show(imageName);
+        methods: {
+            toBook(room) {
+                this.showModalBooking = true;
+                this.selected_room_type = room.name;
+                this.selected_room_type_id = room.id;
+                this.selected_arrival = window.document.getElementById('time_' + room.id).value;
+                this.selected_breakfast = window.document.getElementById('breakfast_' + room.id).value;
+                this.selected_parking = window.document.getElementById('parking_' + room.id).value;
+                this.add_services_list = room.add_services;
+                this.selected_cost = window.document.getElementById('guest_' + room.id).value;
+                this.selected_guest = window.document.getElementById('guest_' + room.id).options[window.document.getElementById('guest_' + room.id).selectedIndex].text;
+            },
+            getCurrencySign() {
+                for (var i = 0; i < this.currencies.length; i++) {
+                    if (this.currencies[i][0] === this.currentCurrency) {
+                        return this.currencies[i][1]
+                    }
+                }
+            },
+            getCurrencyRatio() {
+                for (var i = 0; i < this.currencies.length; i++) {
+                    if (this.currencies[i][0] === this.currentCurrency) {
+                        return this.currencies[i][2]
+                    }
+                }
+            },
+            search() {
+                let data = {
+                    'range': this.date_range,
+                    'promocode': this.promocode,
+                };
+
+                this.showLoader = true
+
+                axios.post(ajaxurl + '?action=xfor_get', data).then(response => {
+                    this.rooms = response.data.rooms;
+                    this.showLoader = false
+                }).catch(error => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+
+            },
+            getNight() {
+                this.selected_days = datepicker.getNights();
+                let dateRange = document.querySelector('#input-id').value;
+                this.date_range = dateRange;
+                dateRange = dateRange.split(' - ');
+                this.selected_datestart = dateRange[0];
+                this.selected_dateend = dateRange[1];
+            },
+            initDatePicker() {
+                datepicker = new HotelDatepicker(document.getElementById('input-id'), {
+                    format: 'DD.MM.YYYY',
+                    startOfWeek: 'monday',
+                    showTopbar: false,
+                    selectForward: true,
+                    i18n: this.datepicker_lang,
+                    onSelectRange: function() {
+                        hotel_booking.search()
+                    },
+                });
+                return datepicker;
+            },
+            showLightbox(imageName, index) {
+                this.$refs.lightbox[index].show(imageName);
+            },
+            changeGuest: function (e, item) {
+                this.$refs.cost[item].innerText = e.target.value;
+            },
+            changeCurrentCurrency: function () {
+                let i = 0;
+                while (i < this.rooms.length) {
+                    this.$el.getElementsByClassName('guest')[i].selectedIndex = 0;
+                    let selectedCost = parseInt(this.rooms[i].capacity_cost[0] * this.getCurrencyRatio());
+                    this.$refs.cost[i].innerText = selectedCost;
+                    i++;
+                }
+            },
         },
-        initDatePicker() {
-            return new HotelDatepicker(document.getElementById('input-id'), {
-                format: 'DD.MM.YYYY',
-                startOfWeek: 'monday',
-                showTopbar: false,
-                selectForward: true,
-                i18n: this.datepicker_lang,
-            });
-        },
-        changeGuest: function (e, item) {
-            this.$refs.cost[item].innerText = e.target.value;
-        },
-        changeCurrentCurrency: function () {
-            let i = 0;
-            while (i < this.rooms.length) {
-                this.$el.getElementsByClassName('guest')[i].selectedIndex = 0;
-                let selectedCost = parseInt(this.rooms[i].capacity_cost[0] * this.getCurrencyRatio());
-                this.$refs.cost[i].innerText = selectedCost;
-                i++;
-            }
-        },
-    },
-});
+    });
+
+}
