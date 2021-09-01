@@ -1,5 +1,4 @@
 Vue.prototype.message = {
-    // title: 'Room reservation',
     my_reserv: 'My booking',
     area: 'Area',
     capacity: 'Capacity',
@@ -38,7 +37,6 @@ Vue.prototype.message = {
 };
 
 Vue.prototype.datepicker_lang = {
-
     night: 'Night',
     nights: 'Nights',
     'day-names-short': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],

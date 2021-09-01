@@ -37,5 +37,6 @@ function xfor_front_style()
 
     wp_enqueue_script('script', XFOR_ASSETS_DIR . 'public.js');
     wp_localize_script('script', 'ajaxurl', admin_url('admin-ajax.php'));
+    wp_set_script_translations( 'script', 'hotel-booking-by-xfor', XFOR_LANG_DIR .'js' );
 }
 add_action('wp_head', 'xfor_front_style');

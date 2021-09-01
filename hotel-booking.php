@@ -3,11 +3,11 @@
 Plugin Name: Hotel Booking by Xfor
 Plugin URI: https://github.com/utz0r2/hotel-booking
 Author: Igor Veselov
-Text Domain: hotel-booking
-Domain Path: hotel-booking
+Text Domain: hotel-booking-by-xfor
+Domain Path: /languages
 Description: Plugin Hotel booking. Ideal solution for creating your own hotel's booking system.
 Version: 0.1.1
-Author URI: https://xfor.top/en
+Author URI: https://xfor.top/
 */
 
 use XFOR_HB_Activator\HotelBOokingActivator;
@@ -22,6 +22,7 @@ define('XFOR_CLASSES_DIR', plugin_dir_path(__FILE__) . 'backend/classes/');
 define('XFOR_VIEWS_DIR', plugin_dir_path(__FILE__) . 'backend/views/');
 define('XFOR_ASSETS_DIR', plugin_dir_url(__FILE__) . 'assets/');
 define('XFOR_LIBS_DIR', plugin_dir_url(__FILE__) . 'assets/libs/');
+define('XFOR_LANG_DIR', plugin_dir_url(__FILE__) . 'languages/');
 
 function xfor_activate()
 {
