@@ -22,7 +22,7 @@ define('XFOR_CLASSES_DIR', plugin_dir_path(__FILE__) . 'backend/classes/');
 define('XFOR_VIEWS_DIR', plugin_dir_path(__FILE__) . 'backend/views/');
 define('XFOR_ASSETS_DIR', plugin_dir_url(__FILE__) . 'assets/');
 define('XFOR_LIBS_DIR', plugin_dir_url(__FILE__) . 'assets/libs/');
-define('XFOR_LANG_DIR', plugin_dir_url(__FILE__) . 'languages/');
+define('XFOR_LANG_DIR', plugin_dir_path(__FILE__) . 'languages');
 
 function xfor_activate()
 {

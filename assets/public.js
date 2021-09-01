@@ -1,55 +1,98 @@
+const {__, _x, _n, _nx} = wp.i18n;
+
 Vue.prototype.message = {
-    my_reserv: 'My booking',
-    area: 'Area',
-    capacity: 'Capacity',
-    to_book: 'To book',
-    guest: 'Guest',
-    breakfast: 'Breakfast',
-    parking: 'Parking',
-    arrival: 'Arrival Time',
-    price: 'Price',
-    yes: 'Yes',
-    no: 'No',
-    promocode: 'Promo code',
-    arrival_date: 'Arrival',
-    departure_date: 'Departure',
-    check_availability: 'Check availability',
-    time: 'Time',
-    meter: 'm',
-    booking_form: 'Booking form',
-    fullname: 'Full Name',
-    tel: 'Phone',
-    email: 'Email',
-    noty: 'Wishes',
-    send: 'Send',
-    back: 'Back',
-    left: 'left',
-    qty_night: 'Nights',
-    add_services: 'Additional services',
-    order: 'Order Form',
-    guests: 'Guests',
-    check_booking: 'Check booking',
-    order_id: 'Order id',
-    check: 'Check',
-    order_success: 'Order Success',
-    return: 'Return',
-    sorry: 'This date is already taken',
+    my_reserv: __('My booking', 'hotel-booking-by-xfor'),
+    area: __('Area', 'hotel-booking-by-xfor'),
+    capacity: __('Capacity', 'hotel-booking-by-xfor'),
+    to_book: __('To book', 'hotel-booking-by-xfor'),
+    guest: __('Guest', 'hotel-booking-by-xfor'),
+    breakfast: __('Breakfast', 'hotel-booking-by-xfor'),
+    parking: __('Parking', 'hotel-booking-by-xfor'),
+    arrival: __('Arrival Time', 'hotel-booking-by-xfor'),
+    price: __('Price', 'hotel-booking-by-xfor'),
+    yes: __('Yes', 'hotel-booking-by-xfor'),
+    no: __('No', 'hotel-booking-by-xfor'),
+    promocode: __('Promo code', 'hotel-booking-by-xfor'),
+    arrival_date: __('Arrival', 'hotel-booking-by-xfor'),
+    departure_date: __('Departure', 'hotel-booking-by-xfor'),
+    check_availability: __('Check availability', 'hotel-booking-by-xfor'),
+    time: __('Time', 'hotel-booking-by-xfor'),
+    meter: __('m', 'hotel-booking-by-xfor'),
+    booking_form: __('Booking form', 'hotel-booking-by-xfor'),
+    fullname: __('Full Name', 'hotel-booking-by-xfor'),
+    tel: __('Phone', 'hotel-booking-by-xfor'),
+    email: __('Email', 'hotel-booking-by-xfor'),
+    noty: __('Wishes', 'hotel-booking-by-xfor'),
+    send: __('Send', 'hotel-booking-by-xfor'),
+    back: __('Back', 'hotel-booking-by-xfor'),
+    left: __('left', 'hotel-booking-by-xfor'),
+    qty_night: __('Nights', 'hotel-booking-by-xfor'),
+    add_services: __('Additional services', 'hotel-booking-by-xfor'),
+    order: __('Order Form', 'hotel-booking-by-xfor'),
+    guests: __('Guests', 'hotel-booking-by-xfor'),
+    check_booking: __('Check booking', 'hotel-booking-by-xfor'),
+    order_id: __('Order id', 'hotel-booking-by-xfor'),
+    check: __('Check', 'hotel-booking-by-xfor'),
+    order_success: __('Order Success', 'hotel-booking-by-xfor'),
+    return: __('Return', 'hotel-booking-by-xfor'),
+    sorry: __('This date is already taken', 'hotel-booking-by-xfor'),
+    per_night: __('per night', 'hotel-booking-by-xfor'),
 };
 
 Vue.prototype.datepicker_lang = {
-    night: 'Night',
-    nights: 'Nights',
-    'day-names-short': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    'day-names': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    'month-names-short': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    'month-names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-
+    night: __('Night', 'hotel-booking-by-xfor'),
+    nights: __('Nights', 'hotel-booking-by-xfor'),
+    'day-names-short': [
+        __('Sun', 'hotel-booking-by-xfor'),
+        __('Mon', 'hotel-booking-by-xfor'),
+        __('Tue', 'hotel-booking-by-xfor'),
+        __('Wed', 'hotel-booking-by-xfor'),
+        __('Thu', 'hotel-booking-by-xfor'),
+        __('Fri', 'hotel-booking-by-xfor'),
+        __('Sat', 'hotel-booking-by-xfor')
+    ],
+    'day-names': [
+        __('Sunday', 'hotel-booking-by-xfor'),
+        __('Monday', 'hotel-booking-by-xfor'),
+        __('Tuesday', 'hotel-booking-by-xfor'),
+        __('Wednesday', 'hotel-booking-by-xfor'),
+        __('Thursday', 'hotel-booking-by-xfor'),
+        __('Friday', 'hotel-booking-by-xfor'),
+        __('Saturday', 'hotel-booking-by-xfor')
+    ],
+    'month-names-short': [
+        __('Jan', 'hotel-booking-by-xfor'),
+        __('Feb', 'hotel-booking-by-xfor'),
+        __('Mar', 'hotel-booking-by-xfor'),
+        __('Apr', 'hotel-booking-by-xfor'),
+        __('May', 'hotel-booking-by-xfor'),
+        __('Jun', 'hotel-booking-by-xfor'),
+        __('Jul', 'hotel-booking-by-xfor'),
+        __('Aug', 'hotel-booking-by-xfor'),
+        __('Sep', 'hotel-booking-by-xfor'),
+        __('Oct', 'hotel-booking-by-xfor'),
+        __('Nov', 'hotel-booking-by-xfor'),
+        __('Dec', 'hotel-booking-by-xfor')
+    ],
+    'month-names': [
+        __('January', 'hotel-booking-by-xfor'),
+        __('February', 'hotel-booking-by-xfor'),
+        __('March', 'hotel-booking-by-xfor'),
+        __('April', 'hotel-booking-by-xfor'),
+        __('May', 'hotel-booking-by-xfor'),
+        __('June', 'hotel-booking-by-xfor'),
+        __('July', 'hotel-booking-by-xfor'),
+        __('August', 'hotel-booking-by-xfor'),
+        __('September', 'hotel-booking-by-xfor'),
+        __('October', 'hotel-booking-by-xfor'),
+        __('November', 'hotel-booking-by-xfor'),
+        __('December', 'hotel-booking-by-xfor')
+    ],
 };
 
 Vue.use(VueAwesomeSwiper);
 
 Vue.component('modal0', {
-    // template: '#modal-checkBooking',
     data() {
         return {
             fields: {},
@@ -58,7 +101,6 @@ Vue.component('modal0', {
     },
     methods: {
         submit() {
-
             axios.post(ajaxurl + '?action=xfor_check', this.fields).then(response => {
                 document.getElementById('check_result').innerHTML = '<div class="mt-3">' + response.data + '</div>';
             }).catch(error => {
@@ -103,10 +145,8 @@ Vue.component('modal0', {
 });
 
 Vue.component('modal1', {
-    // template: '#modal-booking',
     data() {
         return {
-            // fields: {},
             errors: {},
             booking: {},
             selected_days: this.$root.$data.selected_days,
@@ -117,7 +157,6 @@ Vue.component('modal1', {
             selected_arrival: this.$root.$data.selected_arrival,
             selected_breakfast: this.$root.$data.selected_breakfast,
             selected_parking: this.$root.$data.selected_parking,
-            // bookingImage: this.$root.$data.bookingImage,
             add_services_list: this.$root.$data.add_services_list,
             currentCurrency: this.$root.$data.currentCurrency,
             currencies: this.$root.$data.currencies,
@@ -186,7 +225,6 @@ Vue.component('modal1', {
               <div class="modal-body">
                 <div class="row">
                   <div class="col-4">
-                    <!-- <img :src="bookingImage" class="img-fluid" /> -->
                     <ul class="list-group">
                       <li class="list-group-item py-1">
                         {{ message.arrival_date }} <b class="float-right">{{ selected_datestart }}</b><br/>
@@ -269,7 +307,7 @@ Vue.component('modal1', {
       </div>`
 });
 
-if(document.getElementById("hotel-booking")) {
+if (document.getElementById("hotel-booking")) {
 
     const hotel_booking = new Vue({
         el: '#hotel-booking',
@@ -396,7 +434,7 @@ if(document.getElementById("hotel-booking")) {
                     showTopbar: false,
                     selectForward: true,
                     i18n: this.datepicker_lang,
-                    onSelectRange: function() {
+                    onSelectRange: function () {
                         hotel_booking.search()
                     },
                 });

@@ -118,7 +118,7 @@
                 {{ getCurrencySign() }}
                 <h5 class="d-inline-block" ref="cost" :id="'cost_'+room.id">
                     {{ parseInt(room.capacity_cost[0]*getCurrencyRatio()) }}
-                </h5> per night
+                </h5> {{ message.per_night }}
             </div>
             <div class="col-3 pr-3">
                 <span v-if="room.available != 0">

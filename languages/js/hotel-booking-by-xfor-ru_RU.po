@@ -1,0 +1,552 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hotel-booking-by-xfor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-01 17:11+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Veselov <dev@xfor.top>\n"
+"Language-Team: xfor.top\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_attr_e;esc_html__;esc_html_e\n"
+"X-Poedit-Basepath: ../..\n"
+"X-Generator: Poedit 2.0.7\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: assets/backend.js:138
+msgid "Fullname"
+msgstr ""
+
+#: assets/backend.js:139 assets/backend.js:805 assets/public.js:24
+msgid "Email"
+msgstr ""
+
+#: assets/backend.js:140 assets/public.js:23
+msgid "Phone"
+msgstr ""
+
+#: assets/backend.js:141 assets/backend.js:261 assets/backend.js:793
+#: includes/ajax.php:816
+msgid "Room"
+msgstr ""
+
+#: assets/backend.js:142 assets/backend.js:805
+msgid "Noty"
+msgstr ""
+
+#: assets/backend.js:143 assets/backend.js:196 assets/backend.js:937
+msgid "Status"
+msgstr ""
+
+#: assets/backend.js:144
+msgid "Is paid"
+msgstr ""
+
+#: assets/backend.js:145
+msgid "Date"
+msgstr ""
+
+#: assets/backend.js:170
+msgid "Timeline"
+msgstr ""
+
+#: assets/backend.js:192
+msgid "Number"
+msgstr ""
+
+#: assets/backend.js:194
+msgid "Type"
+msgstr ""
+
+#: assets/backend.js:262
+#, fuzzy
+#| msgid "Hotel Booking"
+msgid "Check-in"
+msgstr "Бронирование отеля"
+
+#: assets/backend.js:263
+msgid "Check-out"
+msgstr ""
+
+#: assets/backend.js:278
+msgid "This room is already booked for this date."
+msgstr ""
+
+#: assets/backend.js:311
+msgid "All"
+msgstr ""
+
+#: assets/backend.js:321
+msgid "Full name is required!"
+msgstr ""
+
+#: assets/backend.js:343
+msgid "Filter by Type"
+msgstr ""
+
+#: assets/backend.js:372 backend/views/home.php:17
+msgid "Room Types"
+msgstr ""
+
+#: assets/backend.js:378
+msgid "Name"
+msgstr ""
+
+#: assets/backend.js:380 assets/backend.js:558 assets/backend.js:795
+#: assets/public.js:12
+msgid "Price"
+msgstr ""
+
+#: assets/backend.js:392 assets/public.js:20
+msgid "m"
+msgstr ""
+
+#: assets/backend.js:541
+msgid "Add Room Type"
+msgstr ""
+
+#: assets/backend.js:570
+msgid "Photos"
+msgstr ""
+
+#: assets/backend.js:596
+msgid "Upload photos"
+msgstr ""
+
+#: assets/backend.js:613
+msgid "Description"
+msgstr ""
+
+#: assets/backend.js:621
+msgid "Save"
+msgstr ""
+
+#: assets/backend.js:626
+msgid "Add"
+msgstr ""
+
+#: assets/backend.js:695
+msgid "off"
+msgstr ""
+
+#: assets/backend.js:698
+msgid "Add New Room"
+msgstr ""
+
+#: assets/backend.js:716
+msgid "Cleaning"
+msgstr ""
+
+#: assets/backend.js:791
+msgid "Customer"
+msgstr ""
+
+#: assets/backend.js:862
+msgid "Room Statuses"
+msgstr ""
+
+#: assets/backend.js:868
+msgid "Booking Statuses"
+msgstr ""
+
+#: assets/backend.js:874
+msgid "Comforts List"
+msgstr ""
+
+#: assets/backend.js:880
+msgid "Services List"
+msgstr ""
+
+#: assets/backend.js:886
+msgid "Sets List"
+msgstr ""
+
+#: assets/backend.js:892
+msgid "Room Images"
+msgstr ""
+
+#: assets/backend.js:894
+msgid "Large"
+msgstr ""
+
+#: assets/backend.js:896
+msgid "Medium"
+msgstr ""
+
+#: assets/backend.js:898
+msgid "Small"
+msgstr ""
+
+#: assets/backend.js:910
+msgid "Currencies"
+msgstr ""
+
+#: assets/backend.js:912
+msgid "Coef"
+msgstr ""
+
+#: assets/backend.js:935
+msgid "Promocodes"
+msgstr ""
+
+#: assets/public.js:4
+#, fuzzy
+#| msgid "Hotel Booking"
+msgid "My booking"
+msgstr "Бронирование отеля"
+
+#: assets/public.js:5
+msgid "Area"
+msgstr "Площадь"
+
+#: assets/public.js:6
+msgid "Capacity"
+msgstr ""
+
+#: assets/public.js:7
+msgid "To book"
+msgstr ""
+
+#: assets/public.js:8
+msgid "Guest"
+msgstr ""
+
+#: assets/public.js:9
+msgid "Breakfast"
+msgstr ""
+
+#: assets/public.js:10
+msgid "Parking"
+msgstr ""
+
+#: assets/public.js:11
+msgid "Arrival Time"
+msgstr ""
+
+#: assets/public.js:13
+msgid "Yes"
+msgstr ""
+
+#: assets/public.js:14
+msgid "No"
+msgstr ""
+
+#: assets/public.js:15
+msgid "Promo code"
+msgstr ""
+
+#: assets/public.js:16 includes/ajax.php:814
+msgid "Arrival"
+msgstr ""
+
+#: assets/public.js:17 includes/ajax.php:815
+msgid "Departure"
+msgstr ""
+
+#: assets/public.js:18
+msgid "Check availability"
+msgstr ""
+
+#: assets/public.js:19
+msgid "Time"
+msgstr ""
+
+#: assets/public.js:21
+msgid "Booking form"
+msgstr ""
+
+#: assets/public.js:22
+msgid "Full Name"
+msgstr ""
+
+#: assets/public.js:25
+msgid "Wishes"
+msgstr ""
+
+#: assets/public.js:26
+msgid "Send"
+msgstr ""
+
+#: assets/public.js:27
+msgid "Back"
+msgstr ""
+
+#: assets/public.js:28
+msgid "left"
+msgstr ""
+
+#: assets/public.js:29 assets/public.js:44
+msgid "Nights"
+msgstr ""
+
+#: assets/public.js:30
+msgid "Additional services"
+msgstr ""
+
+#: assets/public.js:31
+msgid "Order Form"
+msgstr ""
+
+#: assets/public.js:32 includes/ajax.php:818
+msgid "Guests"
+msgstr ""
+
+#: assets/public.js:33
+#, fuzzy
+#| msgid "Hotel Booking"
+msgid "Check booking"
+msgstr "Бронирование отеля"
+
+#: assets/public.js:34
+msgid "Order id"
+msgstr ""
+
+#: assets/public.js:35
+msgid "Check"
+msgstr ""
+
+#: assets/public.js:36
+msgid "Order Success"
+msgstr ""
+
+#: assets/public.js:37
+msgid "Return"
+msgstr ""
+
+#: assets/public.js:38
+msgid "This date is already taken"
+msgstr ""
+
+#: assets/public.js:39
+msgid "per night"
+msgstr ""
+
+#: assets/public.js:43
+msgid "Night"
+msgstr ""
+
+#: assets/public.js:46
+msgid "Sun"
+msgstr ""
+
+#: assets/public.js:47
+msgid "Mon"
+msgstr ""
+
+#: assets/public.js:48
+msgid "Tue"
+msgstr ""
+
+#: assets/public.js:49
+msgid "Wed"
+msgstr ""
+
+#: assets/public.js:50
+msgid "Thu"
+msgstr ""
+
+#: assets/public.js:51
+msgid "Fri"
+msgstr ""
+
+#: assets/public.js:52
+msgid "Sat"
+msgstr ""
+
+#: assets/public.js:55
+msgid "Sunday"
+msgstr ""
+
+#: assets/public.js:56
+msgid "Monday"
+msgstr ""
+
+#: assets/public.js:57
+msgid "Tuesday"
+msgstr ""
+
+#: assets/public.js:58
+msgid "Wednesday"
+msgstr ""
+
+#: assets/public.js:59
+msgid "Thursday"
+msgstr ""
+
+#: assets/public.js:60
+msgid "Friday"
+msgstr ""
+
+#: assets/public.js:61
+msgid "Saturday"
+msgstr ""
+
+#: assets/public.js:64
+msgid "Jan"
+msgstr ""
+
+#: assets/public.js:65
+msgid "Feb"
+msgstr ""
+
+#: assets/public.js:66
+msgid "Mar"
+msgstr ""
+
+#: assets/public.js:67
+msgid "Apr"
+msgstr ""
+
+#: assets/public.js:68 assets/public.js:82
+msgid "May"
+msgstr ""
+
+#: assets/public.js:69
+msgid "Jun"
+msgstr ""
+
+#: assets/public.js:70
+msgid "Jul"
+msgstr ""
+
+#: assets/public.js:71
+msgid "Aug"
+msgstr ""
+
+#: assets/public.js:72
+msgid "Sep"
+msgstr ""
+
+#: assets/public.js:73
+msgid "Oct"
+msgstr ""
+
+#: assets/public.js:74
+msgid "Nov"
+msgstr ""
+
+#: assets/public.js:75
+msgid "Dec"
+msgstr ""
+
+#: assets/public.js:78
+msgid "January"
+msgstr ""
+
+#: assets/public.js:79
+msgid "February"
+msgstr ""
+
+#: assets/public.js:80
+msgid "March"
+msgstr ""
+
+#: assets/public.js:81
+msgid "April"
+msgstr ""
+
+#: assets/public.js:83
+msgid "June"
+msgstr ""
+
+#: assets/public.js:84
+msgid "July"
+msgstr ""
+
+#: assets/public.js:85
+msgid "August"
+msgstr ""
+
+#: assets/public.js:86
+msgid "September"
+msgstr ""
+
+#: assets/public.js:87
+msgid "October"
+msgstr ""
+
+#: assets/public.js:88
+msgid "November"
+msgstr ""
+
+#: assets/public.js:89
+msgid "December"
+msgstr ""
+
+#: backend/init.php:51 backend/init.php:52
+msgid "Hotel Booking"
+msgstr "Бронирование отеля"
+
+#: backend/views/home.php:8
+msgid "Dashboard"
+msgstr ""
+
+#: backend/views/home.php:11
+msgid "Orders"
+msgstr ""
+
+#: backend/views/home.php:14
+msgid "Rooms"
+msgstr ""
+
+#: backend/views/home.php:20
+msgid "Settings"
+msgstr ""
+
+#: includes/ajax.php:522
+msgid "File is not selected."
+msgstr ""
+
+#: includes/ajax.php:530
+msgid "It is too large than expected."
+msgstr ""
+
+#: includes/ajax.php:534
+msgid "WordPress doesn't allow this type of uploads."
+msgstr ""
+
+#: includes/ajax.php:809
+msgid "Sorry, your order not find"
+msgstr ""
+
+#: includes/ajax.php:817
+msgid "Price per day"
+msgstr ""
+
+#: includes/ajax.php:848
+msgid "Error not found available room"
+msgstr ""
+
+#: includes/ajax.php:862
+msgid "days"
+msgstr ""
+
+#: includes/ajax.php:868
+msgid "add.services"
+msgstr ""
+
+#: includes/ajax.php:870
+msgid "arrival"
+msgstr ""
+
+#: includes/ajax.php:871
+msgid "breakfast"
+msgstr ""
+
+#: includes/ajax.php:872
+msgid "parking"
+msgstr ""
+
+#: includes/ajax.php:891 includes/ajax.php:892
+msgid "New Order"
+msgstr ""
+
+#: includes/ajax.php:892
+msgid "check your site"
+msgstr ""

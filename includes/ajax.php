@@ -519,7 +519,7 @@ function xfor_upload_images()
     $new_file_mime = mime_content_type($photo['tmp_name']);
 
     if (empty($photo)) {
-        die('File is not selected.');
+        die(__('File is not selected.', 'hotel-booking-by-xfor'));
     }
 
     if ($photo['error']) {
@@ -527,11 +527,11 @@ function xfor_upload_images()
     }
 
     if ($photo['size'] > wp_max_upload_size()) {
-        die('It is too large than expected.');
+        die(__('It is too large than expected.', 'hotel-booking-by-xfor'));
     }
 
     if (!in_array($new_file_mime, get_allowed_mime_types())) {
-        die('WordPress doesn\'t allow this type of uploads.');
+        die(__('WordPress doesn\'t allow this type of uploads.', 'hotel-booking-by-xfor'));
     }
 
     while (file_exists($new_file_path)) {
@@ -806,17 +806,16 @@ function xfor_check()
     ");
 
     if (empty($check)) {
-        echo 'Sorry, your order not find';
-        die();
+        die(__('Sorry, your order not find', 'hotel-booking-by-xfor'));
     }
 
     echo '
     <ul>
-        <li>Arrival: ' . $check->start_date . '</li>
-        <li>Departure: ' . $check->end_date . '</li>
-        <li>Room: ' . $check->room . '</li>
-        <li>Price per day: ' . $check->cost . '</li>
-        <li>Guests: ' . $check->guest . '</li>
+        <li>' . __('Arrival', 'hotel-booking-by-xfor') . ': ' . $check->start_date . '</li>
+        <li>' . __('Departure', 'hotel-booking-by-xfor') . ': ' . $check->end_date . '</li>
+        <li>' . __('Room', 'hotel-booking-by-xfor') . ': ' . $check->room . '</li>
+        <li>' . __('Price per day', 'hotel-booking-by-xfor') . ': ' . $check->cost . '</li>
+        <li>' . __('Guests', 'hotel-booking-by-xfor') . ': ' . $check->guest . '</li>
     </ul>
     ';
     die();
@@ -846,7 +845,7 @@ function xfor_send()
         $room_type_id, $start_date, $end_date
     );
     if (!count($rooms_all_list)) {
-        die('Error not found available room');
+        die(__('Error not found available room', 'hotel-booking-by-xfor'));
     }
 
     $room = array_shift($rooms_all_list);
@@ -860,17 +859,17 @@ function xfor_send()
     $cost = sanitize_text_field(trim($_POST['cost']));
     $guest = sanitize_text_field(trim($_POST['guest']));
 
-    $noty .= ', days: ' . (int)$_POST['days'];
+    $noty .= ', ' . __('days', 'hotel-booking-by-xfor') . ': ' . (int)$_POST['days'];
     if (count($_POST['add_services'])) {
         $services = '';
         foreach ($_POST['add_services'] as $item) {
             $services .= sanitize_text_field($item) . '|';
         }
-        $noty .= ', add.services(' . $services . ') ';
+        $noty .= ', ' . __('add.services', 'hotel-booking-by-xfor') . '(' . $services . ') ';
     }
-    $noty .= ', arrival: ' . sanitize_text_field(trim($_POST['arrival']));
-    $noty .= ', breakfast: ' . sanitize_text_field(trim($_POST['breakfast']));
-    $noty .= ', parking: ' . sanitize_text_field(trim($_POST['parking']));
+    $noty .= ', ' . __('arrival', 'hotel-booking-by-xfor') . ': ' . sanitize_text_field(trim($_POST['arrival']));
+    $noty .= ', ' . __('breakfast', 'hotel-booking-by-xfor') . ': ' . sanitize_text_field(trim($_POST['breakfast']));
+    $noty .= ', ' . __('parking', 'hotel-booking-by-xfor') . ': ' . sanitize_text_field(trim($_POST['parking']));
 
     $wpdb->insert("{$wpdb->prefix}xfor_orders", [
         'room' => $room,
@@ -887,7 +886,11 @@ function xfor_send()
     ]);
     $id = $wpdb->insert_id;
 
-    wp_mail( get_option('admin_email'), 'New Order '. $id, 'New Order '. $id . ' check your site.');
+    wp_mail(
+        get_option('admin_email'),
+        __('New Order', 'hotel-booking-by-xfor') . ' ' . $id,
+        __('New Order', 'hotel-booking-by-xfor') . ' ' . $id . __('check your site', 'hotel-booking-by-xfor') . '.'
+    );
 
     echo esc_html($id);
     die();

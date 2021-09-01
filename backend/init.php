@@ -30,7 +30,9 @@ function xfor_admin_scripts()
     wp_enqueue_script('np', XFOR_LIBS_DIR . 'nprogress/nprogress.min.js');
     wp_enqueue_style('np', XFOR_LIBS_DIR . 'nprogress/nprogress.min.css');
 
+    wp_register_script('main', XFOR_ASSETS_DIR . 'backend.js');
     wp_enqueue_script('main', XFOR_ASSETS_DIR . 'backend.js', [], false, true);
+    wp_set_script_translations( 'main', 'hotel-booking-by-xfor', XFOR_LANG_DIR . '/js');
 }
 add_action('admin_enqueue_scripts', 'xfor_admin_scripts');
 
@@ -46,8 +48,8 @@ add_action('admin_init', 'wpse_remove_footer');
 function xfor_menu()
 {
     add_menu_page(
-        __('Hotel Booking', 'xfor'),
-        __('Hotel Booking', 'xfor'),
+        __('Hotel Booking', 'hotel-booking-by-xfor'),
+        __('Hotel Booking', 'hotel-booking-by-xfor'),
         8,
         'hb-console',
         'plugin_page',

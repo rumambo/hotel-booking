@@ -1,5 +1,7 @@
 "use strict";
 
+const {__, _x, _n, _nx} = wp.i18n;
+
 const store = new Vuex.Store({
     state: {
         settings: [],
@@ -127,23 +129,20 @@ const store = new Vuex.Store({
         setInitScheduler: ({commit}, flag) => {
             commit("setInitScheduler", flag);
         },
-        // delRoom: ({commit}, {id}) => {
-        //     commit("delRoom", {id});
-        // },
     },
 });
 
 const Dashboard = {
     mounted() {
 
-        scheduler.locale.labels.section_fullname = 'Fullname';
-        scheduler.locale.labels.section_email = 'Email';
-        scheduler.locale.labels.section_tel = 'Phone';
-        scheduler.locale.labels.section_room = 'Room';
-        scheduler.locale.labels.section_noty = 'Noty';
-        scheduler.locale.labels.section_status = 'Status';
-        scheduler.locale.labels.section_is_paid = 'Is paid';
-        scheduler.locale.labels.section_time = 'Date';
+        scheduler.locale.labels.section_fullname = __('Fullname', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_email = __('Email', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_tel = __('Phone', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_room = __('Room', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_noty = __('Noty', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_status = __('Status', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_is_paid = __('Is paid', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.section_time = __('Date', 'hotel-booking-by-xfor');
         scheduler.xy.scale_height = 30;
         scheduler.config.details_on_create = true;
         scheduler.config.details_on_dblclick = true;
@@ -168,7 +167,7 @@ const Dashboard = {
         ];
 
 
-        scheduler.locale.labels.timeline_tab = 'Timeline';
+        scheduler.locale.labels.timeline_tab = __('Timeline', 'hotel-booking-by-xfor');
 
         scheduler.createTimelineView({
             fit_events: true,
@@ -190,11 +189,11 @@ const Dashboard = {
         })
 
         var headerHTML = "<div class='timeline_item_separator'></div>" +
-            "<div class='timeline_item_cell'>Number</div>" +
+            "<div class='timeline_item_cell'>" + __('Number', 'hotel-booking-by-xfor') + "</div>" +
             "<div class='timeline_item_separator'></div>" +
-            "<div class='timeline_item_cell'>Type</div>" +
+            "<div class='timeline_item_cell'>" + __('Type', 'hotel-booking-by-xfor') + "</div>" +
             "<div class='timeline_item_separator'></div>" +
-            "<div class='timeline_item_cell room_status'>Status</div>";
+            "<div class='timeline_item_cell room_status'>" + __('Status', 'hotel-booking-by-xfor') + "</div>";
 
         scheduler.locale.labels.timeline_scale_header = headerHTML;
 
@@ -245,11 +244,6 @@ const Dashboard = {
             return "event_" + (event.status || "");
         };
 
-        // function getBookingStatus(key) {
-        //     var bookingStatus = findInArray(bookingStatusesArr, key);
-        //     return !bookingStatus ? '' : bookingStatus.label;
-        // }
-
         function getPaidStatus(isPaid) {
             return isPaid ? "💶" : "";
         }
@@ -264,9 +258,9 @@ const Dashboard = {
         scheduler.templates.tooltip_text = function (start, end, event) {
             var room = getRoom(event.room) || {label: ""};
             var html = [];
-            html.push("Room: <b>" + room.label + "</b>");
-            html.push("Check-in: <b>" + eventDateFormat(start) + "</b>");
-            html.push("Check-out: <b>" + eventDateFormat(end) + "</b>");
+            html.push(__('Room', 'hotel-booking-by-xfor') + ": <b>" + room.label + "</b>");
+            html.push(__('Check-in', 'hotel-booking-by-xfor') + ": <b>" + eventDateFormat(start) + "</b>");
+            html.push(__('Check-out', 'hotel-booking-by-xfor') + ": <b>" + eventDateFormat(end) + "</b>");
             html.push(event.status + ", " + getPaidStatus(event.is_paid));
             return html.join("<br>")
         };
@@ -281,7 +275,7 @@ const Dashboard = {
                 if (ev.room != evs[i].room) continue;
                 dhtmlx.message({
                     type: "error",
-                    text: "This room is already booked for this date."
+                    text: __('This room is already booked for this date.', 'hotel-booking-by-xfor')
                 });
             }
             return true;
@@ -314,7 +308,7 @@ const Dashboard = {
             showRooms("all");
 
             var select = document.getElementById("room_filter");
-            var selectHTML = ["<option value='all'>All</option>"];
+            var selectHTML = ["<option value='all'>"+__('All', 'hotel-booking-by-xfor')+"</option>"];
             for (var i = 0; i < roomTypesArr.length; i++) {
                 selectHTML.push("<option value='" + roomTypesArr[i].key + "'>" + getRoomType(roomTypesArr[i].key) + "</option>");
             }
@@ -324,7 +318,7 @@ const Dashboard = {
 
         scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
             if (!ev.fullname) {
-                dhtmlx.alert("Full name is required!");
+                dhtmlx.alert(__('Full name is required!', 'hotel-booking-by-xfor'));
                 return false;
             }
             return true;
@@ -346,7 +340,7 @@ const Dashboard = {
         <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:600px;'>
             <div class="dhx_cal_navline">
                 <div style="font-size:16px;padding:4px 20px;">
-                    Filter by Type:
+                    ${__('Filter by Type', 'hotel-booking-by-xfor')}:
                     <select id="room_filter" onchange='showRooms(this.value)'></select>
                 </div>
                 <div class="dhx_cal_prev_button">&nbsp;</div>
@@ -375,15 +369,15 @@ const RoomTypes = {
            <span class="dashicons dashicons-plus" style="line-height: 32px;" ></span>
         </router-link>
 
-        <h3>Room Types</h3>
+        <h3>${__('Room Types', 'hotel-booking-by-xfor')}</h3>
 
         <table class="widefat striped">
             <thead>
             <tr>
-                <th>Photo</th>
-                <th>Name</th>
-                <th>Capacity</th>
-                <th>Price</th>
+                <th>${__('Photo', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Name', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Capacity', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Price', 'hotel-booking-by-xfor')}</th>
                 <th style="width:50px"></th>
                 <th style="width:50px"></th>
             </tr>
@@ -395,15 +389,15 @@ const RoomTypes = {
                 </td>
                 <td class="align-middle">
                     {{ item.shortcode }} -  
-                    <b>{{ item.title }}</b>, {{ item.area }} m<sup>2</sup>
+                    <b>{{ item.title }}</b>, {{ item.area }} ${__('m', 'hotel-booking-by-xfor')}<sup>2</sup>
                     <br/>
                     <span v-html="item.desc"></span>
                     <div>
-                        <b>Services: </b>
+                        <b>${__('Services', 'hotel-booking-by-xfor')}: </b>
                         {{ item.add_services_list }}
                     </div>
                     <div>
-                        <b>Comfort: </b>
+                        <b>${__('Comfort', 'hotel-booking-by-xfor')}: </b>
                         {{ item.comfort_list }}
                     </div>
                 </td>
@@ -544,15 +538,15 @@ const AddRoomType = {
            <span class="dashicons dashicons-menu" style="line-height: 32px;" ></span>
         </router-link>
         
-        <h3>Add Room Type</h3>
-        <input type="text" v-model="tmpRoomType.shortcode" placeholder="Shortcode">
-        <input type="text" v-model="tmpRoomType.title" placeholder="Title">
-        <input type="text" v-model="tmpRoomType.area" style="width:80px;" placeholder="Area"> m<sup>2</sup>
-        <input type="text"  v-model="tmpRoomType.capacity_text" placeholder="Capacity text">
+        <h3>${__('Add Room Type', 'hotel-booking-by-xfor')}</h3>
+        <input type="text" v-model="tmpRoomType.shortcode" placeholder="${__('Shortcode', 'hotel-booking-by-xfor')}">
+        <input type="text" v-model="tmpRoomType.title" placeholder="${__('Title', 'hotel-booking-by-xfor')}">
+        <input type="text" v-model="tmpRoomType.area" style="width:80px;" placeholder="${__('Area', 'hotel-booking-by-xfor')}"> ${__('m', 'hotel-booking-by-xfor')}<sup>2</sup>
+        <input type="text"  v-model="tmpRoomType.capacity_text" placeholder="${__('Capacity text', 'hotel-booking-by-xfor')}">
         
         <div style="clear:both; margin-bottom:15px;"></div>
         
-        <h4 style="margin-bottom:5px;">Additional Services</h4>
+        <h4 style="margin-bottom:5px;">${__('Additional Services', 'hotel-booking-by-xfor')}</h4>
         <label style="margin-right:15px;" v-for="item in store.getters.allSettings.SERVICES_LIST">
         <input type="checkbox" v-model="tmpRoomType.add_services" :value="item"> 
             {{ item }}
@@ -561,10 +555,10 @@ const AddRoomType = {
         <div style="clear:both; margin-bottom:15px;"></div>
   
         <div style="width:25%; float:left">
-           <h4 style="margin-bottom:5px; margin-top:0;">Price</h4>
+           <h4 style="margin-bottom:5px; margin-top:0;">${__('Price', 'hotel-booking-by-xfor')}</h4>
            <div style="margin-bottom:5px" v-for="(item, index) in store.getters.allSettings.SETS_LIST">
               <div style="width:100px; float:left;">
-                 <input v-model="tmpRoomType.price[item]" style="width:90%" type="text" placeholder="Price">
+                 <input v-model="tmpRoomType.price[item]" style="width:90%" type="text" placeholder="${__('Price', 'hotel-booking-by-xfor')}">
               </div>
               <div style="width:100px; float:left; line-height:30px;">
                  {{ item }}
@@ -573,7 +567,7 @@ const AddRoomType = {
            </div>
         </div>
        <div style="width:75%; float:right">
-          <h4 style="margin-bottom:5px;  margin-top:0">Photos</h4>
+          <h4 style="margin-bottom:5px;  margin-top:0">${__('Photos', 'hotel-booking-by-xfor')}</h4>
           
           <div v-show="tmpRoomType.images">
                 <div v-for="(src, src_index) in tmpRoomType.images" style="float:left; margin-right:5px;position:relative;">
@@ -583,28 +577,24 @@ const AddRoomType = {
                 <div style="clear:both"></div>
           </div>
           
-  <ul>
-    <li v-for="file in files">
-        {{file.name}} <span class="progress" v-if="file.active || file.progress !== '0.00'">- {{file.progress}}% </span>
-    </li>
-  </ul>
-  <file-upload
-    :data="{id: tmpRoomType.id}"
-    class="button"
-    ref="upload"
-    v-model="files"
-    :multiple="true"
-    accept="image/png,image/gif,image/jpeg,image/webp"
-    :post-action="postAction"
-    @input-file="inputFile"
-    @input-filter="inputFilter"
-  >
-  Upload photos
-  </file-upload>
-  <!--
-  <button class="button button-primary" v-show="!$refs.upload || !$refs.upload.active" @click.prevent="$refs.upload.active = true" type="button">Start upload</button>
-  <button class="button button-primary" v-show="$refs.upload && $refs.upload.active" @click.prevent="$refs.upload.active = false" type="button">Stop upload</button>
-  -->
+          <ul>
+            <li v-for="file in files">
+                {{file.name}} <span class="progress" v-if="file.active || file.progress !== '0.00'">- {{file.progress}}% </span>
+            </li>
+          </ul>
+          <file-upload
+            :data="{id: tmpRoomType.id}"
+            class="button"
+            ref="upload"
+            v-model="files"
+            :multiple="true"
+            accept="image/png,image/gif,image/jpeg,image/webp"
+            :post-action="postAction"
+            @input-file="inputFile"
+            @input-filter="inputFilter"
+          >
+          ${__('Upload photos', 'hotel-booking-by-xfor')}
+          </file-upload>
 
        </div>
         
@@ -612,7 +602,7 @@ const AddRoomType = {
         
         <div style="width:50%; float:left">
         
-            <h4 style="margin-bottom:0; margin:5px 0;">Comfort</h4>
+            <h4 style="margin-bottom:0; margin:5px 0;">${__('Comfort', 'hotel-booking-by-xfor')}</h4>
             
             <label style="margin-right:15px; float:left; width:25%;" v-for="item in store.getters.allSettings.COMFORTS_LIST">
             <input type="checkbox" v-model="tmpRoomType.comfort_list" :value="item" checked=""> {{ item }}
@@ -620,7 +610,7 @@ const AddRoomType = {
             
         </div>
         <div style="width:50%; float:left">
-            <h4 style="margin-bottom:0; margin:5px 0;">Description</h4>
+            <h4 style="margin-bottom:0; margin:5px 0;">${__('Description', 'hotel-booking-by-xfor')}</h4>
             <textarea rows="3" v-model="tmpRoomType.desc" placeholder="Description" style="width:100%"></textarea>
         </div>
         
@@ -628,12 +618,12 @@ const AddRoomType = {
 
         <div v-if="$route.params.id !== undefined">
         <button type="button" @click="editRoomType" class="button button-primary">
-            Save
+            ${__('Save', 'hotel-booking-by-xfor')}
         </button>
         </div>
         <div v-else>
         <button type="button" @click="addRoomType" class="button button-primary">
-            Add
+            ${__('Add', 'hotel-booking-by-xfor')}
         </button>
         </div>
         
@@ -701,16 +691,16 @@ const Rooms = {
                         <option v-for="option in store.getters.allSettings.ROOM_STATUSES" :value="option">{{ option }}</option>
                     </select>
                     <select v-model="tmpRoom.status">
-                        <option value="1">on</option>
-                        <option value="0">off</option>
+                        <option value="1">${__('on', 'hotel-booking-by-xfor')}</option>
+                        <option value="0">${__('off', 'hotel-booking-by-xfor')}</option>
                     </select>
                     <button type="button" class="button button-primary" @click="addRoom">
-                        Add New Room
+                        ${__('Add New Room', 'hotel-booking-by-xfor')}
                     </button>
                 </div>
             </div>
             
-            <h3>Rooms</h3>
+            <h3>${__('Rooms', 'hotel-booking-by-xfor')}</h3>
 
             <div class="row">
                 <div class="column" v-for="(room, index0) in store.getters.allRooms">
@@ -722,8 +712,8 @@ const Rooms = {
                         </th>
                     </tr>
                     <tr>
-                        <th>Room</th>
-                        <th>Cleaning</th>
+                        <th>${__('Room', 'hotel-booking-by-xfor')}</th>
+                        <th>${__('Cleaning', 'hotel-booking-by-xfor')}</th>
                         <th style="width:50px"></th>
                         <!-- <th style="width:50px"></th> -->
                         <th style="width:50px"></th>
@@ -751,13 +741,6 @@ const Rooms = {
                                 </button>
                             </span>
                         </td>
-                        <!--
-                        <td style="text-align:right;">
-                            <a href="#" class="button button-primary button-small" style="background:#FFB900; border:1px solid #FFB900">
-                                <span class="dashicons dashicons-edit" style="line-height: 24px;"></span>
-                            </a>
-                        </td>
-                        -->
                         <td style="text-align:right;">
                             <button @click="delRoom(item.id, index0, index1)" type="button" class="button button-primary button-small" style="background:#DC3232; border:1px solid #DC3232">
                                 <span class="dashicons dashicons-trash" style="line-height: 24px;"></span>
@@ -805,12 +788,12 @@ const Orders = {
             <thead>
             <tr>
                 <th>#</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Room</th>
-                <th style="width:200px;">Check-in - Check-out date</th>
-                <th>Price</th>
-                <th>Status</th>
+                <th>${__('Customer', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Phone', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Room', 'hotel-booking-by-xfor')}</th>
+                <th style="width:200px;">${__('Check-in - Check-out date', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Price', 'hotel-booking-by-xfor')}</th>
+                <th>${__('Status', 'hotel-booking-by-xfor')}</th>
                 <th style="width:50px"></th>
             </tr>
             </thead>
@@ -819,7 +802,7 @@ const Orders = {
                  <td>{{ item.id }}</td>
                 <td>
                     {{ item.fullname }}<br>
-                    Email: {{ item.email }} <br>Noty: {{ item.noty }}
+                    ${__('Email', 'hotel-booking-by-xfor')}: {{ item.email }} <br>${__('Noty', 'hotel-booking-by-xfor')}: {{ item.noty }}
                 </td>
                 <td>
                     {{ item.tel }}
@@ -870,49 +853,49 @@ const Settings = {
         }
     },
     template: `<div>
-            <h3>Settings</h3>
+            <h3>${__('Settings', 'hotel-booking-by-xfor')}</h3>
 
             <div style="width:66%; float:left;">
 
                 <table class="widefat striped">
                     <tr>
-                        <th>Room Statuses</th>
+                        <th>${__('Room Statuses', 'hotel-booking-by-xfor')}</th>
                         <td>
                             <input-tag v-model="store.getters.allSettings.ROOM_STATUSES" @input="changeData" :add-tag-on-blur="true"></input-tag>
                         </td>
                     </tr>
                     <tr>
-                        <th>Booking Statuses</th>
+                        <th>${__('Booking Statuses', 'hotel-booking-by-xfor')}</th>
                         <td>
                             <input-tag v-model="store.getters.allSettings.BOOKING_STATUS" @input="changeData" :add-tag-on-blur="true"></input-tag>
                         </td>
                     </tr>
                     <tr>
-                        <th>Comforts List</th>
+                        <th>${__('Comforts List', 'hotel-booking-by-xfor')}</th>
                         <td>
                             <input-tag v-model="store.getters.allSettings.COMFORTS_LIST" @input="changeData" :add-tag-on-blur="true"></input-tag>
                         </td>
                     </tr>
                     <tr>
-                        <th>Services List</th>
+                        <th>${__('Services List', 'hotel-booking-by-xfor')}</th>
                         <td>
                             <input-tag v-model="store.getters.allSettings.SERVICES_LIST" @input="changeData" :add-tag-on-blur="true"></input-tag>
                         </td>
                     </tr>
                     <tr>
-                        <th>Sets List</th>
+                        <th>${__('Sets List', 'hotel-booking-by-xfor')}</th>
                         <td>
                             <input-tag v-model="store.getters.allSettings.SETS_LIST" @input="changeData" :add-tag-on-blur="true"></input-tag>
                         </td>
                     </tr>
                     <tr>
-                        <th><label>Room Images, px</label></th>
+                        <th><label>${__('Room Images', 'hotel-booking-by-xfor')}, px</label></th>
                         <td>
-                            Large
+                            ${__('Large', 'hotel-booking-by-xfor')}
                             <input style="width:100px; margin-right:15px;" type="number" @input="changeData" v-model="store.getters.allSettings.IMG_LARGE">
-                            Medium
+                            ${__('Medium', 'hotel-booking-by-xfor')}
                             <input style="width:100px; margin-right:15px;" type="number" @input="changeData" v-model="store.getters.allSettings.IMG_MEDIUM">
-                            Small
+                            ${__('Small', 'hotel-booking-by-xfor')}
                             <input style="width:100px;" type="number" @input="changeData" v-model="store.getters.allSettings.IMG_SMALL">
                         </td>
                     </tr>
@@ -924,9 +907,9 @@ const Settings = {
                 <table class='widefat'>
                     <thead>
                         <tr>
-                            <th>Currencies</th>
-                            <th>Sign</th>
-                            <th>Coef</th>
+                            <th>${__('Currencies', 'hotel-booking-by-xfor')}</th>
+                            <th>${__('Sign', 'hotel-booking-by-xfor')}</th>
+                            <th>${__('Coef', 'hotel-booking-by-xfor')}</th>
                             <th style="width:30px; text-align: center"></th>
                         </tr>
                     </thead>
@@ -937,9 +920,9 @@ const Settings = {
                         </tr>
                     </tbody>
                     <tr style="background:#f0f6fc;">
-                        <td><input v-model="tmpCur[0]" type="text" style="width:100%;" placeholder="Currency" ></td>
-                        <td><input v-model="tmpCur[1]" type="text" style="width:100%;" placeholder="Sign" ></td>
-                        <td><input v-model="tmpCur[2]" type="text" style="width:100%;" placeholder="Coef" ></td>
+                        <td><input v-model="tmpCur[0]" type="text" style="width:100%;" placeholder="${__('Currency', 'hotel-booking-by-xfor')}" ></td>
+                        <td><input v-model="tmpCur[1]" type="text" style="width:100%;" placeholder="${__('Sign', 'hotel-booking-by-xfor')}" ></td>
+                        <td><input v-model="tmpCur[2]" type="text" style="width:100%;" placeholder="${__('Coef', 'hotel-booking-by-xfor')}" ></td>
                         <td><button @click="addNewCur" class="button-primary button" style="line-height: normal;" type="button"><span class="dashicons dashicons-plus"></span></button></td>
                     </tr>
                 </table>
@@ -949,9 +932,9 @@ const Settings = {
                 <table class='widefat'>
                     <thead>
                     <tr>
-                        <th>Promocodes</th>
-                        <th>Sum</th>
-                        <th>Status</th>
+                        <th>${__('Promocodes', 'hotel-booking-by-xfor')}</th>
+                        <th>${__('Sum', 'hotel-booking-by-xfor')}</th>
+                        <th>${__('Status', 'hotel-booking-by-xfor')}</th>
                         <th style="width:30px; text-align: center"></th>
                     </tr>
                     </thead>
@@ -962,17 +945,14 @@ const Settings = {
                         </tr>
                     </tbody>
                     <tr style="background:#f0f6fc;">
-                        <td><input v-model="tmpPromo[0]" type="text" style="width:100%;" placeholder="Promocode" ></td>
-                        <td><input v-model="tmpPromo[1]" type="text" style="width:100%;" placeholder="Sum" ></td>
-                        <td><input v-model="tmpPromo[2]" type="text" style="width:100%;" placeholder="Status" ></td>
+                        <td><input v-model="tmpPromo[0]" type="text" style="width:100%;" placeholder="${__('Promocode', 'hotel-booking-by-xfor')}" ></td>
+                        <td><input v-model="tmpPromo[1]" type="text" style="width:100%;" placeholder="${__('Sum', 'hotel-booking-by-xfor')}" ></td>
+                        <td><input v-model="tmpPromo[2]" type="text" style="width:100%;" placeholder="${__('Status', 'hotel-booking-by-xfor')}" ></td>
                         <td><button @click="addNewPromo" class="button-primary button" style="line-height: normal;" type="button"><span class="dashicons dashicons-plus"></span></button></td>
                     </tr>
                 </table>
 
-
             </div>
-
-
         </div>`
 }
 
@@ -1005,7 +985,7 @@ const router = new VueRouter({
 Vue.component('input-tag', vueInputTag.default)
 Vue.component('file-upload', VueUploadComponent)
 
-if(document.getElementById("hotel_bookin_xfor")) {
+if (document.getElementById("hotel_bookin_xfor")) {
 
     new Vue({
         router,
