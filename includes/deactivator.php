@@ -5,7 +5,6 @@
  *=====================================================
  **/
 
-
 namespace XFOR_HB_Deactivator;
 
 class HotelBookingDeactivator

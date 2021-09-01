@@ -885,8 +885,11 @@ function xfor_send()
         'cost' => $cost,
         'guest' => $guest,
     ]);
+    $id = $wpdb->insert_id;
 
-    echo esc_html($wpdb->insert_id);
+    wp_mail( get_option('admin_email'), 'New Order '. $id, 'New Order '. $id . ' check your site.');
+
+    echo esc_html($id);
     die();
 }
 

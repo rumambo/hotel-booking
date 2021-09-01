@@ -584,7 +584,9 @@ const AddRoomType = {
           </div>
           
   <ul>
-    <li v-for="file in files">{{file.name}} - Error: {{file.error}}, Success: {{file.success}}</li>
+    <li v-for="file in files">
+        {{file.name}} <span class="progress" v-if="file.active || file.progress !== '0.00'">- {{file.progress}}% </span>
+    </li>
   </ul>
   <file-upload
     :data="{id: tmpRoomType.id}"

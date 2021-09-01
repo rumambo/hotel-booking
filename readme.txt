@@ -1,17 +1,22 @@
 === Hotel Booking by Xfor ===
-Tags: room reservation, hotel booking
+Tags: room, reservation, hotel, booking, booking engine
+Contributors: utz0r2
 Requires at least: 5.0
 Tested up to: 5.8
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 Requires PHP: 7.0
 License: MIT
 License URI: http://opensource.org/licenses/MIT
 
-Hotel Booking - wordpress plugin
+Hotel Booking - helps you to setup hotel booking system quickly, pleasantly and easily.
 
 == Description ==
 
 The best free hotel booking plugin on the earth! The simplest and fastest.
+
+Hotel Booking - wordpress plugin for room reservation. A powerful rental property booking plugin.
+
+If you are looking for a reliable reservation system for a Hotel, B&B, Villa, Apartments, Hostel or any similar accommodation, then you have found the right plugin.
 
 Features:
 
@@ -30,25 +35,28 @@ Features:
 *   Does not use dependencies
 *   and much more
 
-== Frequently Asked Questions ==
+[youtube https://www.youtube.com/watch?v=cFf2_BGcI1E]
 
-An answer to that question.
+Insert shortcode [hotel_booking] to any page in wordpress.
 
 == Screenshots ==
 
-screenshots/1.png
-screenshots/2.png
-screenshots/3.png
-screenshots/4.png
-screenshots/5.png
-screenshots/6.png
-screenshots/7.png
+1. Frontend view on public page
+2. Modal window check your reservation
+3. Order form
+4. Dashboard
+5. Edit your rooms list
+6. Room types list
+7. Settings
 
 == Changelog ==
 
+= 0.1.2 =
+* fixed email notifications
+* edited readme
+* fixed uninstaller
+* updated uploading images
+* added russian and ukranian localizations
+
 = 0.1.1 =
 * refactor to wordpress catalog, fix some issue
-
-= 0.1.0 =
-* Ready to product
-
