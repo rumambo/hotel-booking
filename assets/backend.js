@@ -2,6 +2,99 @@
 
 const {__, _x, _n, _nx} = wp.i18n;
 
+Scheduler.plugin(function(e) {
+    e.locale = {
+        date: {
+            month_full: [
+                __('January', 'hotel-booking-by-xfor'),
+                __("February", 'hotel-booking-by-xfor'),
+                __("March", 'hotel-booking-by-xfor'),
+                __("April", 'hotel-booking-by-xfor'),
+                __("May", 'hotel-booking-by-xfor'),
+                __("June", 'hotel-booking-by-xfor'),
+                __("July", 'hotel-booking-by-xfor'),
+                __("August", 'hotel-booking-by-xfor'),
+                __("September", 'hotel-booking-by-xfor'),
+                __("October", 'hotel-booking-by-xfor'),
+                __("November", 'hotel-booking-by-xfor'),
+                __("December", 'hotel-booking-by-xfor')
+            ],
+            month_short: [
+                __('Jan', 'hotel-booking-by-xfor'),
+                __("Feb", 'hotel-booking-by-xfor'),
+                __("Mar", 'hotel-booking-by-xfor'),
+                __("Apr", 'hotel-booking-by-xfor'),
+                __("May", 'hotel-booking-by-xfor'),
+                __("Jun", 'hotel-booking-by-xfor'),
+                __("Jul", 'hotel-booking-by-xfor'),
+                __("Aug", 'hotel-booking-by-xfor'),
+                __("Sep", 'hotel-booking-by-xfor'),
+                __("Oct", 'hotel-booking-by-xfor'),
+                __("Nov", 'hotel-booking-by-xfor'),
+                __("Dec", 'hotel-booking-by-xfor')
+            ],
+            day_full: [
+                __('Sunday', 'hotel-booking-by-xfor'),
+                __("Monday", 'hotel-booking-by-xfor'),
+                __("Tuesday", 'hotel-booking-by-xfor'),
+                __("Wednesday", 'hotel-booking-by-xfor'),
+                __("Thursday", 'hotel-booking-by-xfor'),
+                __("Friday", 'hotel-booking-by-xfor'),
+                __("Saturday", 'hotel-booking-by-xfor')
+            ],
+            day_short: [
+                __('Sun', 'hotel-booking-by-xfor'),
+                __("Mon", 'hotel-booking-by-xfor'),
+                __("Tue", 'hotel-booking-by-xfor'),
+                __("Wed", 'hotel-booking-by-xfor'),
+                __("Thu", 'hotel-booking-by-xfor'),
+                __("Fri", 'hotel-booking-by-xfor'),
+                __("Sat", 'hotel-booking-by-xfor')
+            ]
+        },
+        labels: {
+            dhx_cal_today_button: __("Today", 'hotel-booking-by-xfor'),
+            day_tab: __("Day", 'hotel-booking-by-xfor'),
+            week_tab: __("Week", 'hotel-booking-by-xfor'),
+            month_tab: __("Month", 'hotel-booking-by-xfor'),
+            new_event: __("New event", 'hotel-booking-by-xfor'),
+            icon_save: __("Save", 'hotel-booking-by-xfor'),
+            icon_cancel: __("Cancel", 'hotel-booking-by-xfor'),
+            icon_details: __("Details", 'hotel-booking-by-xfor'),
+            icon_edit: __("Edit", 'hotel-booking-by-xfor'),
+            icon_delete: __("Delete", 'hotel-booking-by-xfor'),
+            confirm_closing: "",
+            confirm_deleting: __("Event will be deleted permanently, are you sure?", 'hotel-booking-by-xfor'),
+            section_description: __("Description", 'hotel-booking-by-xfor'),
+            section_time: __("Time period", 'hotel-booking-by-xfor'),
+            full_day: __("Full day", 'hotel-booking-by-xfor'),
+            confirm_recurring: __("Do you want to edit the whole set of repeated events?", 'hotel-booking-by-xfor'),
+            section_recurring: __("Repeat event", 'hotel-booking-by-xfor'),
+            button_recurring: __("Disabled", 'hotel-booking-by-xfor'),
+            button_recurring_open: __("Enabled", 'hotel-booking-by-xfor'),
+            button_edit_series: __("Edit series", 'hotel-booking-by-xfor'),
+            button_edit_occurrence: __("Edit occurrence", 'hotel-booking-by-xfor'),
+            agenda_tab: __("Agenda", 'hotel-booking-by-xfor'),
+            date: __("Date", 'hotel-booking-by-xfor'),
+            description: __("Description", 'hotel-booking-by-xfor'),
+            year_tab: __("Year", 'hotel-booking-by-xfor'),
+            week_agenda_tab: __("Agenda", 'hotel-booking-by-xfor'),
+            grid_tab: __("Grid", 'hotel-booking-by-xfor'),
+            drag_to_create: __("Drag to create", 'hotel-booking-by-xfor'),
+            drag_to_move: __("Drag to move", 'hotel-booking-by-xfor'),
+            message_ok: __("OK", 'hotel-booking-by-xfor'),
+            message_cancel: __("Cancel", 'hotel-booking-by-xfor'),
+            next: __("Next", 'hotel-booking-by-xfor'),
+            prev: __("Previous", 'hotel-booking-by-xfor'),
+            year: __("Year", 'hotel-booking-by-xfor'),
+            month: __("Month", 'hotel-booking-by-xfor'),
+            day: __("Day", 'hotel-booking-by-xfor'),
+            hour: __("Hour", 'hotel-booking-by-xfor'),
+            minute: __("Minute", 'hotel-booking-by-xfor')
+        }
+    }
+});
+
 const store = new Vuex.Store({
     state: {
         settings: [],
@@ -157,17 +250,17 @@ const Dashboard = {
 
         scheduler.config.lightbox.sections = [
             {map_to: "fullname", name: "fullname", type: "textarea", height: 30},
-            {map_to: "email", name: "Email", type: "textarea", height: 30},
-            {map_to: "tel", name: "Phone", type: "textarea", height: 30},
-            {map_to: "noty", name: "Noty", type: "textarea", height: 30},
-            {map_to: "room", name: "Room", type: "select", options: scheduler.serverList("currentRooms")},
+            {map_to: "email", name: "email", type: "textarea", height: 30},
+            {map_to: "tel", name: "tel", type: "textarea", height: 30},
+            {map_to: "noty", name: "noty", type: "textarea", height: 30},
+            {map_to: "room", name: "room", type: "select", options: scheduler.serverList("currentRooms")},
             {map_to: "status", name: "status", type: "radio", options: bookingStatusesArr},
             {map_to: "is_paid", name: "is_paid", type: "checkbox", checked_value: 1, unchecked_value: 0},
             {map_to: "time", name: "time", type: "calendar_time"}
         ];
 
 
-        scheduler.locale.labels.timeline_tab = __('Timeline', 'hotel-booking-by-xfor');
+        scheduler.locale.labels.timeline_tab = 'Timeline';
 
         scheduler.createTimelineView({
             fit_events: true,
@@ -308,7 +401,7 @@ const Dashboard = {
             showRooms("all");
 
             var select = document.getElementById("room_filter");
-            var selectHTML = ["<option value='all'>"+__('All', 'hotel-booking-by-xfor')+"</option>"];
+            var selectHTML = ["<option value='all'>" + __('All', 'hotel-booking-by-xfor') + "</option>"];
             for (var i = 0; i < roomTypesArr.length; i++) {
                 selectHTML.push("<option value='" + roomTypesArr[i].key + "'>" + getRoomType(roomTypesArr[i].key) + "</option>");
             }
@@ -364,13 +457,10 @@ const RoomTypes = {
         }
     },
     template: `<div>
-
-        <router-link to="/room_types/add" class="button button-primary" style="float:right;">
-           <span class="dashicons dashicons-plus" style="line-height: 32px;" ></span>
+        <router-link to="/room_types/add" class="button button-primary float-right">
+           <span class="dashicons dashicons-plus lh32"></span>
         </router-link>
-
         <h3>${__('Room Types', 'hotel-booking-by-xfor')}</h3>
-
         <table class="widefat striped">
             <thead>
             <tr>
@@ -403,7 +493,7 @@ const RoomTypes = {
                 </td>
                 <td class="align-middle">
                     <div v-for="(cap, ci ) in JSON.parse(item.capacity)">
-                     {{ cap ? ci : ''  }}
+                     {{ cap ? ci : '' }}
                     </div>
                 </td>
                 <td class="align-middle">
@@ -412,19 +502,18 @@ const RoomTypes = {
                     </div>
                 </td>
                 <td style="text-align:right;">
-                    <router-link :to="{path: '/room_types/edit/'+item.id}" tag="button" class="button button-primary button-small" style="background: #FFB900;border:1px solid #FFB900;">
+                    <router-link :to="{path: '/room_types/edit/'+item.id}" tag="button" class="button button-primary button-small button-edit">
                         <span class="dashicons dashicons-edit" style="line-height: 24px;"></span>
                     </router-link>
                 </td>
                 <td style="text-align:right;">
-                    <button @click="delRoomType(item.id)" type="button" class="button button-primary button-small" style="background: #DC3232;border:1px solid #DC3232;">
+                    <button @click="delRoomType(item.id)" type="button" class="button button-primary button-small button-delete">
                         <span class="dashicons dashicons-trash" style="line-height: 24px;"></span>
                     </button>
                 </td>
             </tr>
             </tbody>
         </table>
-
     </div>`
 }
 
@@ -533,27 +622,21 @@ const AddRoomType = {
         }
     },
     template: `<div>
-        
-        <router-link to="/room_types" class="button button-primary" style="float:right;">
-           <span class="dashicons dashicons-menu" style="line-height: 32px;" ></span>
+        <router-link to="/room_types" class="button button-primary float-right">
+           <span class="dashicons dashicons-menu lh32"></span>
         </router-link>
-        
         <h3>${__('Add Room Type', 'hotel-booking-by-xfor')}</h3>
         <input type="text" v-model="tmpRoomType.shortcode" placeholder="${__('Shortcode', 'hotel-booking-by-xfor')}">
         <input type="text" v-model="tmpRoomType.title" placeholder="${__('Title', 'hotel-booking-by-xfor')}">
         <input type="text" v-model="tmpRoomType.area" style="width:80px;" placeholder="${__('Area', 'hotel-booking-by-xfor')}"> ${__('m', 'hotel-booking-by-xfor')}<sup>2</sup>
         <input type="text"  v-model="tmpRoomType.capacity_text" placeholder="${__('Capacity text', 'hotel-booking-by-xfor')}">
-        
         <div style="clear:both; margin-bottom:15px;"></div>
-        
         <h4 style="margin-bottom:5px;">${__('Additional Services', 'hotel-booking-by-xfor')}</h4>
         <label style="margin-right:15px;" v-for="item in store.getters.allSettings.SERVICES_LIST">
         <input type="checkbox" v-model="tmpRoomType.add_services" :value="item"> 
             {{ item }}
         </label>
-                
         <div style="clear:both; margin-bottom:15px;"></div>
-  
         <div style="width:25%; float:left">
            <h4 style="margin-bottom:5px; margin-top:0;">${__('Price', 'hotel-booking-by-xfor')}</h4>
            <div style="margin-bottom:5px" v-for="(item, index) in store.getters.allSettings.SETS_LIST">
@@ -595,27 +678,19 @@ const AddRoomType = {
           >
           ${__('Upload photos', 'hotel-booking-by-xfor')}
           </file-upload>
-
        </div>
-        
         <div style="clear:both; margin-bottom:15px;"></div>
-        
         <div style="width:50%; float:left">
-        
             <h4 style="margin-bottom:0; margin:5px 0;">${__('Comfort', 'hotel-booking-by-xfor')}</h4>
-            
             <label style="margin-right:15px; float:left; width:25%;" v-for="item in store.getters.allSettings.COMFORTS_LIST">
             <input type="checkbox" v-model="tmpRoomType.comfort_list" :value="item" checked=""> {{ item }}
             </label>
-            
         </div>
         <div style="width:50%; float:left">
             <h4 style="margin-bottom:0; margin:5px 0;">${__('Description', 'hotel-booking-by-xfor')}</h4>
             <textarea rows="3" v-model="tmpRoomType.desc" placeholder="Description" style="width:100%"></textarea>
         </div>
-        
         <div style="clear:both; margin-bottom:10px;"></div>
-
         <div v-if="$route.params.id !== undefined">
         <button type="button" @click="editRoomType" class="button button-primary">
             ${__('Save', 'hotel-booking-by-xfor')}
@@ -626,7 +701,6 @@ const AddRoomType = {
             ${__('Add', 'hotel-booking-by-xfor')}
         </button>
         </div>
-        
     </div>`
 }
 
@@ -677,82 +751,78 @@ const Rooms = {
         }
     },
     template: `<div>
-
-            <a href="#TB_inline?width=500&height=45&inlineId=modal-window-add" class="button button-primary thickbox" style="float:right;">
-                <span class="dashicons dashicons-plus" style="line-height: 32px;" ></span>
-            </a>
-            <div id="modal-window-add" style="display:none;">
-                <div style=" padding-top:5px;">
-                    <input type="text" placeholder="Title" v-model="tmpRoom.name">
-                    <select v-model="tmpRoom.type_id">
-                        <option v-for="(option, index) in store.getters.allRooms" :value="index.split('|')[1]">{{ index.split('|')[0] }}</option>
-                    </select>
-                    <select v-model="tmpRoom.cleaner">
-                        <option v-for="option in store.getters.allSettings.ROOM_STATUSES" :value="option">{{ option }}</option>
-                    </select>
-                    <select v-model="tmpRoom.status">
-                        <option value="1">${__('on', 'hotel-booking-by-xfor')}</option>
-                        <option value="0">${__('off', 'hotel-booking-by-xfor')}</option>
-                    </select>
-                    <button type="button" class="button button-primary" @click="addRoom">
-                        ${__('Add New Room', 'hotel-booking-by-xfor')}
-                    </button>
-                </div>
+        <a href="#TB_inline?width=500&height=45&inlineId=modal-window-add" class="button button-primary thickbox float-right">
+            <span class="dashicons dashicons-plus lh32"></span>
+        </a>
+        <div id="modal-window-add" style="display:none;">
+            <div style=" padding-top:5px;">
+                <input type="text" placeholder="Title" v-model="tmpRoom.name">
+                <select v-model="tmpRoom.type_id">
+                    <option v-for="(option, index) in store.getters.allRooms" :value="index.split('|')[1]">{{ index.split('|')[0] }}</option>
+                </select>
+                <select v-model="tmpRoom.cleaner">
+                    <option v-for="option in store.getters.allSettings.ROOM_STATUSES" :value="option">{{ option }}</option>
+                </select>
+                <select v-model="tmpRoom.status">
+                    <option value="1">${__('on', 'hotel-booking-by-xfor')}</option>
+                    <option value="0">${__('off', 'hotel-booking-by-xfor')}</option>
+                </select>
+                <button type="button" class="button button-primary" @click="addRoom">
+                    ${__('Add New Room', 'hotel-booking-by-xfor')}
+                </button>
             </div>
-            
-            <h3>${__('Rooms', 'hotel-booking-by-xfor')}</h3>
-
-            <div class="row">
-                <div class="column" v-for="(room, index0) in store.getters.allRooms">
-                    <table class="widefat striped">
-                    <thead>
-                    <tr>
-                        <th colspan="5">
-                            <h4 style="margin:0">{{ index0.split('|')[0] }}</h4>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>${__('Room', 'hotel-booking-by-xfor')}</th>
-                        <th>${__('Cleaning', 'hotel-booking-by-xfor')}</th>
-                        <th style="width:50px"></th>
-                        <!-- <th style="width:50px"></th> -->
-                        <th style="width:50px"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="(item, index1) in room">
-                        <td>
-                            {{ item.name }}
-                        </td>
-                        <td>
-                            <select v-model="item.cleaner" @change="updateRoom(item.id, item.cleaner)">
-                                <option v-for="option in store.getters.allSettings.ROOM_STATUSES" :value="option">{{ option }}</option>
-                            </select>
-                        </td>
-                        <td style="text-align:right;">
-                            <span v-if="item.status == 1">
-                                <button @click="switchRoomStatus(item.id, item.status); item.status = 0" type="button" class="button button-primary button-small" style="background:#46B450; border:1px solid #46B450">
-                                    <span class="dashicons dashicons-visibility" style="line-height: 24px;"></span>
-                                </button>
-                            </span>
-                            <span v-else>
-                                <button @click="switchRoomStatus(item.id, item.status); item.status = 1" type="button" class="button button-primary button-small" style="background:#ccc; border:1px solid #ccc">
-                                    <span class="dashicons dashicons-visibility" style="line-height: 24px;"></span>
-                                </button>
-                            </span>
-                        </td>
-                        <td style="text-align:right;">
-                            <button @click="delRoom(item.id, index0, index1)" type="button" class="button button-primary button-small" style="background:#DC3232; border:1px solid #DC3232">
-                                <span class="dashicons dashicons-trash" style="line-height: 24px;"></span>
+        </div>
+        <h3>${__("Rooms", 'hotel-booking-by-xfor')}</h3>
+        <div class="row">
+            <div class="column" v-for="(room, index0) in store.getters.allRooms">
+                <table class="widefat striped">
+                <thead>
+                <tr>
+                    <th colspan="5">
+                        <h4 style="margin:0">{{ index0.split('|')[0] }}</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th>${__('Room', 'hotel-booking-by-xfor')}</th>
+                    <th>${__('Cleaning', 'hotel-booking-by-xfor')}</th>
+                    <th style="width:50px"></th>
+                    <!-- <th style="width:50px"></th> -->
+                    <th style="width:50px"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item, index1) in room">
+                    <td>
+                        {{ item.name }}
+                    </td>
+                    <td>
+                        <select v-model="item.cleaner" @change="updateRoom(item.id, item.cleaner)">
+                            <option v-for="option in store.getters.allSettings.ROOM_STATUSES" :value="option">{{ option }}</option>
+                        </select>
+                    </td>
+                    <td style="text-align:right;">
+                        <span v-if="item.status == 1">
+                            <button @click="switchRoomStatus(item.id, item.status); item.status = 0" type="button" class="button button-primary button-small" style="background:#46B450; border:1px solid #46B450">
+                                <span class="dashicons dashicons-visibility" style="line-height: 24px;"></span>
                             </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                </div>
+                        </span>
+                        <span v-else>
+                            <button @click="switchRoomStatus(item.id, item.status); item.status = 1" type="button" class="button button-primary button-small" style="background:#ccc; border:1px solid #ccc">
+                                <span class="dashicons dashicons-visibility" style="line-height: 24px;"></span>
+                            </button>
+                        </span>
+                    </td>
+                    <td style="text-align:right;">
+                        <button @click="delRoom(item.id, index0, index1)" type="button" class="button button-primary button-small button-delete">
+                            <span class="dashicons dashicons-trash" style="line-height: 24px;"></span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
             </div>
-
-        </div>`
+        </div>
+    </div>`
 }
 
 const Orders = {
@@ -781,9 +851,7 @@ const Orders = {
         this.getOrder()
     },
     template: `<div>
-
-        <h3>Orders</h3>
-
+        <h3>${__("Orders", 'hotel-booking-by-xfor')}</h3>
         <table class="widefat striped">
             <thead>
             <tr>
@@ -791,7 +859,7 @@ const Orders = {
                 <th>${__('Customer', 'hotel-booking-by-xfor')}</th>
                 <th>${__('Phone', 'hotel-booking-by-xfor')}</th>
                 <th>${__('Room', 'hotel-booking-by-xfor')}</th>
-                <th style="width:200px;">${__('Check-in - Check-out date', 'hotel-booking-by-xfor')}</th>
+                <th style="width:200px;">${__('Check-in', 'hotel-booking-by-xfor')} - ${__('Check-out', 'hotel-booking-by-xfor')}</th>
                 <th>${__('Price', 'hotel-booking-by-xfor')}</th>
                 <th>${__('Status', 'hotel-booking-by-xfor')}</th>
                 <th style="width:50px"></th>
@@ -820,7 +888,7 @@ const Orders = {
                      {{ item.status }} - {{ item.is_paid === 1 ? 'Is paid' : 'Not paid' }}
                 </td>
                 <td style="text-align:right;">
-                    <a href="#" @click="delOrder(item.id, index)" class="button button-primary button-small" style="background: #DC3232;border:1px solid #DC3232;">
+                    <a href="#" @click="delOrder(item.id, index)" class="button button-primary button-small button-delete">
                         <span class="dashicons dashicons-trash" style="line-height: 24px"></span>
                     </a>
                 </td>
@@ -854,9 +922,7 @@ const Settings = {
     },
     template: `<div>
             <h3>${__('Settings', 'hotel-booking-by-xfor')}</h3>
-
             <div style="width:66%; float:left;">
-
                 <table class="widefat striped">
                     <tr>
                         <th>${__('Room Statuses', 'hotel-booking-by-xfor')}</th>
@@ -903,7 +969,6 @@ const Settings = {
 
             </div>
             <div style="width:32%; float:left; margin-left:1%;">
-
                 <table class='widefat'>
                     <thead>
                         <tr>

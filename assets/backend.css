@@ -10,7 +10,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    displa:block;
+    displa: block;
 }
 
 .vue-input-tag-wrapper .new-tag {
@@ -250,4 +250,22 @@ a:focus, input[type=text]:focus {
     border-top: 1px solid #e0e0e0 !important;
     border-bottom: 1px solid #e0e0e0 !important;
     height: 59px !important; /* Compensate 1px difference with the scale_bar row*/
+}
+
+
+/* Core styles */
+
+#hotel_bookin_xfor .lh32 {
+    line-height: 32px;
+}
+
+#hotel_bookin_xfor .float-right {
+    float:right;
+}
+
+#hotel_bookin_xfor .button-edit {
+    background: #FFB900;border:1px solid #FFB900;
+}
+#hotel_bookin_xfor .button-delete {
+    background: #DC3232;border:1px solid #DC3232;
 }

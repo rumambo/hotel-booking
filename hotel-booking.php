@@ -10,6 +10,8 @@ Version: 0.1.1
 Author URI: https://xfor.top/
 */
 
+__('Plugin Hotel booking. Ideal solution for creating your own hotel\'s booking system.', 'hotel-booking-by-xfor');
+
 use XFOR_HB_Activator\HotelBOokingActivator;
 use XFOR_HB_Deactivator\HotelBookingDeactivator;
 

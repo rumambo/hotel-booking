@@ -1,7 +1,6 @@
 <?php
 add_thickbox();
 ?>
-
 <div id="hotel_bookin_xfor">
     <h2 class="nav-tab-wrapper">
         <router-link class="nav-tab" exact-active-class="nav-tab-active" to="/">
