@@ -43,5 +43,3 @@ function xfor_front_style()
 
 }
 add_action('wp_head', 'xfor_front_style');
-
-
