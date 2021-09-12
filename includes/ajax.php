@@ -15,6 +15,10 @@ function xfor_dashboard()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     if (isset($_POST['ids'])) {
 
         $command = Helper::parseRequestArguments($_POST);
@@ -72,6 +76,7 @@ function xfor_dashboard()
         WHERE a.id = b.type_id AND b.status = 1
         ",
         ARRAY_A);
+
     foreach ($result as $row) {
         $data['collections']['roomType'][] = $row;
     }
@@ -122,6 +127,10 @@ function xfor_get_rooms()
 
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $data = [];
     $types = [];
 
@@ -130,6 +139,7 @@ function xfor_get_rooms()
         SELECT id, title
         FROM {$wpdb->prefix}xfor_room_types",
         ARRAY_A);
+
     foreach ($result as $row) {
         $data[$row['title'] . '|' . $row['id']] = [];
         $types[$row['id']] = $row['title'];
@@ -140,6 +150,7 @@ function xfor_get_rooms()
     $result = $wpdb->get_results("
         SELECT * FROM {$wpdb->prefix}xfor_rooms
     ", ARRAY_A);
+
     foreach ($result as $row) {
         $type_title = $types[$row['type_id']];
         $title_and_id = $type_title . '|' . $row['type_id'];
@@ -167,16 +178,18 @@ function xfor_add_room()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
-    if (is_admin()) {
-        $wpdb->insert("{$wpdb->prefix}xfor_rooms", [
-            'name' => sanitize_text_field($_POST['name']),
-            'type_id' => (int)$_POST['type_id'],
-            'cleaner' => sanitize_text_field($_POST['cleaner']),
-            'status' => (int)$_POST['status'],
-        ]);
-    }
+    $wpdb->insert("{$wpdb->prefix}xfor_rooms", [
+        'name' => sanitize_text_field($_POST['name']),
+        'type_id' => (int)$_POST['type_id'],
+        'cleaner' => sanitize_text_field($_POST['cleaner']),
+        'status' => (int)$_POST['status'],
+    ]);
 
     xfor_get_rooms();
     die();
@@ -192,11 +205,13 @@ function xfor_delete_room()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
-    if (is_admin()) {
-        $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['id' => (int)$_POST['id']]);
-    }
+    $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['id' => (int)$_POST['id']]);
 
     echo 1;
     die();
@@ -212,16 +227,18 @@ function xfor_switch_room_status()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
     $status = (int)$_POST['status'] === 1 ? 0 : 1;
 
-    if (is_admin()) {
-        $wpdb->update("{$wpdb->prefix}xfor_rooms",
-            ['status' => $status],
-            ['id' => (int)$_POST['id']]
-        );
-    }
+    $wpdb->update("{$wpdb->prefix}xfor_rooms",
+        ['status' => $status],
+        ['id' => (int)$_POST['id']]
+    );
 
     echo esc_html($status);
     die();
@@ -237,14 +254,16 @@ function xfor_update_room()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
-    if (is_admin()) {
-        $wpdb->update("{$wpdb->prefix}xfor_rooms",
-            ['cleaner' => sanitize_text_field($_POST['cleaner'])],
-            ['id' => (int)$_POST['id']]
-        );
-    }
+    $wpdb->update("{$wpdb->prefix}xfor_rooms",
+        ['cleaner' => sanitize_text_field($_POST['cleaner'])],
+        ['id' => (int)$_POST['id']]
+    );
 
     echo 1;
     die();
@@ -260,6 +279,10 @@ function xfor_get_orders()
 {
 
     global $wpdb;
+
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
 
     $result = $wpdb->get_results("
         SELECT *
@@ -287,11 +310,13 @@ function xfor_delete_order()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
-    if (is_admin()) {
-        $wpdb->delete("{$wpdb->prefix}xfor_orders", ['id' => (int)$_POST['id']]);
-    }
+    $wpdb->delete("{$wpdb->prefix}xfor_orders", ['id' => (int)$_POST['id']]);
 
     echo 1;
     die();
@@ -307,6 +332,10 @@ function xfor_get_room_types()
 {
 
     global $wpdb;
+
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
 
     $result = $wpdb->get_results("
         SELECT *
@@ -341,20 +370,22 @@ function xfor_add_room_type()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
-    if (is_admin()) {
-        $wpdb->insert("{$wpdb->prefix}xfor_room_types", [
-            'title' => sanitize_text_field($_POST['title']),
-            'area' => sanitize_text_field($_POST['area']),
-            'capacity' => json_encode($_POST['price']),
-            'desc' => sanitize_text_field($_POST['desc']),
-            'comfort_list' => sanitize_text_field(implode(',', $_POST['comfort_list'])),
-            'add_services_list' => sanitize_text_field(implode(',', $_POST['add_services'])),
-            'shortcode' => sanitize_text_field($_POST['shortcode']),
-            'capacity_desc' => sanitize_text_field($_POST['capacity_text']),
-        ]);
-    }
+    $wpdb->insert("{$wpdb->prefix}xfor_room_types", [
+        'title' => sanitize_text_field($_POST['title']),
+        'area' => sanitize_text_field($_POST['area']),
+        'capacity' => json_encode($_POST['price']),
+        'desc' => sanitize_text_field($_POST['desc']),
+        'comfort_list' => sanitize_text_field(implode(',', $_POST['comfort_list'])),
+        'add_services_list' => sanitize_text_field(implode(',', $_POST['add_services'])),
+        'shortcode' => sanitize_text_field($_POST['shortcode']),
+        'capacity_desc' => sanitize_text_field($_POST['capacity_text']),
+    ]);
 
     xfor_get_room_types();
     die();
@@ -370,28 +401,32 @@ function xfor_del_room_type()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
 
-    if (is_admin() && $id !== 0) {
-
-        $row = $wpdb->get_row("
-            SELECT images 
-            FROM {$wpdb->prefix}xfor_room_types
-            WHERE type_id = $id
-        ");
-        if (!empty($row->images)) {
-            $images_data = explode(',', $row->images);
-            foreach ($images_data as $value) {
-                wp_delete_attachment($value, true);
-            }
-        }
-        $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['type_id' => $id]);
-        $wpdb->delete("{$wpdb->prefix}xfor_room_types", ['id' => $id]);
-        $wpdb->delete("{$wpdb->prefix}xfor_room_types_images", ['type_id' => $id]);
-
+    if ($id === 0) {
+        die();
     }
+
+    $row = $wpdb->get_row("
+        SELECT images 
+        FROM {$wpdb->prefix}xfor_room_types
+        WHERE type_id = $id
+    ");
+    if (!empty($row->images)) {
+        $images_data = explode(',', $row->images);
+        foreach ($images_data as $value) {
+            wp_delete_attachment($value, true);
+        }
+    }
+    $wpdb->delete("{$wpdb->prefix}xfor_rooms", ['type_id' => $id]);
+    $wpdb->delete("{$wpdb->prefix}xfor_room_types", ['id' => $id]);
+    $wpdb->delete("{$wpdb->prefix}xfor_room_types_images", ['type_id' => $id]);
 
     xfor_get_room_types();
     die();
@@ -407,49 +442,52 @@ function xfor_get_room_type()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
 
     $data = [];
-    if (is_admin() && $id !== 0) {
-
-        $row = $wpdb->get_row("
-            SELECT * 
-            FROM {$wpdb->prefix}xfor_room_types 
-            WHERE id = $id
-        ");
-
-        $capacity = json_decode($row->capacity, true);
-        $price = [];
-        foreach ($capacity as $key => $value) {
-            $price[$key] = $value;
-        }
-
-        $images = [];
-        if (!empty($row->images)) {
-            $img = explode(',', $row->images);
-            foreach ($img as $attach_id) {
-                $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
-            }
-        }
-
-        $data = [
-            'id' => $row->id,
-            'shortcode' => $row->shortcode,
-            'title' => $row->title,
-            'images' => $images,
-            'area' => $row->area,
-            'capacity_text' => $row->capacity_desc,
-            'add_services' => explode(',', $row->add_services_list),
-            'price' => $price,
-            'photos' => '',
-            'comfort_list' => explode(',', $row->comfort_list),
-            'desc' => $row->desc,
-        ];
+    if ($id === 0) {
+        die();
     }
 
-    echo json_encode($data);
+    $row = $wpdb->get_row("
+        SELECT * 
+        FROM {$wpdb->prefix}xfor_room_types 
+        WHERE id = $id
+    ");
+
+    $capacity = json_decode($row->capacity, true);
+    $price = [];
+    foreach ($capacity as $key => $value) {
+        $price[$key] = $value;
+    }
+
+    $images = [];
+    if (!empty($row->images)) {
+        $img = explode(',', $row->images);
+        foreach ($img as $attach_id) {
+            $images[] = wp_get_attachment_image_src($attach_id, 'thumbnail')[0];
+        }
+    }
+
+    echo json_encode([
+        'id' => $row->id,
+        'shortcode' => $row->shortcode,
+        'title' => $row->title,
+        'images' => $images,
+        'area' => $row->area,
+        'capacity_text' => $row->capacity_desc,
+        'add_services' => explode(',', $row->add_services_list),
+        'price' => $price,
+        'photos' => '',
+        'comfort_list' => explode(',', $row->comfort_list),
+        'desc' => $row->desc,
+    ]);
     die();
 }
 
@@ -463,21 +501,27 @@ function xfor_edit_room_type()
 {
     global $wpdb;
 
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
+
     $_POST = Helper::getRequest();
 
     $id = (int)$_POST['id'];
-    if (is_admin() && $id !== 0) {
-        $wpdb->update("{$wpdb->prefix}xfor_room_types", [
-            'title' => sanitize_text_field($_POST['title']),
-            'area' => sanitize_text_field($_POST['area']),
-            'capacity' => json_encode($_POST['price']),
-            'desc' => sanitize_text_field($_POST['desc']),
-            'comfort_list' => sanitize_text_field(implode(',', $_POST['comfort_list'])),
-            'add_services_list' => sanitize_text_field(implode(',', $_POST['add_services'])),
-            'shortcode' => sanitize_text_field($_POST['shortcode']),
-            'capacity_desc' => sanitize_text_field($_POST['capacity_text']),
-        ], ['id' => $id]);
+    if ($id === 0) {
+        die();
     }
+
+    $wpdb->update("{$wpdb->prefix}xfor_room_types", [
+        'title' => sanitize_text_field($_POST['title']),
+        'area' => sanitize_text_field($_POST['area']),
+        'capacity' => json_encode($_POST['price']),
+        'desc' => sanitize_text_field($_POST['desc']),
+        'comfort_list' => sanitize_text_field(implode(',', $_POST['comfort_list'])),
+        'add_services_list' => sanitize_text_field(implode(',', $_POST['add_services'])),
+        'shortcode' => sanitize_text_field($_POST['shortcode']),
+        'capacity_desc' => sanitize_text_field($_POST['capacity_text']),
+    ], ['id' => $id]);
 
     xfor_get_room_types();
     die();
@@ -494,7 +538,7 @@ function xfor_upload_images()
     global $wpdb;
 
     if (!is_admin()) {
-        die();
+        die('Error! Not access');
     }
 
     $id = (int)$_POST['id'];
@@ -534,6 +578,10 @@ function xfor_upload_images()
         die(__('WordPress doesn\'t allow this type of uploads.', 'hotel-booking-by-xfor'));
     }
 
+    if (($new_file_mime !== 'image/jpeg') && ($new_file_mime !== 'image/jpg') && ($new_file_mime !== 'image/png')) {
+        die(__('Error type, please upload: jpg, jpeg, png', 'hotel-booking-by-xfor'));
+    }
+
     while (file_exists($new_file_path)) {
         $i++;
         $new_file_path = $wordpress_upload_dir['path'] . '/' . $i . '_' . $photo['name'];
@@ -552,7 +600,6 @@ function xfor_upload_images()
         // wp_generate_attachment_metadata() won't work if you do not include this file
         require_once(ABSPATH . 'wp-admin/includes/image.php');
 
-        // Generate and save the attachment metas into the database
         wp_update_attachment_metadata($upload_id, wp_generate_attachment_metadata($upload_id, $new_file_path));
 
         array_push($images_data, $upload_id);
@@ -601,7 +648,7 @@ function xfor_delete_image()
     global $wpdb;
 
     if (!is_admin()) {
-        die();
+        die('Error! Not access');
     }
 
     $_POST = Helper::getRequest();
@@ -612,11 +659,12 @@ function xfor_delete_image()
     $images_data = [];
     $is_set = false;
 
-    $row = $wpdb->get_row("
+    $row = $wpdb->get_row($wpdb->prepare("
         SELECT images 
         FROM {$wpdb->prefix}xfor_room_types_images
-        WHERE type_id = $id
-    ");
+        WHERE type_id = %d
+    ", $id));
+
     if (!empty($row->images)) {
         $images_data = explode(',', $row->images);
         $is_set = true;
@@ -680,11 +728,11 @@ function xfor_get_room_type_images()
 
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 
-    $row = $wpdb->get_row("
+    $row = $wpdb->get_row($wpdb->prepare("
         SELECT images 
         FROM {$wpdb->prefix}xfor_room_types_images
-        WHERE type_id = $id
-    ");
+        WHERE type_id = %d
+    ", $id));
 
     $images = [];
     if (!empty($row->images)) {
@@ -708,6 +756,10 @@ add_action('wp_ajax_nopriv_xfor_get_room_type_images', 'xfor_get_room_type_image
 function xfor_get_settings()
 {
     global $wpdb;
+
+    if (!is_admin()) {
+        die('Error! Not access');
+    }
 
     $result = $wpdb->get_results("
         SELECT *
@@ -748,7 +800,7 @@ function xfor_store_settings()
     global $wpdb;
 
     if (!is_admin()) {
-        die();
+        die('Error! Not access');
     }
 
     $_POST = Helper::getRequest();
@@ -799,11 +851,11 @@ function xfor_check()
     $order_id = (int)$_POST['order_id'];
     $tel = str_replace(['+', ' ', ' ', ')', '('], '', strip_tags(trim(sanitize_text_field($_POST['tel']))));
 
-    $check = $wpdb->get_row("
+    $check = $wpdb->get_row($wpdb->prepare("
         SELECT *
         FROM " . $wpdb->prefix . "xfor_orders
-        WHERE id = $order_id AND tel = $tel
-    ");
+        WHERE id = %d AND tel = %s
+    ", [$order_id, $tel]));
 
     if (empty($check)) {
         die(__('Sorry, your order not find', 'hotel-booking-by-xfor'));
@@ -913,19 +965,22 @@ function xfor_get()
     $end_date = $search_data['end_date'];
     $promocode = $search_data['promocode'];
 
+    $res = [];
     $data = [];
     $rooms_list = [];
 
     $rooms_all_list = Helper::getAvailableRoomsList($start_date, $end_date);
 
     if (count($rooms_all_list) > 0) {
-        $rooms_all_list = implode(',', $rooms_all_list);
+        $count_rooms_all_list = count($rooms_all_list);
+        $stringPlaceholders = array_fill(0, $count_rooms_all_list, '%s');
+        $placeholders = implode(', ', $stringPlaceholders);
 
-        $result = $wpdb->get_results("
+        $result = $wpdb->get_results($wpdb->prepare("
             SELECT *
             FROM " . $wpdb->prefix . "xfor_rooms
-            WHERE name IN ($rooms_all_list) AND status = 1
-        ");
+            WHERE name IN ({$placeholders}) AND status = 1
+        ", $rooms_all_list));
         foreach ($result as $row) {
             $rooms_list[$row->type_id][] = $row->name;
         }

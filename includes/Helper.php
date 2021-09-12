@@ -84,12 +84,12 @@ class Helper
 
         $rooms_list = [];
 
-        $rooms = $wpdb->get_results("
+        $rooms = $wpdb->get_results($wpdb->prepare("
             SELECT *
             FROM " . $wpdb->prefix . "xfor_rooms
-            WHERE type_id = $type_id AND status = 1
+            WHERE type_id = %d AND status = 1
             ORDER BY cleaner DESC
-        ");
+        ", $type_id));
         foreach ($rooms as $row) {
             $rooms_list[$row->name] = $row->name;
         }
@@ -97,11 +97,11 @@ class Helper
 
         $rooms_busy_list = [];
 
-        $rooms = $wpdb->get_results("
+        $rooms = $wpdb->get_results($wpdb->prepare("
             SELECT room
             FROM " . $wpdb->prefix . "xfor_orders
-            WHERE start_date >= '$start_date' AND end_date <= '$end_date'
-        ");
+            WHERE start_date >= %s AND end_date <= %s
+        ", [$start_date, $end_date]));
         foreach ($rooms as $row) {
             $rooms_busy_list[$row->room] = $row->room;
         }
@@ -129,12 +129,12 @@ class Helper
         }
 
         $rooms_list = [];
-        $rooms = $wpdb->get_results("
+        $rooms = $wpdb->get_results($wpdb->prepare("
             SELECT *
             FROM " . $wpdb->prefix . "xfor_rooms
             WHERE status = 1
             ORDER BY cleaner ASC
-        ");
+        "));
         foreach ($rooms as $row) {
             $rooms_list[$row->name] = $row->name;
         }
@@ -142,14 +142,14 @@ class Helper
 
         $rooms_busy_list = [];
 
-        $rooms = $wpdb->get_results("
+        $rooms = $wpdb->get_results($wpdb->prepare("
             SELECT room
             FROM " . $wpdb->prefix . "xfor_orders
             WHERE 
-                start_date BETWEEN '$start_date' AND '$end_date' OR 
-                end_date BETWEEN '$start_date' AND '$end_date' OR 
-                (start_date <= '$start_date' AND end_date >= '$end_date')
-        ");
+                start_date BETWEEN %s AND %s OR 
+                end_date BETWEEN %s AND %s OR 
+                (start_date <= %s AND end_date >= %s)
+        ", [$start_date, $end_date, $start_date, $end_date, $start_date, $end_date]));
         foreach ($rooms as $row) {
             $rooms_busy_list[$row->room] = $row->room;
         }
@@ -210,16 +210,19 @@ class Helper
             }
 
             if (isset($_POST['promocode']) && !empty($_POST['promocode'])) {
-                $promocode = sanitize_text_field(trim($_POST['promocode']));
+
+                $promocode_data = sanitize_text_field(trim($_POST['promocode']));
+
                 $settings_promo = $wpdb->get_row("
-                SELECT `value`
-                FROM " . $wpdb->prefix . "xfor_settings
-                WHERE param = 'PROMO'
-            ");
+                    SELECT `value`
+                    FROM " . $wpdb->prefix . "xfor_settings
+                    WHERE param = 'PROMO'
+                ");
 
                 $settings_promo = json_decode($settings_promo->value, true);
+
                 foreach ($settings_promo as $value) {
-                    if ($value[0] === $promocode && $value[2] === 1) {
+                    if ($value[0] === $promocode_data && $value[2] === 1) {
                         $promocode = (float)$value[1];
                     }
                 }

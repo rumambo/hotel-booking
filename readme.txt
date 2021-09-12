@@ -2,8 +2,8 @@
 Tags: room, reservation, hotel, booking, booking engine
 Contributors: utz0r2
 Requires at least: 5.0
-Tested up to: 5.8
-Stable tag: 0.1.2
+Tested up to: 5.8.1
+Stable tag: 0.1.3
 Requires PHP: 7.0
 License: MIT
 License URI: http://opensource.org/licenses/MIT
@@ -50,6 +50,9 @@ Insert shortcode [hotel_booking] to any page in wordpress.
 7. Settings
 
 == Changelog ==
+
+= 0.1.3 =
+* fixed some code
 
 = 0.1.2 =
 * fixed email notifications

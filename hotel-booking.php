@@ -6,7 +6,7 @@ Author: Igor Veselov
 Text Domain: hotel-booking-by-xfor
 Domain Path: /languages
 Description: Plugin Hotel booking. Ideal solution for creating your own hotel's booking system.
-Version: 0.1.1
+Version: 0.1.3
 Author URI: https://xfor.top/
 */
 
