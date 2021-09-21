@@ -33,6 +33,9 @@ function xfor_admin_scripts()
     wp_register_script('main', XFOR_ASSETS_DIR . 'backend.js');
     wp_enqueue_script('main', XFOR_ASSETS_DIR . 'backend.js', [], false, true);
     wp_set_script_translations('main', 'hotel-booking-by-xfor', XFOR_LANG_DIR . '/js');
+    wp_localize_script('main', 'hotel_booking_by_xfor', [
+        'nonce' => wp_create_nonce('hotel_booking_by_xfor')
+    ]);
 }
 
 add_action('admin_enqueue_scripts', 'xfor_admin_scripts');
@@ -60,7 +63,7 @@ function xfor_menu()
     add_menu_page(
         __('Hotel Booking', 'hotel-booking-by-xfor'),
         __('Hotel Booking', 'hotel-booking-by-xfor'),
-        8,
+        'xfor_options',
         'hb-console',
         'plugin_page',
         'dashicons-bank',

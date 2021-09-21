@@ -117,7 +117,7 @@ const store = new Vuex.Store({
         },
         storeSettings(state) {
             axios
-                .post(ajaxurl + '?action=xfor_store_settings', state.settings)
+                .post(ajaxurl + '?action=xfor_store_settings', {settings: state.settings, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => state.settings = response.data)
                 .catch(error => console.log(error));
         },
@@ -145,7 +145,7 @@ const store = new Vuex.Store({
         },
         addRoomType(state, tmp) {
             axios
-                .post(ajaxurl + '?action=xfor_add_room_type', tmp)
+                .post(ajaxurl + '?action=xfor_add_room_type', {tmp : tmp, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -155,7 +155,7 @@ const store = new Vuex.Store({
         },
         editRoomType(state, tmp) {
             axios
-                .post(ajaxurl + '?action=xfor_edit_room_type', tmp)
+                .post(ajaxurl + '?action=xfor_edit_room_type', {tmp : tmp, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -165,7 +165,7 @@ const store = new Vuex.Store({
         },
         delRoomType(state, id) {
             axios
-                .post(ajaxurl + '?action=xfor_del_room_type', {id: id})
+                .post(ajaxurl + '?action=xfor_del_room_type', {id: id, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => (state.roomtypes = response.data))
                 .catch(error => console.log(error));
 
@@ -174,19 +174,13 @@ const store = new Vuex.Store({
         },
         addRoom(state, tmp) {
             axios
-                .post(ajaxurl + '?action=xfor_add_room', tmp)
+                .post(ajaxurl + '?action=xfor_add_room', {tmp : tmp, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => state.rooms = response.data)
                 .catch(error => console.log(error));
         },
         setInitScheduler(state, flag) {
             state.init_scheduler = flag;
         },
-        // delRoom(state, {id}) {
-        //     axios
-        //         .post(ajaxurl + '?action=xfor_delete_room', Qs.stringify({'id':id}))
-        //         // .then(response => state.settings = response.data)
-        //         .catch(error => console.log(error));
-        // },
     },
     actions: {
         getSettings: ({commit}) => {
@@ -530,7 +524,7 @@ const AddRoomType = {
                 area: '',
                 capacity_text: '',
                 add_services: [],
-                price: [],
+                price: {},
                 photos: '',
                 comfort_list: [],
                 desc: '',
@@ -590,13 +584,18 @@ const AddRoomType = {
             let id = this.$route.params.id;
 
             axios
-                .post(ajaxurl + '?action=xfor_get_room_type', {id: id})
+                .post(ajaxurl + '?action=xfor_get_room_type', {id: id, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => (this.tmpRoomType = response.data))
                 .catch(error => console.log(error));
         },
         getRoomTypeImages() {
+            var id = 0;
+            if (this.$route.params.id !== undefined) {
+                id = this.$route.params.id
+            }
+
             axios
-                .post(ajaxurl + '?action=xfor_get_room_type_images')
+                .post(ajaxurl + '?action=xfor_get_room_type_images', {id: id, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .then(response => (this.tmpRoomType.images = response.data))
                 .catch(error => console.log(error));
         },
@@ -606,8 +605,7 @@ const AddRoomType = {
                 id = this.$route.params.id
             }
             axios
-                .post(ajaxurl + '?action=xfor_delete_image', {id: id, index: index})
-                // .then(response => (this.tmpRoomType = response.data))
+                .post(ajaxurl + '?action=xfor_delete_image', {id: id, index: index, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .catch(error => console.log(error));
 
             this.$store.state.roomtypes = [];
@@ -666,7 +664,7 @@ const AddRoomType = {
             </li>
           </ul>
           <file-upload
-            :data="{id: tmpRoomType.id}"
+            :data="{id: tmpRoomType.id, _ajax_nonce: hotel_booking_by_xfor.nonce}"
             class="button"
             ref="upload"
             v-model="files"
@@ -726,8 +724,7 @@ const Rooms = {
         delRoom(id, index0, index1) {
 
             axios
-                .post(ajaxurl + '?action=xfor_delete_room', {'id': id})
-                //.then(response => state.rooms = response.data)
+                .post(ajaxurl + '?action=xfor_delete_room', {id: id, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .catch(error => console.log(error));
 
             Vue.delete(this.$store.state.rooms[index0], index1)
@@ -735,19 +732,13 @@ const Rooms = {
         },
         switchRoomStatus(id, status) {
             axios
-                .post(ajaxurl + '?action=xfor_switch_room_status', {'id': id, 'status': status})
-                //.then(response => state.rooms = response.data)
+                .post(ajaxurl + '?action=xfor_switch_room_status', {id: id, status: status, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .catch(error => console.log(error));
         },
         updateRoom(id, cleaner) {
-
-            // console.log(id, cleaner)
-
             axios
-                .post(ajaxurl + '?action=xfor_update_room', {'id': id, 'cleaner': cleaner})
-                //.then(response => state.rooms = response.data)
+                .post(ajaxurl + '?action=xfor_update_room', {id: id, cleaner: cleaner, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .catch(error => console.log(error));
-
         }
     },
     template: `<div>
@@ -834,8 +825,7 @@ const Orders = {
     methods: {
         delOrder(id, index) {
             axios
-                .post(ajaxurl + '?action=xfor_delete_order', {'id': id})
-                // .then(response => state.settings = response.data)
+                .post(ajaxurl + '?action=xfor_delete_order', {'id': id, _ajax_nonce: hotel_booking_by_xfor.nonce})
                 .catch(error => console.log(error));
 
             this.orders.splice(index, 1)

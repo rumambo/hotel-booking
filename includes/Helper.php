@@ -204,9 +204,9 @@ class Helper
             $_POST = Helper::getRequest();
 
             if (isset($_POST['range']) && !empty($_POST['range'])) {
-                $range = explode(' - ', sanitize_text_field($_POST['range']));
-                $start_date = date('Y-m-d', strtotime($range[0]));
-                $end_date = date('Y-m-d', strtotime($range[1]));
+                $range = explode(' - ', $_POST['range']);
+                $start_date = date('Y-m-d', strtotime(sanitize_text_field($range[0])));
+                $end_date = date('Y-m-d', strtotime(sanitize_text_field($range[1])));
             }
 
             if (isset($_POST['promocode']) && !empty($_POST['promocode'])) {
