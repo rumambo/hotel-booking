@@ -41,21 +41,21 @@ function xfor_admin_scripts()
 add_action('admin_enqueue_scripts', 'xfor_admin_scripts');
 
 
-function wpse_remove_footer()
+function xfor_remove_footer()
 {
     add_filter('admin_footer_text', '__return_false', 11);
     add_filter('update_footer', '__return_false', 11);
 }
 
-add_action('admin_init', 'wpse_remove_footer');
+add_action('admin_init', 'xfor_remove_footer');
 
 
-function myplugin_init()
+function xfor_myplugin_init()
 {
     load_plugin_textdomain('hotel-booking-by-xfor', false, basename(dirname(__FILE__, 2)) . '/languages/js');
 }
 
-add_action('plugins_loaded', 'myplugin_init');
+add_action('plugins_loaded', 'xfor_myplugin_init');
 
 
 function xfor_menu()
