@@ -40,6 +40,3 @@ After activation on plugin page. Go to hotel booking page and fill the data abou
 <kbd><img src="https://i.imgur.com/ktowBPM.png" alt="front" width="100%"/></kbd><br/><br/>
 <kbd><img src="https://i.imgur.com/VbIzz7L.png" alt="front" width="100%"/></kbd><br/><br/>
 <kbd><img src="https://i.imgur.com/JxSeV0J.png" alt="front" width="100%"/></kbd><br/>
-
-## For any questions
-My e-mail dev@xfor.top
